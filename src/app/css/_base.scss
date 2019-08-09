@@ -1,0 +1,57 @@
+// FONTS
+
+@font-face {
+    font-family: "Noto Sans";
+    src: url("../assets/fonts/notosans-regular-webfont.woff2") format("woff2"),
+        url("../assets/fonts/notosans-regular-webfont.woff") format("woff");
+    font-weight: normal;
+    font-display: fallback;
+}
+@font-face {
+    font-family: "Noto Sans";
+    src: url("../assets/fonts/notosans-bold-webfont.woff2") format("woff2"),
+        url("../assets/fonts/notosans-bold-webfont.woff") format("woff");
+    font-weight: bold;
+    font-display: fallback;
+}
+
+@font-face {
+    font-family: "DroidArabicNaskh";
+    src: url("../assets/fonts/droidnaskh-regular.woff2") format("woff2"),
+        url("../assets/fonts/droidnaskh-regular.woff") format("woff");
+    font-weight: normal;
+    font-display: fallback;
+}
+@font-face {
+    font-family: "DroidArabicNaskh";
+    src: url("../assets/fonts/droidnaskh-bold.woff2") format("woff2"),
+        url("../assets/fonts/droidnaskh-bold.woff") format("woff");
+    font-weight: bold;
+    font-display: fallback;
+}
+
+@font-face {
+    font-family: "Font-Awesome";
+    font-style: normal;
+    font-weight: 900;
+    src: url("../assets/fonts/fa-solid-900.eot");
+    src: url("../assets/fonts/fa-solid-900.eot?#iefix")
+            format("embedded-opentype"),
+        url("../assets/fonts/fa-solid-900.woff2") format("woff2"),
+        url("../assets/fonts/fa-solid-900.woff") format("woff"),
+        url("../assets/fonts/fa-solid-900.ttf") format("truetype"),
+        url("../assets/fonts/fa-solid-900.svg#fontawesome") format("svg");
+}
+
+@font-face {
+    font-family: "Font-Awesome-brands";
+    font-style: normal;
+    font-weight: 400;
+    src: url("../assets/fonts/fa-brands-400.eot");
+    src: url("../assets/fonts/fa-brands-400.eot?#iefix")
+            format("embedded-opentype"),
+        url("../assets/fonts/fa-brands-400.woff2") format("woff2"),
+        url("../assets/fonts/fa-brands-400.woff") format("woff"),
+        url("../assets/fonts/fa-brands-400.ttf") format("truetype"),
+        url("../assets/fonts/fa-brands-400.svg#fontawesome") format("svg");
+}

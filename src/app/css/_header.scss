@@ -1,0 +1,45 @@
+.main-header {
+    background-color: $white;
+    display: flex;
+    align-items: center;
+    height: 7rem;
+
+    .logo {
+        width: 7rem;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: $blue;
+        padding: 1rem;
+
+        a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        img {
+            width: 100%;
+            display: block;
+        }
+    }
+
+    .right {
+        flex: 1;
+        height: 100%;
+        border-bottom: solid 1px $borderGrey;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 2rem;
+    }
+
+    .sign-out {
+        margin-left: 1rem;
+    }
+
+    .language-switcher {
+        margin-right: 1rem;
+    }
+} //main-header

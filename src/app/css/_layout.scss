@@ -1,0 +1,16 @@
+.main-content-wrapper {
+    display: flex;
+    min-height: calc(100% - 7rem);
+
+    .main-content {
+        flex: 1;
+        flex-direction: column;
+
+        .actions-bar {
+            width: 100%;
+            height: 6rem;
+            background-color: #f9f9f9;
+            border-bottom: solid 1px $borderGrey;
+        }
+    }
+}

@@ -1,0 +1,51 @@
+@import url("https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,500,500i,600,600i,700,700i");
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+    overflow-y: scroll;
+    font-size: 10px;
+}
+
+body {
+    @include clearfix;
+    color: $textColorDark;
+    background-color: $bgGrey;
+    font-family: $enFont;
+    font-size: 1.6rem;
+    font-weight: 400;
+    line-height: 1.5;
+    height: 100%;
+
+    &.ar {
+        direction: rtl;
+    }
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    height: 1px;
+    transition: all 0.3s;
+}
+
+h3 {
+    font-weight: 500;
+    font-size: 1.8rem;
+}
+
+a {
+    transition: all 0.3s;
+}
+
+.ar {
+    font-family: $arFont;
+}
+
+.en {
+    font-family: $enFont;
+}

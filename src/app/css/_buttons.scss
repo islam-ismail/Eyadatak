@@ -1,0 +1,130 @@
+.btn {
+    appearance: none;
+    border: solid 1px $borderGrey;
+    text-transform: uppercase;
+    height: 3.6rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3rem;
+    color: $textColorDark;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+    font-family: inherit;
+    font-size: 1.2rem;
+    outline: none;
+    letter-spacing: 0.5px;
+
+    &.ar {
+        font-family: $arFont;
+    }
+
+    &.en {
+        font-family: $enFont;
+    }
+
+    &.icon {
+        width: 3.6rem;
+        padding: 0;
+        font-size: 1.9rem;
+
+        .fas {
+            margin-right: 0;
+            font-size: 1.6rem;
+        }
+    }
+
+    .fas {
+        margin-right: 1rem;
+    }
+
+    &.btn-default {
+        background-color: $white;
+        border-color: $borderGrey;
+
+        &:hover {
+            background-color: $textColorDark;
+            color: $white;
+        }
+    }
+
+    &.btn-green {
+        background-color: $green;
+        border-color: $green;
+        color: $white;
+
+        &:hover {
+            background-color: $white;
+            color: $green;
+        }
+    }
+
+    &.btn-black {
+        background-color: $textColorDark;
+        border-color: $textColorDark;
+        color: $white;
+
+        &:hover {
+            background-color: $white;
+            color: $textColorDark;
+        }
+    }
+
+    &.btn-blue {
+        background-color: $blue;
+        border-color: $blue;
+        color: $white;
+
+        &:hover {
+            background-color: $white;
+            color: $blue;
+        }
+    }
+
+    &.big {
+        height: 5rem;
+        width: 100%;
+        font-size: 1.4rem;
+    }
+
+    &[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+
+        &:hover {
+            &.btn-default {
+                background-color: $white;
+                border-color: $borderGrey;
+            }
+
+            &.btn-green {
+                background-color: $green;
+                border-color: $green;
+                color: $white;
+            }
+
+            &.btn-black {
+                background-color: $textColorDark;
+                border-color: $textColorDark;
+                color: $white;
+            }
+
+            &.btn-blue {
+                background-color: $blue;
+                border-color: $blue;
+                color: $white;
+            }
+        }
+    }
+} //btn
+
+.asLink {
+    color: $blue;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}

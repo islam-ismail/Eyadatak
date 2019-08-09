@@ -1,0 +1,21 @@
+.tableHeaderCell {
+  font-size: 1em !important;
+}
+
+.tableRow-IsRead {
+  .tableCell {
+    font-size: 1em !important;
+  }
+}
+
+.tableRow-IsUnread {
+  .tableCell {
+    font-size: 1em !important;
+    font-weight: bold !important;
+  }
+}
+
+.caseSpeciality {
+  display: flex;
+  flex-direction: column;
+}

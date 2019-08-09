@@ -1,0 +1,18 @@
+.transfer-case-modal {
+  .input-group-regular {
+      margin-bottom: 2rem;
+  }
+
+  input[type="text"],
+  input[type="password"],
+  input[type="tel"],
+  select,
+  textarea {
+      width: 100%;
+  }
+
+  h3 {
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+  }
+}

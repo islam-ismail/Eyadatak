@@ -1,0 +1,42 @@
+.f-icon {
+    position: relative;
+    display: inline-block;
+    line-height: 1;
+
+    &:before {
+        content: "";
+        display: inline-block;
+        font-family: $fAwsome;
+        font-weight: normal !important;
+        font-style: normal !important;
+        font-size: inherit;
+        line-height: 1;
+        text-transform: none;
+        letter-spacing: normal;
+        word-wrap: normal;
+        white-space: nowrap;
+        direction: ltr;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        -moz-osx-font-smoothing: grayscale;
+        font-feature-settings: "liga";
+    }
+
+    &.brand {
+        &:before {
+            font-family: $fAwsomeBrands;
+        }
+    }
+}
+
+.sign-out-icon:before {
+    content: "\f2f5";
+}
+
+.close-icon:before {
+    content: "\f00d";
+}
+
+.paper-clip-icon:before {
+    content: "\f0c6";
+}

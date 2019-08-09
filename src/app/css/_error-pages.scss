@@ -1,0 +1,29 @@
+.error-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background-color: $white;
+    border: solid 1px $borderGrey;
+    flex-direction: column;
+
+    figure {
+        width: 40%;
+    }
+
+    h2 {
+        font-size: 4rem;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        font-weight: 700;
+    }
+
+    a {
+        color: $blue;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}

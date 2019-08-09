@@ -1,0 +1,365 @@
+.input-group {
+    position: relative;
+    width: 30rem;
+    margin-bottom: 4.5rem;
+    line-height: 1;
+
+    &.error {
+        input {
+            border-color: $red;
+        }
+    }
+
+    .react-datepicker-popper {
+        & ~ label {
+            top: -2rem;
+            font-size: 1.2rem;
+            color: $blue;
+        }
+
+        & ~ .bar {
+            &:before,
+            &:after {
+                width: 50%;
+            }
+        }
+
+        & ~ .highlight {
+            animation: inputHighlighter 0.2s ease-in-out;
+        }
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="tel"],
+    select {
+        padding: 1rem 1rem 1rem 0.5rem;
+        display: block;
+        border: none;
+        border-bottom: solid 1px $borderGrey;
+        width: 100%;
+        background-color: transparent;
+        font-size: 1.6rem;
+        font-family: $enFont;
+
+        &:focus {
+            outline: none;
+
+            & ~ label {
+                top: -2rem;
+                font-size: 1.2rem;
+                color: $blue;
+            }
+
+            & ~ .bar {
+                &:before,
+                &:after {
+                    width: 50%;
+                }
+            }
+
+            & ~ .highlight {
+                animation: inputHighlighter 0.2s ease-in-out;
+            }
+        }
+    }
+
+    label {
+        color: $textColorLight;
+        position: absolute;
+        left: 0.5rem;
+        top: 1rem;
+        pointer-events: none;
+        transition: all 0.2s ease-in-out;
+
+        &.dirty {
+            top: -2rem;
+            font-size: 1.2rem;
+            color: $blue;
+        }
+    }
+
+    .bar {
+        position: relative;
+        display: block;
+        width: 100%;
+
+        &:before,
+        &:after {
+            content: "";
+            height: 1px;
+            width: 0;
+            position: absolute;
+            bottom: 0;
+            background-color: $blue;
+            transition: all 0.2s ease-in-out;
+        }
+
+        &:before {
+            left: 50%;
+        }
+
+        &:after {
+            right: 50%;
+        }
+    }
+
+    .highlight {
+        position: absolute;
+        top: 25%;
+        left: 0;
+        height: 60%;
+        width: 10rem;
+        pointer-events: none;
+        opacity: 0.5;
+    }
+
+    .error {
+        color: $red;
+        font-size: 1.2rem;
+        margin-top: 1rem;
+        display: inline-block;
+    }
+
+    @keyframes inputHighlighter {
+        from {
+            background: $blue;
+        }
+        to {
+            width: 0;
+            background-color: transparent;
+        }
+    }
+} //input-group
+
+.input-group-regular {
+    &.error {
+        iinput[type="text"],
+        input[type="password"],
+        input[type="tel"],
+        select {
+            border-color: $red;
+        }
+    }
+
+    label {
+        font-weight: 500;
+        font-size: 1.4rem;
+        display: flex;
+        margin-bottom: 1rem;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="tel"],
+    select {
+        appearance: none;
+        height: 36px;
+        border: solid 1px $borderGrey;
+        border-radius: 0.4rem;
+        font-family: $enFont;
+        display: flex;
+        align-items: center;
+        padding: 0 1.5rem;
+        outline: none;
+
+        &:focus {
+            border-color: $textColorLight;
+        }
+    }
+
+    select {
+        position: relative;
+        padding-right: 3rem;
+        background-image: url("../assets/images/dropdown-arrow.svg");
+        background-size: 1.2rem;
+        background-position: center right 1rem;
+        background-repeat: no-repeat;
+    }
+
+    textarea {
+        appearance: none;
+        min-height: 200px;
+        border: solid 1px $borderGrey;
+        border-radius: 0.4rem;
+        font-family: $enFont;
+        display: flex;
+        padding: 1.5rem;
+        outline: none;
+        resize: vertical;
+
+        &:focus {
+            border-color: $textColorLight;
+        }
+    }
+} //input-group-regular
+
+.inputs-row {
+    h3 {
+        margin-bottom: 3rem;
+    }
+
+    &.horizontal {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 3rem;
+
+        h3 {
+            margin-bottom: 1.5rem;
+            width: 100%;
+            flex: 0 0 100%;
+            display: flex;
+        }
+
+        .radio-check,
+        .checkbox-check {
+            margin-right: 2rem;
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+}
+
+.radio-group,
+.checkboxes-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+} //radio-group
+
+.radio-group-transfer {
+  font-weight: bolder;
+  line-height: 3.5rem;
+}
+
+.radio-check {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    input[type="radio"] {
+        display: none;
+
+        &:checked + .check-mark:before {
+            transform: scale(1);
+        }
+    }
+
+    input[type="radio"][disabled] {
+        & ~ .check-mark {
+            background-color: $lightGrey;
+        }
+
+        & ~ i {
+            color: $silver;
+        }
+    }
+
+    .check-mark {
+        width: 2rem;
+        height: 2rem;
+        border: solid 1px $borderGrey;
+        border-radius: 50%;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        &:before {
+            content: "";
+            width: 1.2rem;
+            height: 1.2rem;
+            border-radius: 50%;
+            background-color: $green;
+            transform: scale(0);
+            transform-origin: center center;
+            transition: all 0.2s;
+        }
+    }
+
+    i {
+        margin-left: 0.5rem;
+    }
+} //radio-check
+
+.checkbox-check {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    input[type="checkbox"],
+    input[type="checkbox"][disabled] {
+        display: none;
+
+        &:checked + .check-mark:before,
+        &:checked + input[type="hidden"] + .check-mark:before {
+            transform: scale(1);
+        }
+    }
+
+    input[type="checkbox"][disabled] ~ .check-mark {
+        background-color: $silver;
+        cursor: not-allowed;
+    }
+
+    input[type="checkbox"][disabled] ~ i {
+        // text-decoration: line-through;
+        color: $silver;
+        cursor: not-allowed;
+    }
+
+    .check-mark {
+        width: 20px;
+        height: 20px;
+        border: solid 1px $borderGrey;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        &:before {
+            content: "\2713";
+            font-size: 19px;
+            font-weight: bold;
+            color: $green;
+            transform: scale(0);
+            transform-origin: center center;
+            transition: all 0.2s;
+        }
+    }
+
+    i {
+        margin-left: 5px;
+    }
+} //checkbox-check
+
+.file-upload {
+    margin-bottom: 3rem;
+} //file-upload
+
+.drag-area {
+    & > div {
+        padding: 2rem;
+        border: dashed 2px $borderGrey;
+        background-color: lighten($borderGrey, 9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $textColorLight;
+        height: 20rem;
+        cursor: pointer;
+    }
+} //dropzone
+
+.chat-reply {
+  width: 100%;
+}
