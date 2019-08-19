@@ -1,22 +1,25 @@
-import React from "react";
+import React, { HTMLProps, SFC } from "react";
 
-const UploadInput = ({
+interface FieldConfig {
+    input: HTMLProps<HTMLInputElement>;
+    label: string;
+    meta?: { touched: boolean; dirty: boolean; error: string };
+    type: string;
+}
+const UploadInput: SFC<FieldConfig> = ({
     input: { value, ...restInput },
-    type,
     label,
-    meta: { touched, error, dirty }
+    meta = { touched: false, error: "", dirty: false }
 }) => {
     const groupClasses =
-        touched && !!error
-            ? "input-group-regular error"
-            : "input-group-regular";
+        meta.touched && !!meta.error ? "input-group-regular error" : "input-group-regular";
 
     return (
         <div className={groupClasses}>
             <label>{label}</label>
 
             <input type="file" accept=".jpg, .png, .jpeg" {...restInput} />
-            {touched && !!error && <span className="error">{error}</span>}
+            {meta.touched && !!meta.error && <span className="error">{meta.error}</span>}
         </div>
     );
 };

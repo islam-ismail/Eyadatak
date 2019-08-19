@@ -1,52 +1,47 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import {
-    HISTORY_CASE_ACTION_START,
-    HISTORY_CASE_ACTION_FINISH,
-    HISTORY_CASE_ACTION_ERROR,
-    GET_HISTORY_CASE_REPLIES
-} from "./historyCaseConstants";
+import * as historyCaseConstants from "./historyCaseConstants";
 import { groupAnswersAndQuestions } from "../chatCaseActions";
 import { AppAction } from "../../../types/app-action";
 import { CaseReply } from "../../../types/models/CaseReply";
-import { GetHistoryCaseChatDataAction } from "./historyCaseTypes";
+import * as historyCaseTypes from "./historyCaseTypes";
 import { CaseChatElement } from "../chatCaseTypes";
 import { Dispatch } from "redux";
 import { MedicalCase } from "../../../types/models/MedicalCase";
 import { CaseQuestionAnswer } from "../../../types/models/CaseQuestionAnswer";
 import { CaseTransfer } from "../../../types/models/CaseTransfer";
 
-export const historyCaseActionStart = (): AppAction => {
+export const historyCaseActionStart = (): historyCaseTypes.HistoryCaseActionStartAction => {
     return {
-        type: HISTORY_CASE_ACTION_START,
+        type: historyCaseConstants.HISTORY_CASE_ACTION_START,
         excludeRefresh: true
     };
 };
 
-export const historyCaseActionFinish = (): AppAction => {
+export const historyCaseActionFinish = (): historyCaseTypes.HistoryCaseActionFinishAction => {
     return {
-        type: HISTORY_CASE_ACTION_FINISH,
+        type: historyCaseConstants.HISTORY_CASE_ACTION_FINISH,
         excludeRefresh: true
     };
 };
 
-export const historyCaseActionError = (): AppAction => {
+export const historyCaseActionError = (): historyCaseTypes.HistoryCaseActionErrorAction => {
     return {
-        type: HISTORY_CASE_ACTION_ERROR,
+        type: historyCaseConstants.HISTORY_CASE_ACTION_ERROR,
         excludeRefresh: true
     };
 };
 
 export const getHistoryCaseChatData = (
     replies: CaseChatElement[]
-): GetHistoryCaseChatDataAction => {
+): historyCaseTypes.GetHistoryCaseChatDataAction => {
     return {
-        type: GET_HISTORY_CASE_REPLIES,
+        type: historyCaseConstants.GET_HISTORY_CASE_REPLIES,
         payload: replies
     };
 };
 
-export const getHistoryCaseReplies = (
+export const getHistoryCaseReplies: historyCaseTypes.getHistoryCaseRepliesSig = (
     caseId: number,
     chatCase: MedicalCase,
     clearFirst: boolean
@@ -72,7 +67,7 @@ export const getHistoryCaseReplies = (
             const data4 = response4.data;
             const caseTransfers = data4.data.case_transfers;
 
-            const caseChatData = [];
+            const caseChatData: CaseChatElement[] = [];
             let index = 0;
 
             caseChatData.push({

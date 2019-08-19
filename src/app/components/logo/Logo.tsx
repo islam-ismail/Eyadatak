@@ -1,8 +1,8 @@
-import React from "react";
+import React, { SFC } from "react";
 import logoWhite from "../../assets/images/logo-white.svg";
 import { Link } from "react-router-dom";
 
-const Logo = props => {
+const Logo: SFC = props => {
     return (
         <div className="logo">
             <Link

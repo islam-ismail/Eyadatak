@@ -1,8 +1,8 @@
-import React from "react";
+import React, { SFC } from "react";
 import error404 from "../../assets/images/error-404.svg";
 import { Link } from "react-router-dom";
 
-const Error404 = props => {
+const Error404: SFC = props => {
     return (
         <div className="error-page">
             <figure>

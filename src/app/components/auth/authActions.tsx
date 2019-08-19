@@ -5,62 +5,74 @@ import { SIGN_IN, SIGN_OUT } from "./authConstants";
 import { setAuthorizationHeader } from "../../util/helpersFunc";
 import { isTokenExpired, getJWT } from "../../util/helpersFunc";
 import { clearCaseLists } from "../myCasesList/myCasesListActions";
-import {
-    asyncActionStart,
-    asyncActionFinish,
-    asyncActionError
-} from "../globalState/globalStateActions";
+import * as globalStateActions from "../globalState/globalStateActions";
 import { AppAction } from "../../types/app-action";
 import { User } from "../../types/models/User";
-import { SignInAction } from "./authTypes";
+import * as authTypes from "./authTypes";
 import { Dispatch } from "redux";
+import { ThunkDispatch } from "redux-thunk";
 
-export const asyncSignUp = user => {
-    return async (dispatch: Dispatch<AppAction>) => {
-        try {
-            dispatch(asyncActionStart());
-            const response = await axios.post("auth/register", user);
-            const data = response.data;
-            toast.success(data.success_message);
-            dispatch(asyncActionFinish());
-            dispatch(reset("signupForm"));
-        } catch (error) {
-            toast.error(error.response.data.error_message);
-            dispatch(asyncActionError());
-        }
-    };
-};
-
-export const signIn = (data: { user: User }): SignInAction => {
+export const signIn: authTypes.signInSig = (data: { user: User }): authTypes.SignInAction => {
     return {
         type: SIGN_IN,
         payload: data.user
-        // excludeRefresh: true
     };
 };
 
-export const asyncSignIn = user => {
+export const signOut: authTypes.signOutSig = (): authTypes.SignOutAction => {
+    localStorage.removeItem("eyadatak-jwt");
+    setAuthorizationHeader(null);
+
+    return {
+        type: SIGN_OUT,
+        excludeRefresh: true
+    };
+};
+
+export const asyncSignUp: authTypes.asyncSignUpSig = (formData: authTypes.SignUpFormData) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
-            dispatch(asyncActionStart());
-            const response = await axios.post("auth/login", user);
+            dispatch(globalStateActions.asyncActionStart());
+            const response = await axios.post("auth/register", formData);
             const data = response.data;
-            dispatch(signIn(data.data));
-            const token = data.data.access_token;
-            localStorage.setItem("eyadatak-jwt", token);
-            setAuthorizationHeader(token);
-            dispatch(asyncActionFinish());
-            toast.success(`Welcome back, ${data.data.user.name}`);
+            toast.success(data.success_message);
+            dispatch(globalStateActions.asyncActionFinish());
+            dispatch(reset("signupForm"));
         } catch (error) {
             toast.error(error.response.data.error_message);
-            dispatch(asyncActionError());
+            dispatch(globalStateActions.asyncActionError());
         }
     };
 };
 
-export const autoSignIn = () => {
+export const asyncSignIn: authTypes.asyncSignInSig = (formData: authTypes.SignInFormData) => {
     return async (dispatch: Dispatch<AppAction>) => {
-        dispatch(asyncActionStart());
+        try {
+            dispatch(globalStateActions.asyncActionStart());
+            const response = await axios.post("auth/login", formData);
+            if (response.data && response.data.status) {
+                const data: {
+                    user: User;
+                    access_token: string;
+                    expires_in: number;
+                } = response.data.data;
+                dispatch(signIn(data));
+                const token = data.access_token;
+                localStorage.setItem("eyadatak-jwt", token);
+                setAuthorizationHeader(token);
+                dispatch(globalStateActions.asyncActionFinish());
+                toast.success(`Welcome back, ${data.user.name}`);
+            }
+        } catch (error) {
+            toast.error(error.response.data.error_message);
+            dispatch(globalStateActions.asyncActionError());
+        }
+    };
+};
+
+export const autoSignIn: authTypes.autoSignInSig = () => {
+    return async (dispatch: ThunkDispatch<{}, {}, AppAction>) => {
+        dispatch(globalStateActions.asyncActionStart());
         const token = getJWT();
         if (token && !isTokenExpired(token)) {
             try {
@@ -68,56 +80,47 @@ export const autoSignIn = () => {
                 const data = response.data;
                 setAuthorizationHeader(token);
                 dispatch(signIn(data.data));
-                dispatch(asyncActionFinish());
+                dispatch(globalStateActions.asyncActionFinish());
             } catch (error) {
                 dispatch(signOut());
-                dispatch(asyncActionError());
+                dispatch(globalStateActions.asyncActionError());
             }
         } else if (token && isTokenExpired(token)) {
             dispatch(refreshToken());
         } else {
             dispatch(signOut());
-            dispatch(asyncActionFinish());
+            dispatch(globalStateActions.asyncActionFinish());
         }
     };
 };
 
-export const refreshToken = () => {
+export const refreshToken: authTypes.refreshTokenSig = () => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
-            dispatch(asyncActionStart());
+            dispatch(globalStateActions.asyncActionStart());
             const response = await axios.post("auth/refresh");
             const data = response.data;
             const token = data.data.access_token;
             localStorage.setItem("eyadatak-jwt", token);
             setAuthorizationHeader(token);
             dispatch(signIn(data.data));
-            dispatch(asyncActionFinish());
+            dispatch(globalStateActions.asyncActionFinish());
         } catch (error) {
             toast.error(error.response.data.error_message);
             dispatch(signOut());
-            dispatch(asyncActionError());
+            dispatch(globalStateActions.asyncActionError());
         }
     };
 };
 
-export const clearListsAction = () => {
-    return async (dispatch: Dispatch<AppAction>) => {
+export const clearListsAction: authTypes.clearListsActionSig = () => {
+    return async (dispatch: ThunkDispatch<{}, {}, AppAction>) => {
         try {
             dispatch(clearCaseLists());
         } catch (error) {
             toast.error(error.response.data.error_message);
             dispatch(signOut());
-            dispatch(asyncActionError());
+            dispatch(globalStateActions.asyncActionError());
         }
-    };
-};
-
-export const signOut = (): AppAction => {
-    localStorage.removeItem("eyadatak-jwt");
-    setAuthorizationHeader(null);
-    return {
-        type: SIGN_OUT,
-        excludeRefresh: true
     };
 };

@@ -1,15 +1,8 @@
 import { createReducer } from "../../reducers/reducerUtil";
-import {
-    MY_CASES_LIST_ACTION_START,
-    MY_CASES_LIST_ACTION_FINISH,
-    MY_CASES_LIST_ACTION_ERROR,
-    GET_MY_CASES,
-    SORT_CASES_LIST,
-    FILTER_CASES,
-    CLEAR_CASE_LISTS,
-    GET_PENDING_TRANSFERS
-} from "./myCasesListConstants";
+import * as myCasesListConstants from "./myCasesListConstants";
 import { MedicalCase } from "../../types/models/MedicalCase";
+import * as myCasesListTypes from "./myCasesListTypes";
+import { CaseTransfer } from "../../types/models/CaseTransfer";
 
 export interface SortAndFilterOptions {
     order: string;
@@ -23,7 +16,7 @@ export interface MyCasesListState {
     filteredCases: MedicalCase[];
     sortAndFilter: SortAndFilterOptions;
     loading: boolean;
-    pendingTransfers: MedicalCase[];
+    pendingTransfers: CaseTransfer[];
 }
 
 const initialState: MyCasesListState = {
@@ -39,31 +32,31 @@ const initialState: MyCasesListState = {
     pendingTransfers: []
 };
 
-export const myCasesListActionStarted = (state: MyCasesListState, payload: any) => {
+export const myCasesListActionStarted = (state: MyCasesListState) => {
     return {
         ...state,
         loading: true
     };
 };
 
-export const myCasesListActionFinished = (state: MyCasesListState, payload: any) => {
+export const myCasesListActionFinished = (state: MyCasesListState) => {
     return {
         ...state,
         loading: false
     };
 };
 
-export const myCasesListActionError = (state: MyCasesListState, payload: any) => {
+export const myCasesListActionError = (state: MyCasesListState) => {
     return {
         ...state,
         loading: false
     };
 };
 
-export const getMyCases = (state: MyCasesListState, payload: MedicalCase[]) => {
+export const getMyCases = (state: MyCasesListState, action: myCasesListTypes.GetMyCasesAction) => {
     return {
         ...state,
-        medicalCases: payload,
+        medicalCases: action.payload,
         sortAndFilter: {
             ...state.sortAndFilter,
             order: "desc",
@@ -74,23 +67,26 @@ export const getMyCases = (state: MyCasesListState, payload: MedicalCase[]) => {
 
 export const sortCasesList = (
     state: MyCasesListState,
-    payload: { medicalCases: MedicalCase[]; order: string; orderBy: string }
+    action: myCasesListTypes.SortCasesListAction
 ) => {
     return {
         ...state,
-        filteredCases: payload.medicalCases,
+        filteredCases: action.payload.medicalCases,
         sortAndFilter: {
             ...state.sortAndFilter,
-            order: payload.order,
-            orderBy: payload.orderBy
+            order: action.payload.order,
+            orderBy: action.payload.orderBy
         }
     };
 };
 
-export const filterCases = (state: MyCasesListState, payload: MedicalCase[]) => {
+export const filterCases = (
+    state: MyCasesListState,
+    action: myCasesListTypes.FilterCasesAction
+) => {
     return {
         ...state,
-        filteredCases: payload
+        filteredCases: action.payload
     };
 };
 
@@ -102,20 +98,27 @@ export const clearCaseLists = (state: MyCasesListState) => {
     };
 };
 
-export const getPendingTransfers = (state: MyCasesListState, payload: MedicalCase[]) => {
+export const getPendingTransfers = (
+    state: MyCasesListState,
+    action: myCasesListTypes.GetPendingTransfersAction
+) => {
     return {
         ...state,
-        pendingTransfers: payload
+        pendingTransfers: action.payload
     };
 };
 
-export default createReducer(initialState, {
-    [MY_CASES_LIST_ACTION_START]: myCasesListActionStarted,
-    [MY_CASES_LIST_ACTION_FINISH]: myCasesListActionFinished,
-    [MY_CASES_LIST_ACTION_ERROR]: myCasesListActionError,
-    [GET_MY_CASES]: getMyCases,
-    [SORT_CASES_LIST]: sortCasesList,
-    [FILTER_CASES]: filterCases,
-    [CLEAR_CASE_LISTS]: clearCaseLists,
-    [GET_PENDING_TRANSFERS]: getPendingTransfers
+export default createReducer<
+    MyCasesListState,
+    myCasesListConstants.MyCasesListActionTypes,
+    myCasesListTypes.MyCasesListActions
+>(initialState, {
+    [myCasesListConstants.MY_CASES_LIST_ACTION_START]: myCasesListActionStarted,
+    [myCasesListConstants.MY_CASES_LIST_ACTION_FINISH]: myCasesListActionFinished,
+    [myCasesListConstants.MY_CASES_LIST_ACTION_ERROR]: myCasesListActionError,
+    [myCasesListConstants.GET_MY_CASES]: getMyCases,
+    [myCasesListConstants.SORT_CASES_LIST]: sortCasesList,
+    [myCasesListConstants.FILTER_CASES]: filterCases,
+    [myCasesListConstants.CLEAR_CASE_LISTS]: clearCaseLists,
+    [myCasesListConstants.GET_PENDING_TRANSFERS]: getPendingTransfers
 });

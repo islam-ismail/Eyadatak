@@ -1,28 +1,71 @@
-import React, { Component } from "react";
-import { compose } from "redux";
+import React, { Component, ComponentType, ChangeEventHandler } from "react";
 import { connect } from "react-redux";
-import { reduxForm, Field } from "redux-form";
+import { compose } from "redux";
+import { Field, reduxForm, InjectedFormProps } from "redux-form";
+import CheckboxGroup from "../../form/CheckboxGroup";
+import RadioGroup from "../../form/RadioGroup";
+import SelectInputRegular from "../../form/SelectInputRegular";
+import TextAreaRegular from "../../form/TextAreaRegular";
+import TextInputRegular from "../../form/TextInputRegular";
+import { AppState } from "../../reducers/rootReducer";
+import Button from "../../UIComponents/Button";
 // import { composeValidators, combineValidators, isRequired } from "revalidate";
 // import { combineValidators, isRequired } from "revalidate";
 import FileInputQuestion from "../chatViews/questionTypes/FileInputQuestion";
-import Button from "../../UIComponents/Button";
-import TextInputRegular from "../../form/TextInputRegular";
-import TextAreaRegular from "../../form/TextAreaRegular";
-import RadioGroup from "../../form/RadioGroup";
-import CheckboxGroup from "../../form/CheckboxGroup";
-import SelectInputRegular from "../../form/SelectInputRegular";
 // import UploadInput from "../../form/UploadInput";
 // import DropzoneInput from "../../form/DropzoneInput";
 // import Dropzone from "react-dropzone";
 import * as actions from "./newCaseActions";
+import { NewCaseActionsSignatures } from "./newCaseTypes";
 
-class NewCaseForm extends Component {
-    state = {
+const mapState = (state: AppState) => ({
+    locale: state.global.locale,
+    signedInUser: state.auth.signedInUser,
+    primarySpecialities: state.newCase.primarySpecialities,
+    secondarySpecialities: state.newCase.secondarySpecialities,
+    initialRequiredQuestions: state.newCase.initialRequiredQuestions,
+    requiredQuestions: state.newCase.requiredQuestions,
+    initialNotRequiredQuestions: state.newCase.initialNotRequiredQuestions,
+    notRequiredQuestions: state.newCase.notRequiredQuestions
+});
+
+type CompStateProps = ReturnType<typeof mapState>;
+
+type CompActionProps = NewCaseActionsSignatures;
+
+interface CompOwnProps {
+    handleUploadFiles: (caseId: number, uploadedFiles: File[][]) => void;
+    caseId: number;
+}
+
+interface FormData {
+    question_description: string;
+}
+
+type CompProps = InjectedFormProps<FormData> & CompOwnProps & CompStateProps & CompActionProps;
+
+type CompState = {
+    topLevelSpecialities: {
+        key: number;
+        value: string;
+    }[];
+    secondLevelSpecialities: {
+        key: number;
+        value: string;
+    }[];
+    hasSecondLevelSpecialities: boolean;
+    primarySpecialityID: number;
+    selectedSpecialityID: number;
+    uploadedFiles: File[][];
+};
+
+class NewCaseForm extends Component<CompProps, CompState> {
+    state: CompState = {
         topLevelSpecialities: [],
         secondLevelSpecialities: [],
         hasSecondLevelSpecialities: false,
-        primarySpecialityID: null,
-        selectedSpecialityID: null,
+        primarySpecialityID: 0,
+        selectedSpecialityID: 0,
         uploadedFiles: []
     };
 
@@ -42,7 +85,7 @@ class NewCaseForm extends Component {
     }
 
     // Check for updates in the store state to update the specialities and other stuff
-    componentDidUpdate(prevProp) {
+    componentDidUpdate(prevProp: CompProps) {
         if (
             prevProp.primarySpecialities !== this.props.primarySpecialities ||
             prevProp.locale !== this.props.locale
@@ -58,7 +101,7 @@ class NewCaseForm extends Component {
         }
     }
 
-    handleOnDrop = (acceptedFiles, rejectedFiles, questionId: number) => {
+    handleOnDrop = (acceptedFiles: File[], rejectedFiles: File[], questionId: number) => {
         acceptedFiles.map(file => {
             let tempArray = this.state.uploadedFiles.slice();
             if (this.state.uploadedFiles[questionId]) {
@@ -75,7 +118,7 @@ class NewCaseForm extends Component {
         });
     };
 
-    removeFile = (fileName, questionId: number) => {
+    removeFile = (fileName: File, questionId: number) => {
         let tempArray = this.state.uploadedFiles.slice();
         tempArray[questionId].splice(tempArray[questionId].indexOf(fileName), 1);
         this.setState(() => ({
@@ -144,7 +187,9 @@ class NewCaseForm extends Component {
     // Handle the change in speciality dropdowns and set the the selectedSpecialityID
     // and set the other state to show / hide secondary specialities if there's none.
     // Also to render the required and none required questions based on the speciality.
-    handleSpecialityChange = (event, value) => {
+    handleSpecialityChange: ChangeEventHandler<HTMLSelectElement> = event => {
+        const value = parseInt(event.target.value, 10);
+
         if (event.target.name === "top_level_speciality") {
             if (value) {
                 this.props.asyncGetSecondarySpecialities(value);
@@ -157,7 +202,7 @@ class NewCaseForm extends Component {
                 this.setState(() => ({
                     secondLevelSpecialities: [],
                     hasSecondLevelSpecialities: false,
-                    selectedSpecialityID: null
+                    selectedSpecialityID: 0
                 }));
             }
         } else if (event.target.name === "second_level_speciality") {
@@ -175,12 +220,14 @@ class NewCaseForm extends Component {
         }
     };
 
-    handleFormSubmit = values => {
-        this.props.addNewCase(
-            this.state.selectedSpecialityID,
-            values.question_description,
-            this.props.signedInUser.id
-        );
+    handleFormSubmit = (values: FormData) => {
+        if (this.props.signedInUser) {
+            this.props.addNewCase(
+                this.state.selectedSpecialityID,
+                values.question_description,
+                this.props.signedInUser.id
+            );
+        }
     };
 
     // handleFileChange = e => {
@@ -237,17 +284,18 @@ class NewCaseForm extends Component {
                             />
                         );
                     } else if (question.question_type === "CheckboxInput") {
-                        const checkBoxesOptions = question.question_options_en.map(
-                            (value, key) => ({
-                                label: value,
-                                value: value
-                            })
-                        );
+                        const checkBoxesOptions: {
+                            label: string;
+                            value: string;
+                        }[] = question.question_options_en.map((value, _) => ({
+                            label: value,
+                            value: value
+                        }));
                         return (
                             <div className="inputs-row horizontal" key={question.id}>
                                 <h3>{question.question_text_en}</h3>
                                 <CheckboxGroup
-                                    name={`speciality_questions[${question.id}]`}
+                                    input={{ name: `speciality_questions[${question.id}]` }}
                                     options={checkBoxesOptions}
                                 />
                             </div>
@@ -367,17 +415,6 @@ class NewCaseForm extends Component {
     }
 }
 
-const mapState = state => ({
-    locale: state.global.locale,
-    signedInUser: state.auth.signedInUser,
-    primarySpecialities: state.newCase.primarySpecialities,
-    secondarySpecialities: state.newCase.secondarySpecialities,
-    initialRequiredQuestions: state.newCase.initialRequiredQuestions,
-    requiredQuestions: state.newCase.requiredQuestions,
-    initialNotRequiredQuestions: state.newCase.initialNotRequiredQuestions,
-    notRequiredQuestions: state.newCase.notRequiredQuestions
-});
-
 // const validate = (values, ownProps) => {
 //   const dynamicValidations = ownProps.initialRequiredQuestions.reduce(
 //     (accu, curr) => {
@@ -397,7 +434,7 @@ const mapState = state => ({
 //   })(values);
 // };
 
-export default compose(
+export default compose<ComponentType>(
     connect(
         mapState,
         actions

@@ -6,3 +6,12 @@ export const SORT_CASES_LIST = "SORT_CASES_LIST";
 export const FILTER_CASES = "FILTER_CASES";
 export const CLEAR_CASE_LISTS = "CLEAR_CASE_LISTS";
 export const GET_PENDING_TRANSFERS = "GET_PENDING_TRANSFERS";
+
+export type MyCasesListActionTypes = typeof GET_MY_CASES &
+    typeof MY_CASES_LIST_ACTION_START &
+    typeof MY_CASES_LIST_ACTION_FINISH &
+    typeof MY_CASES_LIST_ACTION_ERROR &
+    typeof SORT_CASES_LIST &
+    typeof FILTER_CASES &
+    typeof CLEAR_CASE_LISTS &
+    typeof GET_PENDING_TRANSFERS;

@@ -1,17 +1,44 @@
-import React, { Component } from "react";
+import React, { Component, ComponentType } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { Redirect, withRouter } from "react-router-dom";
+import { Redirect, withRouter, RouteComponentProps } from "react-router-dom";
 import * as actions from "./myCasesListActions";
 import MyCasesListTable from "./MyCasesListTable";
 import Loader from "../layout/Loader";
 import { adjustDateTimeZone } from "../../util/helpersFunc";
 import Button from "../../UIComponents/Button";
+import { AppState } from "../../reducers/rootReducer";
+import { MedicalCase } from "../../types/models/MedicalCase";
+import { CaseTransfer } from "../../types/models/CaseTransfer";
+import { MyCasesListActionsSignatures } from "./myCasesListTypes";
 
-class MyCasesList extends Component {
-    state = {
+const mapState = (state: AppState) => ({
+    locale: state.global.locale,
+    loading: state.global.loading,
+    signedInUser: state.auth.signedInUser,
+    authenticated: state.auth.authenticated,
+    medicalCases: state.myCasesList.medicalCases,
+    pendingTransfers: state.myCasesList.pendingTransfers
+});
+
+type CompStateProps = ReturnType<typeof mapState>;
+
+type CompActionProps = MyCasesListActionsSignatures;
+
+type CompProps = RouteComponentProps & CompStateProps & CompActionProps;
+
+interface CompState {
+    myCases: MedicalCase[];
+    pendingTransfers: CaseTransfer[];
+    label: string;
+    redirect: boolean;
+    clickedCase: MedicalCase | null;
+}
+
+class MyCasesList extends Component<CompProps, CompState> {
+    state: CompState = {
         redirect: false,
-        clickedCase: {},
+        clickedCase: null,
         myCases: [],
         label:
             this.props.location.state === undefined || this.props.location.state.label === undefined
@@ -23,9 +50,11 @@ class MyCasesList extends Component {
     componentDidMount() {
         if (this.props.authenticated) {
             if (
-                !this.props.medicalCases ||
-                this.props.medicalCases.length === 0 ||
-                (this.props.location.state && this.props.location.state.source === "SideNav")
+                (!this.props.medicalCases ||
+                    this.props.medicalCases.length === 0 ||
+                    (this.props.location.state &&
+                        this.props.location.state.source === "SideNav")) &&
+                this.props.signedInUser
             ) {
                 this.props.getMyCasesList(this.props.signedInUser);
             } else {
@@ -37,7 +66,7 @@ class MyCasesList extends Component {
         }
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: CompProps) {
         if (prevProps.medicalCases !== this.props.medicalCases) {
             this.setState(() => ({
                 myCases: this.props.medicalCases
@@ -68,23 +97,27 @@ class MyCasesList extends Component {
         }
     }
 
-    caseClicked = clickedCase => {
+    caseClicked = (clickedCase: MedicalCase) => {
         this.setState(() => ({
             redirect: true,
             clickedCase: clickedCase
         }));
     };
 
-    acceptTransfer = caseTransferId => {
-        this.props.acceptCaseTransfer(caseTransferId, this.props.signedInUser.id);
+    acceptTransfer = (caseTransferId: number) => {
+        if (this.props.signedInUser) {
+            this.props.acceptCaseTransfer(caseTransferId, this.props.signedInUser.id);
+        }
     };
 
-    rejectTransfer = caseTransferId => {
-        this.props.rejectCaseTransfer(caseTransferId, this.props.signedInUser.id);
+    rejectTransfer = (caseTransferId: number) => {
+        if (this.props.signedInUser) {
+            this.props.rejectCaseTransfer(caseTransferId, this.props.signedInUser.id);
+        }
     };
 
     render() {
-        if (this.state.redirect) {
+        if (this.props.signedInUser && this.state.redirect) {
             return (
                 <Redirect
                     to={{
@@ -143,12 +176,13 @@ class MyCasesList extends Component {
                                 </>
                             )}
                         </>
-                    ) : (
+                    ) : this.props.signedInUser ? (
                         <MyCasesListTable
                             caseClicked={this.caseClicked}
                             userType={this.props.signedInUser.type}
-                            label={this.state.label}
                         />
+                    ) : (
+                        ""
                     )}
                     <aside />
                 </>
@@ -157,16 +191,7 @@ class MyCasesList extends Component {
     }
 }
 
-const mapState = state => ({
-    locale: state.global.locale,
-    loading: state.global.loading,
-    signedInUser: state.auth.signedInUser,
-    authenticated: state.auth.authenticated,
-    medicalCases: state.myCasesList.medicalCases,
-    pendingTransfers: state.myCasesList.pendingTransfers
-});
-
-export default compose(
+export default compose<ComponentType>(
     withRouter,
     connect(
         mapState,

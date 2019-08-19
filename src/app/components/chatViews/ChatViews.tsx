@@ -1,11 +1,19 @@
-import React, { Component } from "react";
+import React, { Component, ComponentType } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { Redirect, withRouter } from "react-router-dom";
+import { Redirect, withRouter, RouteComponentProps } from "react-router-dom";
 import PatientChatView from "./PatientChatView";
 import DoctorChatView from "./DoctorChatView";
+import { AppState } from "../../reducers/rootReducer";
 
-class ChatViews extends Component {
+const mapState = (state: AppState) => ({
+    authenticated: state.auth.authenticated
+});
+
+type CompStateProps = ReturnType<typeof mapState>;
+type CompProps = CompStateProps & RouteComponentProps;
+
+class ChatViews extends Component<CompProps> {
     render() {
         if (!this.props.authenticated) {
             return <Redirect to="/" />;
@@ -18,11 +26,7 @@ class ChatViews extends Component {
     }
 }
 
-const mapState = state => ({
-    authenticated: state.auth.authenticated
-});
-
-export default compose(
+export default compose<ComponentType>(
     withRouter,
     connect(mapState)
 )(ChatViews);

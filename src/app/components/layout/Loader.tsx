@@ -1,12 +1,19 @@
-import React from "react";
+import React, { SFC } from "react";
 // import NProgress from "nprogress";
 import { BarLoader } from "react-spinners";
 
-const Loader = props => {
+const Loader: SFC<{ loading: boolean }> = props => {
     const groupClasses = props.loading ? "globalLoader show" : "globalLoader";
     return (
         <div className={groupClasses}>
-            <BarLoader loading={props.loading} color={"#000000"} sizeUnit={"px"} size={150} />
+            <BarLoader
+                height={150}
+                heightUnit={"px"}
+                width={150}
+                widthUnit={"px"}
+                loading={props.loading}
+                color={"#000000"}
+            />
         </div>
     );
 };

@@ -1,33 +1,43 @@
-import React from "react";
+import React, { HTMLProps, SFC } from "react";
 
-const SelectInputRegular = ({
-  input,
-  multiple,
-  options,
-  label,
-  meta: { touched, error, dirty },
-  className
+interface FieldConfig {
+    input: HTMLProps<HTMLSelectElement>;
+    label: string;
+    meta?: { touched: boolean; dirty: boolean; error: string };
+    options: {
+        key: number;
+        value: string;
+    }[];
+    multiple: boolean;
+    className: string;
+}
+
+const SelectInputRegular: SFC<FieldConfig> = ({
+    input,
+    multiple,
+    options,
+    label,
+    meta = { touched: false, error: "", dirty: false },
+    className
 }) => {
-  let groupClasses =
-    touched && !!error
-      ? "input-group-regular error"
-      : "input-group-regular";
+    let groupClasses =
+        meta.touched && !!meta.error ? "input-group-regular error" : "input-group-regular";
 
-  return (
-    <div className={groupClasses}>
-      <h4>{label}</h4>
-      <select {...input} multiple={multiple} className={className}>
-        <option value="" />
-        {options &&
-          options.map(option => (
-            <option key={option.key} value={option.key}>
-              {option.value}
-            </option>
-          ))}
-      </select>
-      {touched && !!error && <span className="err-msg">{error}</span>}
-    </div>
-  );
+    return (
+        <div className={groupClasses}>
+            <h4>{label}</h4>
+            <select {...input} multiple={multiple} className={className}>
+                <option value="" />
+                {options &&
+                    options.map(option => (
+                        <option key={option.key} value={option.key}>
+                            {option.value}
+                        </option>
+                    ))}
+            </select>
+            {meta.touched && !!meta.error && <span className="err-msg">{meta.error}</span>}
+        </div>
+    );
 };
 
 export default SelectInputRegular;

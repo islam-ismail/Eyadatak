@@ -1,21 +1,12 @@
 import { createReducer } from "../../reducers/reducerUtil";
-import {
-    CHAT_CASE_ACTION_START,
-    CHAT_CASE_ACTION_FINISH,
-    CHAT_CASE_ACTION_ERROR,
-    GET_CASE_REPLIES,
-    GET_CASE_DOCTOR,
-    GET_CASE_PATIENT
-} from "./chatCaseConstants";
 import { Doctor } from "../../types/models/Doctor";
 import { User } from "../../types/models/User";
-import { CaseReply } from "../../types/models/CaseReply";
-import { CaseQuestion } from "../../types/models/CaseQuestion";
-import { CaseChatElement } from "./chatCaseTypes";
+import * as chatCaseConstants from "./chatCaseConstants";
+import * as chatCaseTypes from "./chatCaseTypes";
 
 export interface ChatCaseState {
-    caseChatData: CaseChatElement[];
-    caseUnansweredQuestions: CaseQuestion[];
+    caseChatData: chatCaseTypes.CaseChatElement[];
+    caseUnansweredQuestions: chatCaseTypes.CaseChatElement[];
     caseDoctor: Doctor | null;
     loading: boolean;
     casePatient?: User;
@@ -29,21 +20,21 @@ const initialState: ChatCaseState = {
     loading: false
 };
 
-export const chatCaseActionStarted = (state: ChatCaseState, payload: any) => {
+export const chatCaseActionStarted = (state: ChatCaseState) => {
     return {
         ...state,
         loading: true
     };
 };
 
-export const chatCaseActionFinished = (state: ChatCaseState, payload: any) => {
+export const chatCaseActionFinished = (state: ChatCaseState) => {
     return {
         ...state,
         loading: false
     };
 };
 
-export const chatCaseActionError = (state: ChatCaseState, payload: any) => {
+export const chatCaseActionError = (state: ChatCaseState) => {
     return {
         ...state,
         loading: false
@@ -52,35 +43,42 @@ export const chatCaseActionError = (state: ChatCaseState, payload: any) => {
 
 export const getCaseChatData = (
     state: ChatCaseState,
-    payload: { replies: CaseChatElement[]; questions: CaseQuestion[]; lastReplyId: number }
+    action: chatCaseTypes.GetCaseChatDataAction
 ) => {
     return {
         ...state,
-        caseChatData: payload.replies,
-        caseUnansweredQuestions: payload.questions,
-        lastReplyId: payload.lastReplyId
+        caseChatData: action.payload.replies,
+        caseUnansweredQuestions: action.payload.questions,
+        lastReplyId: action.payload.lastReplyId
     };
 };
 
-export const getCaseDoctor = (state: ChatCaseState, payload: Doctor) => {
+export const getCaseDoctor = (state: ChatCaseState, action: chatCaseTypes.GetCaseDoctorAction) => {
     return {
         ...state,
-        caseDoctor: payload
+        caseDoctor: action.payload
     };
 };
 
-export const getCasePatient = (state: ChatCaseState, payload: User) => {
+export const getCasePatient = (
+    state: ChatCaseState,
+    action: chatCaseTypes.GetCasePatientAction
+) => {
     return {
         ...state,
-        casePatient: payload
+        casePatient: action.payload
     };
 };
 
-export default createReducer(initialState, {
-    [CHAT_CASE_ACTION_START]: chatCaseActionStarted,
-    [CHAT_CASE_ACTION_FINISH]: chatCaseActionFinished,
-    [CHAT_CASE_ACTION_ERROR]: chatCaseActionError,
-    [GET_CASE_REPLIES]: getCaseChatData,
-    [GET_CASE_DOCTOR]: getCaseDoctor,
-    [GET_CASE_PATIENT]: getCasePatient
+export default createReducer<
+    ChatCaseState,
+    chatCaseConstants.ChatCaseActionTypes,
+    chatCaseTypes.ChatCaseActions
+>(initialState, {
+    [chatCaseConstants.CHAT_CASE_ACTION_START]: chatCaseActionStarted,
+    [chatCaseConstants.CHAT_CASE_ACTION_FINISH]: chatCaseActionFinished,
+    [chatCaseConstants.CHAT_CASE_ACTION_ERROR]: chatCaseActionError,
+    [chatCaseConstants.GET_CASE_REPLIES]: getCaseChatData,
+    [chatCaseConstants.GET_CASE_DOCTOR]: getCaseDoctor,
+    [chatCaseConstants.GET_CASE_PATIENT]: getCasePatient
 });

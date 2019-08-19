@@ -4,8 +4,8 @@ export interface QuestionTemplate {
     question_text_en: string;
     question_text_ar: string;
     question_type: string;
-    question_options_en: string;
-    question_options_ar: string;
+    question_options_en: string[];
+    question_options_ar: string[];
     used_counter: number;
     required: number;
 }

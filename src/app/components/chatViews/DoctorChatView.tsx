@@ -1,4 +1,10 @@
-import React, { Component } from "react";
+import React, {
+    Component,
+    ComponentType,
+    EventHandler,
+    MouseEvent,
+    MouseEventHandler
+} from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import ChatSideNav from "./ChatSideNav";
@@ -7,7 +13,7 @@ import { ChatMessage } from "./ChatMessage";
 import { PatientDetailsPanel } from "./PatientDetailsPanel";
 import { PatientHistoryPanel } from "./PatientHistoryPanel";
 import * as actions from "./chatCaseActions";
-import { reduxForm, Field } from "redux-form";
+import { reduxForm, Field, InjectedFormProps } from "redux-form";
 import TextAreaRegular from "../../form/TextAreaRegular";
 import TransferCaseDoctorModal from "../transferCase/TransferCaseModal";
 import QuestionTemplateModal from "../questionTemplate/QuestionTemplateModal";
@@ -17,25 +23,72 @@ import transferImage from "../../assets/images/transfer.png";
 // import historyLock from '../../assets/images/lock.png'
 import formImage from "../../assets/images/form.png";
 import ScrollToBottom from "../../util/ScrollToBottom";
+import { ChatCaseSignatures, CaseChatElement } from "./chatCaseTypes";
+import { AppState } from "../../reducers/rootReducer";
+import { User } from "../../types/models/User";
+import { MedicalCase } from "../../types/models/MedicalCase";
 
-class DoctorChatView extends Component {
-    state = {
+const mapState = (state: AppState) => ({
+    locale: state.global.locale,
+    signedInUser: state.auth.signedInUser,
+    caseChatData: state.chatCase.caseChatData,
+    casePatient: state.chatCase.casePatient,
+    caseUnansweredQuestions: state.chatCase.caseUnansweredQuestions,
+    requestStatus: state.historyAccess.requestStatus,
+    accessLevel: state.historyAccess.accessLevel,
+    historyCases: state.historyAccess.historyCases,
+    waitingApproval: state.historyAccess.waitingApproval,
+    allAccessRequests: state.historyAccess.allAccessRequests
+});
+
+type CompStateProps = ReturnType<typeof mapState>;
+
+type CompActionProps = ChatCaseSignatures;
+
+interface CompOwnProps {
+    openNewCaseModal?: boolean;
+    chatCase: MedicalCase;
+}
+
+interface FormData {
+    chat_reply: string;
+}
+
+type CompProps = InjectedFormProps<FormData> & CompOwnProps & CompStateProps & CompActionProps;
+
+interface CompState
+    extends Omit<
+        CompStateProps,
+        "locale" | "signedInUser" | "caseUnansweredQuestions" | "casePatient"
+    > {
+    allChatMessages: CaseChatElement[];
+    sidebarActive: string;
+    detailsActive: string;
+    questionsOrHistoryActive: string;
+
+    openHistoryAccessModal: boolean;
+    openTransferCaseDoctorModal: boolean;
+    openQuestionTemplateModal: boolean;
+    openHistoryCaseModal: boolean;
+    whichButton: string;
+    historyCase?: MedicalCase;
+    casePatient?: User;
+}
+
+class DoctorChatView extends Component<CompProps, CompState> {
+    state: CompState = {
         caseChatData: [],
-        casePatient: {},
-        patientHistory: [],
-        caseQuestionToAnswer: {},
         openHistoryAccessModal: false,
         openTransferCaseDoctorModal: false,
         openQuestionTemplateModal: false,
         openHistoryCaseModal: false,
-        requestStatus: undefined,
-        accessLevel: undefined,
-        historyCases: [],
-        historyCase: undefined,
+        requestStatus: "",
+        accessLevel: "",
         waitingApproval: false,
         allAccessRequests: [],
         whichButton: "both",
         allChatMessages: [],
+        historyCases: [],
         sidebarActive: "",
         detailsActive: "",
         questionsOrHistoryActive: ""
@@ -55,15 +108,15 @@ class DoctorChatView extends Component {
 
         this.props.getHistoryAccessRequestStatus(
             this.props.chatCase.id,
-            this.props.signedInUser,
-            this.props.chatCase.patient.id,
+            this.props.signedInUser as User,
+            (this.props.chatCase.patient as User).id,
             this.props.chatCase.speciality.parent_id === 0
                 ? this.props.chatCase.speciality.id
                 : this.props.chatCase.speciality.parent_id
         );
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: CompProps) {
         if (prevProps.caseChatData !== this.props.caseChatData) {
             this.setState(() => ({
                 caseChatData: this.props.caseChatData
@@ -71,7 +124,7 @@ class DoctorChatView extends Component {
         }
         if (prevProps.casePatient !== this.props.casePatient) {
             this.setState(() => ({
-                casePatient: this.props.casePatient
+                casePatient: this.props.casePatient as User
             }));
         }
         if (prevProps.requestStatus !== this.props.requestStatus) {
@@ -106,13 +159,13 @@ class DoctorChatView extends Component {
         ) {
             this.setState(() => ({
                 allChatMessages: [...this.props.caseChatData, ...this.props.allAccessRequests].sort(
-                    (a, b) => new Date(a.created_at) - new Date(b.created_at)
+                    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
                 )
             }));
         }
     }
 
-    togglePatientDetails = e => {
+    togglePatientDetails: MouseEventHandler = e => {
         e.preventDefault();
         if (this.state.detailsActive === "active")
             this.setState(() => ({
@@ -129,7 +182,7 @@ class DoctorChatView extends Component {
         }));
     };
 
-    togglePatientHistory = e => {
+    togglePatientHistory: MouseEventHandler = e => {
         e.preventDefault();
         if (this.state.questionsOrHistoryActive === "active")
             this.setState(() => ({
@@ -146,14 +199,14 @@ class DoctorChatView extends Component {
         }));
     };
 
-    handleFormSubmit = values => {
+    handleFormSubmit = (values: FormData) => {
         this.props.handleSubmitChatReply(
             this.props.chatCase,
             {
                 case_id: this.props.chatCase.id,
                 reply: values.chat_reply
             },
-            this.props.signedInUser.type
+            (this.props.signedInUser as User).type
         );
 
         this.props.reset();
@@ -183,7 +236,7 @@ class DoctorChatView extends Component {
         }));
     };
 
-    handleOpenHistoryAccessModal = whichButton => {
+    handleOpenHistoryAccessModal = (whichButton: string) => {
         this.setState(() => ({
             openHistoryAccessModal: true,
             whichButton: whichButton
@@ -202,7 +255,7 @@ class DoctorChatView extends Component {
         }));
     };
 
-    handleCloseHistoryCaseModal = () => {
+    handleCloseHistoryCaseModal: EventHandler<MouseEvent> = e => {
         this.setState(() => ({
             openHistoryCaseModal: false
         }));
@@ -214,8 +267,7 @@ class DoctorChatView extends Component {
         }));
     };
 
-    handleHistoryCaseClick = (e, historyCaseClicked) => {
-        e.preventDefault();
+    handleHistoryCaseClick = (historyCaseClicked: MedicalCase) => {
         this.setState(() => ({
             historyCase: historyCaseClicked
         }));
@@ -248,11 +300,13 @@ class DoctorChatView extends Component {
                     closeQuestionTemplateModal={this.handleCloseQuestionTemplateModal}
                     caseId={this.props.chatCase.id}
                 />
-                <HistoryCaseModal
-                    openHistoryCaseModal={this.state.openHistoryCaseModal}
-                    closeHistoryCaseModal={this.handleCloseHistoryCaseModal}
-                    historyCase={this.state.historyCase}
-                />
+                {this.state.historyCase && (
+                    <HistoryCaseModal
+                        openHistoryCaseModal={this.state.openHistoryCaseModal}
+                        closeHistoryCaseModal={this.handleCloseHistoryCaseModal}
+                        historyCase={this.state.historyCase}
+                    />
+                )}
                 <div className="action-bar chat">
                     <div className="actions left">
                         <div className="single">
@@ -286,11 +340,18 @@ class DoctorChatView extends Component {
                         <ScrollToBottom>
                             <div className="messages" id="messages">
                                 {this.state.allChatMessages.map(message => (
-                                    <div key={message.id + (message.status ? message.status : 0)}>
+                                    <div
+                                        key={
+                                            message.id +
+                                            (message.accessRequest
+                                                ? message.accessRequest.status
+                                                : "")
+                                        }
+                                    >
                                         <ChatMessage
                                             message={message}
                                             me="doctor"
-                                            userId={this.props.signedInUser.id}
+                                            userId={(this.props.signedInUser as User).id}
                                             // handleDeleteTransferRequest={this.handleDeleteTransferRequest}
                                         />
                                     </div>
@@ -342,7 +403,7 @@ class DoctorChatView extends Component {
                     />
                     <ChatCaseDetails chatCase={this.props.chatCase} />
                     <PatientDetailsPanel
-                        patient={this.state.casePatient}
+                        patient={this.state.casePatient as User}
                         detailsActive={detailsActive}
                     />
                     <PatientHistoryPanel
@@ -361,20 +422,7 @@ class DoctorChatView extends Component {
     }
 }
 
-const mapState = state => ({
-    locale: state.global.locale,
-    signedInUser: state.auth.signedInUser,
-    caseChatData: state.chatCase.caseChatData,
-    casePatient: state.chatCase.casePatient,
-    caseUnansweredQuestions: state.chatCase.caseUnansweredQuestions,
-    requestStatus: state.historyAccess.requestStatus,
-    accessLevel: state.historyAccess.accessLevel,
-    historyCases: state.historyAccess.historyCases,
-    waitingApproval: state.historyAccess.waitingApproval,
-    allAccessRequests: state.historyAccess.allAccessRequests
-});
-
-const validate = values => {
+const validate = (values: FormData) => {
     const errors = {};
     // if (!values.chat_reply) {
     //   console.log('EMPTY chat_reply')
@@ -383,7 +431,7 @@ const validate = values => {
     return errors;
 };
 
-export default compose(
+export default compose<ComponentType<CompOwnProps>>(
     connect(
         mapState,
         actions

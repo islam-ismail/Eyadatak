@@ -1,19 +1,12 @@
 import { createReducer } from "../../../reducers/reducerUtil";
-import {
-    HISTORY_ACCESS_ACTION_START,
-    HISTORY_ACCESS_ACTION_FINISH,
-    HISTORY_ACCESS_ACTION_ERROR,
-    REQUEST_FULL_ACCESS,
-    REQUEST_SPECIALITY_ACCESS,
-    GET_REQUEST_STATUS_AND_ACCESS_LEVEL,
-    GET_HISTORY_CASES
-} from "./historyAccessConstants";
-import { PatientHistoryAccess } from "../../../types/models/PatientHistoryAccess";
+import * as historyAccessConstants from "./historyAccessConstants";
 import { MedicalCase } from "../../../types/models/MedicalCase";
+import { HistoryAccessActions } from "./historyAccessTypes";
+import { CaseChatElement } from "../chatCaseTypes";
 
 export interface HistoryAccessState {
     historyCases: MedicalCase[];
-    allAccessRequests: PatientHistoryAccess[];
+    allAccessRequests: CaseChatElement[];
     requestStatus: string;
     accessLevel: string;
     historyAccessId: number;
@@ -105,12 +98,16 @@ export const getApprovedHistoryCases = (
     };
 };
 
-export default createReducer(initialState, {
-    [HISTORY_ACCESS_ACTION_START]: historyAccessActionStarted,
-    [HISTORY_ACCESS_ACTION_FINISH]: historyAccessActionFinished,
-    [HISTORY_ACCESS_ACTION_ERROR]: historyAccessActionError,
-    [REQUEST_FULL_ACCESS]: requestFullHistoryAccess,
-    [REQUEST_SPECIALITY_ACCESS]: requestSpcialityAccess,
-    [GET_REQUEST_STATUS_AND_ACCESS_LEVEL]: getRequestStatus,
-    [GET_HISTORY_CASES]: getApprovedHistoryCases
+export default createReducer<
+    HistoryAccessState,
+    historyAccessConstants.HistoryAccessActionTypes,
+    HistoryAccessActions
+>(initialState, {
+    [historyAccessConstants.HISTORY_ACCESS_ACTION_START]: historyAccessActionStarted,
+    [historyAccessConstants.HISTORY_ACCESS_ACTION_FINISH]: historyAccessActionFinished,
+    [historyAccessConstants.HISTORY_ACCESS_ACTION_ERROR]: historyAccessActionError,
+    [historyAccessConstants.REQUEST_FULL_ACCESS]: requestFullHistoryAccess,
+    [historyAccessConstants.REQUEST_SPECIALITY_ACCESS]: requestSpcialityAccess,
+    [historyAccessConstants.GET_REQUEST_STATUS_AND_ACCESS_LEVEL]: getRequestStatus,
+    [historyAccessConstants.GET_HISTORY_CASES]: getApprovedHistoryCases
 });

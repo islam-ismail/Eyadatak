@@ -1,52 +1,46 @@
-import {
-    ASYNC_ACTION_START,
-    ASYNC_ACTION_FINISH,
-    ASYNC_ACTION_ERROR,
-    SWITCH_TO_ARABIC,
-    SWITCH_TO_ENGLISH,
-    SET_LOCALE
-} from "./globalStateConstants";
-import { AppAction } from "../../types/app-action";
-import { setLocaleAction } from "./globalStateTypes";
+import * as globalStateConstants from "./globalStateConstants";
+import * as globalStateTypes from "./globalStateTypes";
 
-export const asyncActionStart = (): AppAction => {
+export const asyncActionStart: globalStateTypes.asyncActionStartSig = (): globalStateTypes.asynActionStartedAction => {
     return {
-        type: ASYNC_ACTION_START,
+        type: globalStateConstants.ASYNC_ACTION_START,
         excludeRefresh: true
     };
 };
 
-export const asyncActionFinish = (): AppAction => {
+export const asyncActionFinish: globalStateTypes.asyncActionFinishSig = (): globalStateTypes.asynActionFinishedAction => {
     return {
-        type: ASYNC_ACTION_FINISH,
+        type: globalStateConstants.ASYNC_ACTION_FINISH,
         excludeRefresh: true
     };
 };
 
-export const asyncActionError = (): AppAction => {
+export const asyncActionError: globalStateTypes.asyncActionErrorSig = (): globalStateTypes.asynActionErrorAction => {
     return {
-        type: ASYNC_ACTION_ERROR,
+        type: globalStateConstants.ASYNC_ACTION_ERROR,
         excludeRefresh: true
     };
 };
 
-export const switchToArabic = (): AppAction => {
+export const switchToArabic: globalStateTypes.switchToArabicSig = (): globalStateTypes.switchToArabicAction => {
     return {
-        type: SWITCH_TO_ARABIC,
+        type: globalStateConstants.SWITCH_TO_ARABIC,
         excludeRefresh: true
     };
 };
 
-export const switchToEnglish = (): AppAction => {
+export const switchToEnglish: globalStateTypes.switchToEnglishSig = (): globalStateTypes.switchToEnglishAction => {
     return {
-        type: SWITCH_TO_ENGLISH,
+        type: globalStateConstants.SWITCH_TO_ENGLISH,
         excludeRefresh: true
     };
 };
 
-export const setLocale = (locale: string): setLocaleAction => {
+export const setLocale: globalStateTypes.setLocaleSig = (
+    locale: string
+): globalStateTypes.setLocaleAction => {
     return {
-        type: SET_LOCALE,
+        type: globalStateConstants.SET_LOCALE,
         payload: locale,
         excludeRefresh: true
     };

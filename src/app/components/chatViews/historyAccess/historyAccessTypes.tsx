@@ -1,21 +1,106 @@
-import { GET_HISTORY_CASES, GET_REQUEST_STATUS_AND_ACCESS_LEVEL } from "./historyAccessConstants";
+import * as historyAccessConstants from "./historyAccessConstants";
 import { AppAction } from "../../../types/app-action";
-import { PatientHistoryAccess } from "../../../types/models/PatientHistoryAccess";
 import { MedicalCase } from "../../../types/models/MedicalCase";
+import { Dispatch } from "redux";
+import { User } from "../../../types/models/User";
+import { CaseChatElement } from "../chatCaseTypes";
 
+/**
+ * actions signature
+ */
 export interface GetRequestStatusAction extends AppAction {
-    type: typeof GET_REQUEST_STATUS_AND_ACCESS_LEVEL;
+    type: typeof historyAccessConstants.GET_REQUEST_STATUS_AND_ACCESS_LEVEL;
     payload: {
         requestStatus: string;
         accessLevel: string;
         historyAccessId: number;
         waitingApproval: boolean;
         waitingLevel: string;
-        allAccessRequests: PatientHistoryAccess[];
+        allAccessRequests: CaseChatElement[];
     };
 }
 
 export interface GetApprovedHistoryCasesAction extends AppAction {
-    type: typeof GET_HISTORY_CASES;
+    type: typeof historyAccessConstants.GET_HISTORY_CASES;
     payload: MedicalCase[];
+}
+
+export interface HistoryAccessActionStartAction extends AppAction {
+    type: typeof historyAccessConstants.HISTORY_ACCESS_ACTION_START;
+    excludeRefresh: boolean;
+}
+
+export interface HistoryAccessActionFinishAction extends AppAction {
+    type: typeof historyAccessConstants.HISTORY_ACCESS_ACTION_FINISH;
+    excludeRefresh: boolean;
+}
+
+export interface HistoryAccessActionErrorAction extends AppAction {
+    type: typeof historyAccessConstants.HISTORY_ACCESS_ACTION_ERROR;
+    excludeRefresh: boolean;
+}
+
+export interface RequestFullHistoryAccessAction extends AppAction {
+    type: typeof historyAccessConstants.REQUEST_FULL_ACCESS;
+}
+
+export interface RequestSpecialityHistoryAccessAction extends AppAction {
+    type: typeof historyAccessConstants.REQUEST_SPECIALITY_ACCESS;
+}
+
+export type HistoryAccessActions = GetRequestStatusAction &
+    GetApprovedHistoryCasesAction &
+    HistoryAccessActionStartAction &
+    HistoryAccessActionFinishAction &
+    HistoryAccessActionErrorAction &
+    RequestFullHistoryAccessAction &
+    RequestSpecialityHistoryAccessAction;
+
+/**
+ * action creators signature
+ */
+export type requestHistoryAccessSig = (
+    accessLevel: string,
+    caseId: number
+) => (dispatch: Dispatch<AppAction>) => Promise<void>;
+
+export type getHistoryCasesSig = (
+    patientId: number,
+    accessLevel: string,
+    specialityId: number
+) => (dispatch: Dispatch<AppAction>) => Promise<void>;
+
+export type getAccessRequestStatusSig = (
+    caseId: number,
+    user: User,
+    patientId: number,
+    specialityId: number,
+    clearFirst: boolean
+) => (dispatch: Dispatch<AppAction>) => Promise<void>;
+
+export type approveHistoryAccessSig = (
+    historyAccessId: number,
+    accessLevel: string
+) => (dispatch: Dispatch<AppAction>) => Promise<void>;
+
+export type declineHistoryAccessSig = (
+    historyAccessId: number
+) => (dispatch: Dispatch<AppAction>) => Promise<void>;
+
+export interface HistoryAccessSignatures {
+    requestHistoryAccess: (accessLevel: string, caseId: number) => Promise<void>;
+    getHistoryCases: (
+        patientId: number,
+        accessLevel: string,
+        specialityId: number
+    ) => Promise<void>;
+    getAccessRequestStatus: (
+        caseId: number,
+        user: User,
+        patientId: number,
+        specialityId: number,
+        clearFirst: boolean
+    ) => Promise<void>;
+    approveHistoryAccess: (historyAccessId: number, accessLevel: string) => Promise<void>;
+    declineHistoryAccess: (historyAccessId: number) => Promise<void>;
 }

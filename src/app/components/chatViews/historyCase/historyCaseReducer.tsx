@@ -1,11 +1,7 @@
 import { createReducer } from "../../../reducers/reducerUtil";
-import {
-    HISTORY_CASE_ACTION_START,
-    HISTORY_CASE_ACTION_FINISH,
-    HISTORY_CASE_ACTION_ERROR,
-    GET_HISTORY_CASE_REPLIES
-} from "./historyCaseConstants";
+import * as historyCaseConstants from "./historyCaseConstants";
 import { CaseChatElement } from "../chatCaseTypes";
+import { GetHistoryCaseChatDataAction, HistoryCaseActions } from "./historyCaseTypes";
 
 export interface HistoryCaseState {
     historyCaseChatData: CaseChatElement[];
@@ -17,27 +13,21 @@ const initialState: HistoryCaseState = {
     loading: false
 };
 
-export const historyCaseActionStarted = (
-    state: HistoryCaseState,
-    payload: any
-): HistoryCaseState => {
+export const historyCaseActionStarted = (state: HistoryCaseState): HistoryCaseState => {
     return {
         ...state,
         loading: true
     };
 };
 
-export const historyCaseActionFinished = (
-    state: HistoryCaseState,
-    payload: any
-): HistoryCaseState => {
+export const historyCaseActionFinished = (state: HistoryCaseState): HistoryCaseState => {
     return {
         ...state,
         loading: false
     };
 };
 
-export const historyCaseActionError = (state: HistoryCaseState, payload: any): HistoryCaseState => {
+export const historyCaseActionError = (state: HistoryCaseState): HistoryCaseState => {
     return {
         ...state,
         loading: false
@@ -46,17 +36,21 @@ export const historyCaseActionError = (state: HistoryCaseState, payload: any): H
 
 export const getHistoryCaseChatData = (
     state: HistoryCaseState,
-    payload: CaseChatElement[]
+    action: GetHistoryCaseChatDataAction
 ): HistoryCaseState => {
     return {
         ...state,
-        historyCaseChatData: payload
+        historyCaseChatData: action.payload
     };
 };
 
-export default createReducer(initialState, {
-    [HISTORY_CASE_ACTION_START]: historyCaseActionStarted,
-    [HISTORY_CASE_ACTION_FINISH]: historyCaseActionFinished,
-    [HISTORY_CASE_ACTION_ERROR]: historyCaseActionError,
-    [GET_HISTORY_CASE_REPLIES]: getHistoryCaseChatData
+export default createReducer<
+    HistoryCaseState,
+    historyCaseConstants.HistoryCaseActionTypes,
+    HistoryCaseActions
+>(initialState, {
+    [historyCaseConstants.HISTORY_CASE_ACTION_START]: historyCaseActionStarted,
+    [historyCaseConstants.HISTORY_CASE_ACTION_FINISH]: historyCaseActionFinished,
+    [historyCaseConstants.HISTORY_CASE_ACTION_ERROR]: historyCaseActionError,
+    [historyCaseConstants.GET_HISTORY_CASE_REPLIES]: getHistoryCaseChatData
 });

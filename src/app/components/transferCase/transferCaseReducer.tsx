@@ -1,15 +1,9 @@
 import { createReducer } from "../../reducers/reducerUtil";
-import {
-    TRANSFER_CASE_ACTION_START,
-    TRANSFER_CASE_ACTION_FINISH,
-    TRANSFER_CASE_ACTION_ERROR,
-    GET_SPECIALITY_DOCTORS,
-    TRANSFER_REQUEST_SUCCESSFUL
-} from "./transferCaseConstants";
-import { Doctor } from "../../types/models/Doctor";
+import * as transferCaseConstants from "./transferCaseConstants";
+import * as transferCaseTypes from "./transferCaseTypes";
 
 export interface TransferCaseState {
-    specialityDoctorsList: Doctor[];
+    specialityDoctorsList: transferCaseTypes.DoctorsWithSpecialities[];
     transferRequestedSuccessfully: boolean;
     loading?: boolean;
 }
@@ -19,30 +13,21 @@ const initialState: TransferCaseState = {
     transferRequestedSuccessfully: false
 };
 
-export const transferCaseActionStarted = (
-    state: TransferCaseState,
-    payload: any
-): TransferCaseState => {
+export const transferCaseActionStarted = (state: TransferCaseState): TransferCaseState => {
     return {
         ...state,
         loading: true
     };
 };
 
-export const transferCaseActionFinished = (
-    state: TransferCaseState,
-    payload: any
-): TransferCaseState => {
+export const transferCaseActionFinished = (state: TransferCaseState): TransferCaseState => {
     return {
         ...state,
         loading: false
     };
 };
 
-export const transferCaseActionError = (
-    state: TransferCaseState,
-    payload: any
-): TransferCaseState => {
+export const transferCaseActionError = (state: TransferCaseState): TransferCaseState => {
     return {
         ...state,
         loading: false
@@ -51,28 +36,29 @@ export const transferCaseActionError = (
 
 export const getSpecialityDoctors = (
     state: TransferCaseState,
-    payload: Doctor[]
+    action: transferCaseTypes.GetDoctorsListAction
 ): TransferCaseState => {
     return {
         ...state,
-        specialityDoctorsList: payload
+        specialityDoctorsList: action.payload
     };
 };
 
-export const transferRequestSuccessful = (
-    state: TransferCaseState,
-    payload: any
-): TransferCaseState => {
+export const transferRequestSuccessful = (state: TransferCaseState): TransferCaseState => {
     return {
         ...state,
         transferRequestedSuccessfully: true
     };
 };
 
-export default createReducer(initialState, {
-    [TRANSFER_CASE_ACTION_START]: transferCaseActionStarted,
-    [TRANSFER_CASE_ACTION_FINISH]: transferCaseActionFinished,
-    [TRANSFER_CASE_ACTION_ERROR]: transferCaseActionError,
-    [GET_SPECIALITY_DOCTORS]: getSpecialityDoctors,
-    [TRANSFER_REQUEST_SUCCESSFUL]: transferRequestSuccessful
+export default createReducer<
+    TransferCaseState,
+    transferCaseConstants.TransferCaseActionTypes,
+    transferCaseTypes.TransferCaseActions
+>(initialState, {
+    [transferCaseConstants.TRANSFER_CASE_ACTION_START]: transferCaseActionStarted,
+    [transferCaseConstants.TRANSFER_CASE_ACTION_FINISH]: transferCaseActionFinished,
+    [transferCaseConstants.TRANSFER_CASE_ACTION_ERROR]: transferCaseActionError,
+    [transferCaseConstants.GET_SPECIALITY_DOCTORS]: getSpecialityDoctors,
+    [transferCaseConstants.TRANSFER_REQUEST_SUCCESSFUL]: transferRequestSuccessful
 });

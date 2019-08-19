@@ -5,9 +5,11 @@ import {
     QUESTION_TEMPLATE_ACTION_ERROR,
     GET_SAVED_QUESTIONS,
     ADD_QUESTION_TO_TEMPLATE,
-    SEND_CASE_QUESTIONS
+    SEND_CASE_QUESTIONS,
+    QuestionTemplateActionTypes
 } from "./questionTemplateConstants";
 import { QuestionTemplate } from "../../types/models/QuestionTemplate";
+import { QuestionTemplateActionActions } from "./questionTemplateTypes";
 
 export interface QuestionTemplateState {
     savedQuestions: QuestionTemplate[];
@@ -21,8 +23,7 @@ const initialState: QuestionTemplateState = {
 };
 
 export const questionTemplateActionStarted = (
-    state: QuestionTemplateState,
-    payload: any
+    state: QuestionTemplateState
 ): QuestionTemplateState => {
     return {
         ...state,
@@ -31,8 +32,7 @@ export const questionTemplateActionStarted = (
 };
 
 export const questionTemplateActionFinished = (
-    state: QuestionTemplateState,
-    payload: any
+    state: QuestionTemplateState
 ): QuestionTemplateState => {
     return {
         ...state,
@@ -41,8 +41,7 @@ export const questionTemplateActionFinished = (
 };
 
 export const questionTemplateActionError = (
-    state: QuestionTemplateState,
-    payload: any
+    state: QuestionTemplateState
 ): QuestionTemplateState => {
     return {
         ...state,
@@ -70,16 +69,17 @@ export const addQuestionToTemplate = (
     };
 };
 
-export const sendCaseQuestions = (
-    state: QuestionTemplateState,
-    payload: any
-): QuestionTemplateState => {
+export const sendCaseQuestions = (state: QuestionTemplateState): QuestionTemplateState => {
     return {
         ...state
     };
 };
 
-export default createReducer(initialState, {
+export default createReducer<
+    QuestionTemplateState,
+    QuestionTemplateActionTypes,
+    QuestionTemplateActionActions
+>(initialState, {
     [QUESTION_TEMPLATE_ACTION_START]: questionTemplateActionStarted,
     [QUESTION_TEMPLATE_ACTION_FINISH]: questionTemplateActionFinished,
     [QUESTION_TEMPLATE_ACTION_ERROR]: questionTemplateActionError,

@@ -16,4 +16,10 @@ export interface MedicalCase {
     speciality: Speciality;
     doctor?: Doctor;
     patient?: User;
+    patient_name?: string;
+    doctor_name?: string;
+    speciality_name?: string;
+    sub_speciality_name?: string;
+    latestReply?: string;
+    is_read?: boolean;
 }

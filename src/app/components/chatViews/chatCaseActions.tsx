@@ -8,77 +8,65 @@ import { CaseTransfer } from "../../types/models/CaseTransfer";
 import { Doctor } from "../../types/models/Doctor";
 import { User } from "../../types/models/User";
 import { deleteTransfer } from "../transferCase/transferCaseActions";
-import {
-    CHAT_CASE_ACTION_ERROR,
-    CHAT_CASE_ACTION_FINISH,
-    CHAT_CASE_ACTION_START,
-    GET_CASE_DOCTOR,
-    GET_CASE_PATIENT,
-    GET_CASE_REPLIES
-} from "./chatCaseConstants";
-import {
-    CaseChatElement,
-    GetCaseChatDataAction,
-    GetCaseDoctorAction,
-    GetCasePatientAction
-} from "./chatCaseTypes";
-import {
-    approveHistoryAccess,
-    declineHistoryAccess,
-    getAccessRequestStatus
-} from "./historyAccess/historyAccessActions";
+import * as chatCaseConstants from "./chatCaseConstants";
+import * as chatCaseTypes from "./chatCaseTypes";
+import * as historyAccessActions from "./historyAccess/historyAccessActions";
 import { Dispatch } from "redux";
 import { MedicalCase } from "../../types/models/MedicalCase";
+import { ThunkDispatch } from "redux-thunk";
 
-export const chatCaseActionStart = (): AppAction => {
+export const chatCaseActionStart = (): chatCaseTypes.ChatCaseActionStartAction => {
     return {
-        type: CHAT_CASE_ACTION_START,
+        type: chatCaseConstants.CHAT_CASE_ACTION_START,
         excludeRefresh: true
     };
 };
 
-export const chatCaseActionFinish = (): AppAction => {
+export const chatCaseActionFinish = (): chatCaseTypes.ChatCaseActionFinishAction => {
     return {
-        type: CHAT_CASE_ACTION_FINISH,
+        type: chatCaseConstants.CHAT_CASE_ACTION_FINISH,
         excludeRefresh: true
     };
 };
 
-export const chatCaseActionError = (): AppAction => {
+export const chatCaseActionError = (): chatCaseTypes.ChatCaseActionErrorAction => {
     return {
-        type: CHAT_CASE_ACTION_ERROR,
+        type: chatCaseConstants.CHAT_CASE_ACTION_ERROR,
         excludeRefresh: true
     };
 };
 
 export const getCaseChatData = (
-    replies: CaseChatElement[],
-    questions: CaseChatElement[] = [],
+    replies: chatCaseTypes.CaseChatElement[],
+    questions: chatCaseTypes.CaseChatElement[] = [],
     lastReplyId: number = 0
-): GetCaseChatDataAction => {
+): chatCaseTypes.GetCaseChatDataAction => {
     return {
-        type: GET_CASE_REPLIES,
+        type: chatCaseConstants.GET_CASE_REPLIES,
         payload: { replies: replies, questions: questions, lastReplyId: lastReplyId }
     };
 };
 
-export const getCasePatient = (casePatient: User): GetCasePatientAction => {
+export const getCasePatient = (casePatient: User): chatCaseTypes.GetCasePatientAction => {
     return {
-        type: GET_CASE_PATIENT,
+        type: chatCaseConstants.GET_CASE_PATIENT,
         payload: casePatient
     };
 };
 
-export const getCaseDoctor = (caseDoctor: Doctor): GetCaseDoctorAction => {
+export const getCaseDoctor = (caseDoctor: Doctor): chatCaseTypes.GetCaseDoctorAction => {
     return {
-        type: GET_CASE_DOCTOR,
+        type: chatCaseConstants.GET_CASE_DOCTOR,
         payload: caseDoctor
     };
 };
 
-export const groupAnswersAndQuestions = (sortedReplies, groupWhat) => {
-    const groupedReplies = [];
-    let tempGroup = [];
+export const groupAnswersAndQuestions: chatCaseTypes.groupAnswersAndQuestionsSig = (
+    sortedReplies: chatCaseTypes.CaseChatElement[],
+    groupWhat: string
+): chatCaseTypes.CaseChatElement[] => {
+    const groupedReplies: chatCaseTypes.CaseChatElement[] = [];
+    let tempGroup: chatCaseTypes.CaseChatElement[] = [];
     let timeDiff = 0;
 
     if (sortedReplies[0].type === groupWhat) tempGroup.push(sortedReplies[0]);
@@ -98,7 +86,7 @@ export const groupAnswersAndQuestions = (sortedReplies, groupWhat) => {
                     if (tempGroup.length === 1) {
                         groupedReplies.push(tempGroup[0]);
                     } else {
-                        let itemToPush =
+                        let itemToPush: chatCaseTypes.CaseChatElement =
                             groupWhat === "answer"
                                 ? {
                                       id: tempGroup[0].id,
@@ -120,7 +108,7 @@ export const groupAnswersAndQuestions = (sortedReplies, groupWhat) => {
             }
         } else {
             if (tempGroup.length > 1) {
-                let itemToPush =
+                let itemToPush: chatCaseTypes.CaseChatElement =
                     groupWhat === "answer"
                         ? {
                               id: tempGroup[0].id,
@@ -148,7 +136,7 @@ export const groupAnswersAndQuestions = (sortedReplies, groupWhat) => {
     }
     // Checking if there are items inside tempGroup after exiting the loop
     if (tempGroup.length > 1) {
-        let itemToPush =
+        let itemToPush: chatCaseTypes.CaseChatElement =
             groupWhat === "answer"
                 ? {
                       id: tempGroup[0].id,
@@ -168,16 +156,17 @@ export const groupAnswersAndQuestions = (sortedReplies, groupWhat) => {
         groupedReplies.push(tempGroup[0]);
         tempGroup = [];
     }
+
     return groupedReplies;
 };
 
-export const getChatCaseReplies = (
+export const getChatCaseReplies: chatCaseTypes.getChatCaseRepliesSig = (
     caseId: number,
     chatCase: MedicalCase,
     userType: string,
     clearFirst: boolean = false
 ) => {
-    return (dispatch: Dispatch<AppAction>) => {
+    return (dispatch: ThunkDispatch<{}, {}, AppAction>) => {
         if (userType === "doctor") {
             dispatch(getDoctorChatCaseReplies(caseId, chatCase, clearFirst));
         } else {
@@ -186,7 +175,7 @@ export const getChatCaseReplies = (
     };
 };
 
-export const getDoctorChatCaseReplies = (
+export const getDoctorChatCaseReplies: chatCaseTypes.getDoctorChatCaseRepliesSig = (
     caseId: number,
     chatCase: MedicalCase,
     clearFirst: boolean
@@ -216,7 +205,7 @@ export const getDoctorChatCaseReplies = (
             const data4 = response4.data;
             const caseTransfers: CaseTransfer[] = data4.data.case_transfers;
 
-            const caseChatData: CaseChatElement[] = [];
+            const caseChatData: chatCaseTypes.CaseChatElement[] = [];
             let index = 0;
 
             caseChatData.push({
@@ -300,7 +289,7 @@ export const getDoctorChatCaseReplies = (
     };
 };
 
-export const getPatientChatCaseReplies = (
+export const getPatientChatCaseReplies: chatCaseTypes.getPatientChatCaseRepliesSig = (
     caseId: number,
     chatCase: MedicalCase,
     clearFirst: boolean
@@ -340,7 +329,7 @@ export const getPatientChatCaseReplies = (
                 }
             }
 
-            const caseChatData = [];
+            const caseChatData: chatCaseTypes.CaseChatElement[] = [];
             let index = 0;
 
             caseChatData.push({
@@ -423,12 +412,12 @@ export const getPatientChatCaseReplies = (
     };
 };
 
-export const handleSubmitChatReply = (
+export const handleSubmitChatReply: chatCaseTypes.handleSubmitChatReplySig = (
     chatCase: MedicalCase,
-    case_reply: CaseReply,
+    case_reply: { case_id: number; reply: string },
     userType: string
 ) => {
-    return async (dispatch: Dispatch<AppAction>) => {
+    return async (dispatch: ThunkDispatch<{}, {}, AppAction>) => {
         try {
             dispatch(chatCaseActionStart());
 
@@ -444,13 +433,16 @@ export const handleSubmitChatReply = (
     };
 };
 
-export const handleUploadFiles = (caseId: number, uploadedFiles) => {
+export const handleUploadFiles: chatCaseTypes.handleUploadFilesSig = (
+    caseId: number,
+    uploadedFiles: File[][]
+) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(chatCaseActionStart());
 
             await Promise.all(
-                uploadedFiles.map(async (file, index) => {
+                uploadedFiles.map(async (file, caseQuestionId: number) => {
                     console.log("file:", file[0]);
                     const formData = new FormData();
                     formData.append("question_answer", file[0]);
@@ -459,7 +451,7 @@ export const handleUploadFiles = (caseId: number, uploadedFiles) => {
                         .create({
                             headers: { "Content-Type": "multipart/form-data" }
                         })
-                        .post(`patient/case_questions/${caseId}/${index}`, formData)
+                        .post(`patient/case_questions/${caseId}/${caseQuestionId}`, formData)
                         .catch(function(error) {
                             console.log("catch error:", error);
                         });
@@ -475,7 +467,7 @@ export const handleUploadFiles = (caseId: number, uploadedFiles) => {
     };
 };
 
-export const handleSubmitAnswers = (
+export const handleSubmitAnswers: chatCaseTypes.handleSubmitAnswersSig = (
     caseId: number,
     answers: any[],
     caseQuestions: CaseQuestion[]
@@ -510,18 +502,20 @@ export const handleSubmitAnswers = (
     };
 };
 
-export const getHistoryAccessRequestStatus = (
+export const getHistoryAccessRequestStatus: chatCaseTypes.getHistoryAccessRequestStatusSig = (
     caseId: number,
     user: User,
     patientId: number,
     specialityId: number
 ) => {
-    return async (dispatch: Dispatch<AppAction>) => {
-        dispatch(getAccessRequestStatus(caseId, user, patientId, specialityId, true));
+    return async (dispatch: ThunkDispatch<{}, {}, AppAction>) => {
+        dispatch(
+            historyAccessActions.getAccessRequestStatus(caseId, user, patientId, specialityId, true)
+        );
     };
 };
 
-export const respondToHistoryAccessRequest = (
+export const respondToHistoryAccessRequest: chatCaseTypes.respondToHistoryAccessRequestSig = (
     historyAccessId: number,
     requestStatus: string,
     accessLevel: string,
@@ -530,20 +524,32 @@ export const respondToHistoryAccessRequest = (
     patientId: number,
     specialityId: number
 ) => {
-    return async (dispatch: Dispatch<AppAction>) => {
+    return async (dispatch: ThunkDispatch<{}, {}, AppAction>) => {
         if (requestStatus === "Approved")
-            await dispatch(approveHistoryAccess(historyAccessId, accessLevel));
-        else await dispatch(declineHistoryAccess(historyAccessId));
+            await dispatch(historyAccessActions.approveHistoryAccess(historyAccessId, accessLevel));
+        else await dispatch(historyAccessActions.declineHistoryAccess(historyAccessId));
         // dispatch(getChatCaseReplies(chatCase.id, chatCase, userType, true))
         setTimeout(
-            () => dispatch(getAccessRequestStatus(caseId, user, patientId, specialityId, true)),
+            () =>
+                dispatch(
+                    historyAccessActions.getAccessRequestStatus(
+                        caseId,
+                        user,
+                        patientId,
+                        specialityId,
+                        true
+                    )
+                ),
             3000
         );
     };
 };
 
-export const deleteTransferRequest = (transferCase: MedicalCase, transferId: number) => {
-    return async (dispatch: Dispatch<AppAction>) => {
+export const deleteTransferRequest: chatCaseTypes.deleteTransferRequestSig = (
+    transferCase: MedicalCase,
+    transferId: number
+) => {
+    return async (dispatch: ThunkDispatch<{}, {}, AppAction>) => {
         dispatch(deleteTransfer(transferCase, transferId));
     };
 };

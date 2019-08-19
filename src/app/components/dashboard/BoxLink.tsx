@@ -1,7 +1,7 @@
-import React from "react";
+import React, { SFC } from "react";
 import { Link } from "react-router-dom";
 
-export const BoxLink = props => {
+export const BoxLink: SFC<{ label: string; count?: number; amount?: number }> = props => {
     let boxLabel = "";
     switch (props.label) {
         case "Open":

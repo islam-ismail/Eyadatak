@@ -1,21 +1,49 @@
-import React, { Component } from "react";
+import React, { Component, ComponentType, EventHandler, MouseEvent } from "react";
 import Modal from "react-modal";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import Button from "../../../UIComponents/Button";
 import Loader from "../../layout/Loader";
 import * as actions from "./historyAccessActions";
+import { RouteComponentProps } from "react-router";
+import { AppState } from "../../../reducers/rootReducer";
+import { HistoryAccessSignatures } from "./historyAccessTypes";
 
-class HistoryAccessModal extends Component {
-    state = {
+const mapState = (state: AppState) => ({
+    loading: state.global.loading
+});
+
+type CompStateProps = ReturnType<typeof mapState>;
+
+type CompActionProps = HistoryAccessSignatures;
+
+interface CompOwnProps {
+    caseId: number;
+    whichButton: string;
+    openHistoryAccessModal: boolean;
+
+    requestStatusUpdate: () => void;
+    closeHistoryAccessModal: EventHandler<MouseEvent>;
+}
+
+type CompProps = RouteComponentProps & CompOwnProps & CompStateProps & CompActionProps;
+
+interface CompState {
+    histroyAccessRequested: boolean;
+}
+
+class HistoryAccessModal extends Component<CompProps, CompState> {
+    state: CompState = {
         histroyAccessRequested: false
     };
 
     handleAccessRequest = (accessLevel: string) => {
         this.props.requestHistoryAccess(accessLevel, this.props.caseId);
+
         this.setState(() => ({
             histroyAccessRequested: true
         }));
+
         this.props.requestStatusUpdate();
     };
 
@@ -106,11 +134,7 @@ class HistoryAccessModal extends Component {
     }
 }
 
-const mapState = state => ({
-    loading: state.global.loading
-});
-
-export default compose(
+export default compose<ComponentType<CompOwnProps>>(
     connect(
         mapState,
         actions

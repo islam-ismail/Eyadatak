@@ -1,20 +1,69 @@
-import React, { Component } from "react";
+import React, { Component, ComponentType, ChangeEventHandler } from "react";
 // import Modal from 'react-modal'
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { reduxForm, Field } from "redux-form";
+import { reduxForm, Field, InjectedFormProps } from "redux-form";
 import SelectInputRegular from "../../form/SelectInputRegular";
 import RadioGroup from "../../form/RadioGroup";
 // import Loader from '../layout/Loader'
 import * as actions from "./transferCaseActions";
+import { Doctor } from "../../types/models/Doctor";
+import { Speciality } from "../../types/models/Speciality";
+import { DoctorsWithSpecialities, TransferCaseActionsSignatures } from "./transferCaseTypes";
+import { User } from "../../types/models/User";
+import { AppState } from "../../reducers/rootReducer";
+import { MedicalCase } from "../../types/models/MedicalCase";
 
-class TransferCaseModal extends Component {
-    state = {
+const mapState = (state: AppState) => ({
+    loading: state.transferCase.loading,
+    signedInUser: state.auth.signedInUser,
+    primarySpecialities: state.newCase.primarySpecialities,
+    secondarySpecialities: state.newCase.secondarySpecialities,
+    specialityDoctorsList: state.transferCase.specialityDoctorsList,
+    transferRequestedSuccessfully: state.transferCase.transferRequestedSuccessfully
+});
+
+type CompStateProps = ReturnType<typeof mapState>;
+
+type CompActionProps = TransferCaseActionsSignatures;
+
+interface CompOwnProps {
+    openTransferCaseDoctorModal: boolean;
+    closeTransferCaseDoctorModal: () => void;
+    transferCase: MedicalCase;
+}
+
+interface FormData {
+    specialityOrDoctor: string;
+    selected_doctor: number;
+}
+
+type CompProps = InjectedFormProps<FormData> & CompStateProps & CompActionProps & CompOwnProps;
+
+interface CompState {
+    topLevelSpecialities: {
+        key: number;
+        value: string;
+    }[];
+    secondLevelSpecialities: {
+        key: number;
+        value: string;
+    }[];
+    hasSecondLevelSpecialities: boolean;
+    primarySpecialityID: number;
+    selectedSpecialityID: number;
+    doctorsList: DoctorsWithSpecialities[];
+    transferDoctor: boolean;
+    transferRequestedSuccessfully: boolean;
+}
+
+class TransferCaseModal extends Component<CompProps, CompState> {
+    state: CompState = {
         topLevelSpecialities: [],
         secondLevelSpecialities: [],
         hasSecondLevelSpecialities: false,
-        primarySpecialityID: null,
-        selectedSpecialityID: null,
+        primarySpecialityID: 0,
+        selectedSpecialityID: 0,
         doctorsList: [],
         transferDoctor: false,
         transferRequestedSuccessfully: false
@@ -27,7 +76,7 @@ class TransferCaseModal extends Component {
         }));
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: CompProps) {
         if (prevProps.primarySpecialities !== this.props.primarySpecialities) {
             this.setTopLevelSpecialities();
         }
@@ -75,7 +124,9 @@ class TransferCaseModal extends Component {
     // Handle the change in speciality dropdowns and set the the selectedSpecialityID
     // and set the other state to show / hide secondary specialities if there's none.
     // Also to render the required and none required questions based on the speciality.
-    handleSpecialityChange = (event, value) => {
+    handleSpecialityChange: ChangeEventHandler<HTMLSelectElement> = event => {
+        const value = parseInt(event.target.value, 10);
+
         if (event.target.name === "top_level_speciality") {
             if (value) {
                 this.props.getSecondLevelSpecialities(value);
@@ -91,7 +142,7 @@ class TransferCaseModal extends Component {
                 this.setState(() => ({
                     secondLevelSpecialities: [],
                     hasSecondLevelSpecialities: false,
-                    selectedSpecialityID: null
+                    selectedSpecialityID: 0
                 }));
             }
         } else if (event.target.name === "second_level_speciality") {
@@ -104,7 +155,7 @@ class TransferCaseModal extends Component {
                 if (this.state.transferDoctor) {
                     this.props.getSpecialityDoctorsList(value);
                 }
-            } else {
+            } else if (prevSpecialityID) {
                 this.setState(() => ({
                     selectedSpecialityID: prevSpecialityID
                 }));
@@ -115,7 +166,7 @@ class TransferCaseModal extends Component {
         }
     };
 
-    handleFormSubmit = values => {
+    handleFormSubmit = (values: FormData) => {
         console.log("values:", values);
         if (values.specialityOrDoctor === "doctor") {
             this.props.transferCaseToDoctor(
@@ -131,7 +182,9 @@ class TransferCaseModal extends Component {
         }
     };
 
-    handleRadioChange = (event, value) => {
+    handleRadioChange: ChangeEventHandler<HTMLInputElement> = event => {
+        const value = event.target.value;
+
         if (value === "doctor") {
             this.props.getSpecialityDoctorsList(this.state.selectedSpecialityID);
             this.setState(() => ({
@@ -293,25 +346,18 @@ class TransferCaseModal extends Component {
     }
 }
 
-const mapState = state => ({
-    loading: state.transferCase.loading,
-    signedInUser: state.auth.signedInUser,
-    primarySpecialities: state.newCase.primarySpecialities,
-    secondarySpecialities: state.newCase.secondarySpecialities,
-    specialityDoctorsList: state.transferCase.specialityDoctorsList,
-    transferRequestedSuccessfully: state.transferCase.transferRequestedSuccessfully
-});
+const validate = (values: FormData) => {
+    const errors: any = {};
 
-const validate = values => {
-    const errors = {};
     if (values.specialityOrDoctor === "doctor" && !values.selected_doctor) {
         errors.selected_doctor = "برجاء اختيار الطبيب";
     }
+
     return errors;
 };
 
-export default compose(
-    connect(
+export default compose<ComponentType<CompOwnProps>>(
+    connect<CompStateProps, CompActionProps, CompOwnProps, AppState>(
         mapState,
         actions
     ),

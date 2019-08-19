@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, ComponentType } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { compose } from "redux";
@@ -9,9 +9,25 @@ import profilePic from "../../assets/images/profile-pic01.svg";
 // import Button from "../../UIComponents/Button";
 import * as actions from "../auth/authActions";
 import NewCaseModal from "../newCase/NewCaseModal";
+import { AppState } from "../../reducers/rootReducer";
+import { AuthActionsSignatures } from "../auth/authTypes";
 
-class Header extends Component {
-    state = {
+const mapState = (state: AppState) => ({
+    signedInUser: state.auth.signedInUser
+});
+
+type CompStateProps = ReturnType<typeof mapState>;
+
+type CompActionProps = AuthActionsSignatures;
+
+type CompProps = CompStateProps & CompActionProps;
+
+interface CompState {
+    openNewCaseModal: boolean;
+}
+
+class Header extends Component<CompProps, CompState> {
+    state: CompState = {
         openNewCaseModal: false
     };
 
@@ -98,13 +114,9 @@ class Header extends Component {
     }
 }
 
-const mapStateToProps = state => ({
-    signedInUser: state.auth.signedInUser
-});
-
-export default compose(
+export default compose<ComponentType>(
     connect(
-        mapStateToProps,
+        mapState,
         actions
     )
 )(Header);

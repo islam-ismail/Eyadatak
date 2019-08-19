@@ -4,7 +4,7 @@ import thunk from "redux-thunk";
 import refreshTokenMiddleware from "../middlewares/refreshTokenMiddleware";
 import rootReducer, { AppState } from "../reducers/rootReducer";
 
-export const configureStore = (preloadedState: AppState) => {
+export const configureStore = (preloadedState?: AppState) => {
     const middlewares = [refreshTokenMiddleware, thunk];
     const middlewareEnhancer = applyMiddleware(...middlewares);
 

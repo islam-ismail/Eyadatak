@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, ComponentType, ChangeEventHandler, MouseEventHandler } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import ChatSideNav from "./ChatSideNav";
@@ -7,21 +7,61 @@ import { ChatMessage } from "./ChatMessage";
 import { DoctorDetailsPanel } from "./DoctorDetailsPanel";
 import CaseQuestionsPanel from "./CaseQuestionsPanel";
 import * as actions from "./chatCaseActions";
-import { reduxForm, Field } from "redux-form";
+import { reduxForm, Field, InjectedFormProps, FormSubmitHandler } from "redux-form";
 import TextAreaRegular from "../../form/TextAreaRegular";
 import ScrollToBottom from "../../util/ScrollToBottom";
+import { AppState } from "../../reducers/rootReducer";
+import { ChatCaseSignatures, CaseChatElement } from "./chatCaseTypes";
+import { MedicalCase } from "../../types/models/MedicalCase";
+import { PatientHistoryAccess } from "../../types/models/PatientHistoryAccess";
+import { User } from "../../types/models/User";
 
-class PatientChatView extends Component {
-    state = {
+const mapState = (state: AppState) => ({
+    locale: state.global.locale,
+    signedInUser: state.auth.signedInUser,
+    caseChatData: state.chatCase.caseChatData,
+    caseDoctor: state.chatCase.caseDoctor,
+    caseUnansweredQuestions: state.chatCase.caseUnansweredQuestions,
+    requestStatus: state.historyAccess.requestStatus,
+    accessLevel: state.historyAccess.accessLevel,
+    historyAccessId: state.historyAccess.historyAccessId,
+    waitingApproval: state.historyAccess.waitingApproval,
+    waitingLevel: state.historyAccess.waitingLevel,
+    allAccessRequests: state.historyAccess.allAccessRequests
+});
+
+type CompStateProps = ReturnType<typeof mapState>;
+
+type CompActionProps = ChatCaseSignatures;
+
+interface CompOwnProps {
+    chatCase: MedicalCase;
+}
+
+interface FormData {
+    chat_reply: string;
+}
+
+type CompProps = InjectedFormProps<FormData> & CompOwnProps & CompStateProps & CompActionProps;
+
+interface CompState extends Omit<CompStateProps, "locale" | "signedInUser"> {
+    allChatMessages: CaseChatElement[];
+    sidebarActive: string;
+    detailsActive: string;
+    questionsOrHistoryActive: string;
+    requestRespondedTo: boolean;
+}
+
+class PatientChatView extends Component<CompProps, CompState> {
+    state: CompState = {
         caseChatData: [],
-        caseDoctor: {},
+        caseDoctor: null,
         caseUnansweredQuestions: [],
-        caseQuestionToAnswer: {},
-        requestStatus: undefined,
-        accessLevel: undefined,
-        historyAccessId: undefined,
+        requestStatus: "",
+        accessLevel: "",
+        historyAccessId: 0,
         waitingApproval: false,
-        waitingLevel: undefined,
+        waitingLevel: "",
         allAccessRequests: [],
         allChatMessages: [],
         sidebarActive: "",
@@ -47,18 +87,18 @@ class PatientChatView extends Component {
         this.props.getChatCaseReplies(this.props.chatCase.id, this.props.chatCase, "patient", true);
         this.props.getHistoryAccessRequestStatus(
             this.props.chatCase.id,
-            this.props.signedInUser,
-            this.props.signedInUser.id,
+            this.props.signedInUser as User,
+            (this.props.signedInUser as User).id,
             this.props.chatCase.speciality_id
         );
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: CompProps) {
         if (prevProps.caseChatData !== this.props.caseChatData) {
             this.setState(() => ({
                 caseChatData: this.props.caseChatData,
                 allChatMessages: [...this.props.caseChatData, ...this.props.allAccessRequests].sort(
-                    (a, b) => new Date(a.created_at) - new Date(b.created_at)
+                    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
                 )
             }));
         }
@@ -101,7 +141,7 @@ class PatientChatView extends Component {
             this.setState(() => ({
                 allAccessRequests: this.props.allAccessRequests,
                 allChatMessages: [...this.props.caseChatData, ...this.props.allAccessRequests].sort(
-                    (a, b) => new Date(a.created_at) - new Date(b.created_at)
+                    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
                 )
             }));
         }
@@ -112,13 +152,13 @@ class PatientChatView extends Component {
         ) {
             this.setState(() => ({
                 allChatMessages: [...this.props.caseChatData, ...this.props.allAccessRequests].sort(
-                    (a, b) => new Date(a.created_at) - new Date(b.created_at)
+                    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
                 )
             }));
         }
     }
 
-    toggleDoctorDetails = e => {
+    toggleDoctorDetails: MouseEventHandler = e => {
         e.preventDefault();
         if (this.state.detailsActive === "active")
             this.setState(() => ({
@@ -135,7 +175,7 @@ class PatientChatView extends Component {
         }));
     };
 
-    toggleCaseQuestions = e => {
+    toggleCaseQuestions: MouseEventHandler = e => {
         if (this.state.questionsOrHistoryActive === "active")
             this.setState(() => ({
                 questionsOrHistoryActive: "",
@@ -146,29 +186,30 @@ class PatientChatView extends Component {
                 questionsOrHistoryActive: "active",
                 sidebarActive: "sidebar-active"
             }));
+
         this.setState(() => ({
             detailsActive: ""
         }));
     };
 
-    handleFormSubmit = values => {
+    handleFormSubmit = (values: FormData) => {
         this.props.handleSubmitChatReply(
             this.props.chatCase,
             { case_id: this.props.chatCase.id, reply: values.chat_reply },
-            this.props.signedInUser.type
+            (this.props.signedInUser as User).type
         );
 
         this.props.reset();
     };
 
-    handleAccessRequestResponse = (requestResponse, accessLevel = undefined) => {
+    handleAccessRequestResponse = (requestResponse: string, accessLevel = "") => {
         this.props.respondToHistoryAccessRequest(
             this.state.historyAccessId,
             requestResponse,
             accessLevel,
             this.props.chatCase.id,
-            this.props.signedInUser,
-            this.props.signedInUser.id,
+            this.props.signedInUser as User,
+            (this.props.signedInUser as User).id,
             this.props.chatCase.speciality_id
         );
         this.setState(() => ({
@@ -186,7 +227,12 @@ class PatientChatView extends Component {
                         <ScrollToBottom>
                             <div className="messages" id="messages">
                                 {this.state.allChatMessages.map(message => (
-                                    <div key={message.id + (message.status ? message.status : 0)}>
+                                    <div
+                                        key={
+                                            message.id.toString() +
+                                            (message.accessRequest as PatientHistoryAccess).status
+                                        }
+                                    >
                                         <ChatMessage
                                             message={message}
                                             openQuestionPanel={this.toggleCaseQuestions}
@@ -248,10 +294,12 @@ class PatientChatView extends Component {
                         }
                     />
                     <ChatCaseDetails chatCase={this.props.chatCase} />
-                    <DoctorDetailsPanel
-                        doctor={this.state.caseDoctor}
-                        detailsActive={detailsActive}
-                    />
+                    {this.state.caseDoctor && (
+                        <DoctorDetailsPanel
+                            doctor={this.state.caseDoctor}
+                            detailsActive={detailsActive}
+                        />
+                    )}
                     <CaseQuestionsPanel
                         caseUnansweredQuestions={this.state.caseUnansweredQuestions}
                         caseId={this.props.chatCase.id}
@@ -263,21 +311,7 @@ class PatientChatView extends Component {
     }
 }
 
-const mapState = state => ({
-    locale: state.global.locale,
-    signedInUser: state.auth.signedInUser,
-    caseChatData: state.chatCase.caseChatData,
-    caseDoctor: state.chatCase.caseDoctor,
-    caseUnansweredQuestions: state.chatCase.caseUnansweredQuestions,
-    requestStatus: state.historyAccess.requestStatus,
-    accessLevel: state.historyAccess.accessLevel,
-    historyAccessId: state.historyAccess.historyAccessId,
-    waitingApproval: state.historyAccess.waitingApproval,
-    waitingLevel: state.historyAccess.waitingLevel,
-    allAccessRequests: state.historyAccess.allAccessRequests
-});
-
-const validate = values => {
+const validate = (values: FormData) => {
     const errors = {};
     // if (!values.chat_reply) {
     //   console.log('EMPTY chat_reply')
@@ -286,7 +320,7 @@ const validate = values => {
     return errors;
 };
 
-export default compose(
+export default compose<ComponentType<CompOwnProps>>(
     connect(
         mapState,
         actions

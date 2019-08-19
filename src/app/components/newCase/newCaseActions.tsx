@@ -1,58 +1,88 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import {
-    NEW_CASE_ACTION_START,
-    NEW_CASE_ACTION_FINISH,
-    NEW_CASE_ACTION_ERROR,
-    GET_PRIMARY_SPECIALITIES,
-    GET_SECONDARY_SPECIALITIES,
-    GET_INITIAL_REQUIRED_QUESTIONS,
-    GET_REQUIRED_QUESTIONS,
-    GET_INITIAL_NOT_REQUIRED_QUESTIONS,
-    GET_NOT_REQUIRED_QUESTIONS
-} from "./newCaseConstants";
+import * as newCaseConstants from "./newCaseConstants";
 import { AppAction } from "../../types/app-action";
-import {
-    GetInitialNotRequiredQuestionsAction,
-    GetRequiredQuestionsAction,
-    GetInitialRequiredQuestionsAction,
-    GetSecondarySpecialitiesAction,
-    GetPrimarySpecialitiesAction,
-    GetNotRequiredQuestionsAction
-} from "./newCaseTypes";
+import * as newCaseTypes from "./newCaseTypes";
 import { Speciality } from "../../types/models/Speciality";
 import { QuestionTemplate } from "../../types/models/QuestionTemplate";
 import { Dispatch } from "redux";
 
-export const newCaseActionStart = (): AppAction => {
+export const newCaseActionStart = (): newCaseTypes.NewCaseActionStartAction => {
     return {
-        type: NEW_CASE_ACTION_START,
+        type: newCaseConstants.NEW_CASE_ACTION_START,
         excludeRefresh: true
     };
 };
 
-export const newCaseActionFinish = (): AppAction => {
+export const newCaseActionFinish = (): newCaseTypes.NewCaseActionFinishAction => {
     return {
-        type: NEW_CASE_ACTION_FINISH,
+        type: newCaseConstants.NEW_CASE_ACTION_FINISH,
         excludeRefresh: true
     };
 };
 
-export const newCaseActionError = (): AppAction => {
+export const newCaseActionError = (): newCaseTypes.NewCaseActionErrorAction => {
     return {
-        type: NEW_CASE_ACTION_ERROR,
+        type: newCaseConstants.NEW_CASE_ACTION_ERROR,
         excludeRefresh: true
     };
 };
 
-export const getPrimarySpecialities = (data: Speciality[]): GetPrimarySpecialitiesAction => {
+export const getPrimarySpecialities = (
+    data: Speciality[]
+): newCaseTypes.GetPrimarySpecialitiesAction => {
     return {
-        type: GET_PRIMARY_SPECIALITIES,
+        type: newCaseConstants.GET_PRIMARY_SPECIALITIES,
         payload: data
     };
 };
 
-export const asyncGetPrimarySpecialities = () => {
+export const getSecondarySpecialities = (
+    data: Speciality[]
+): newCaseTypes.GetSecondarySpecialitiesAction => {
+    return {
+        type: newCaseConstants.GET_SECONDARY_SPECIALITIES,
+        payload: data
+    };
+};
+
+export const getRequiredQuestions = (
+    data: QuestionTemplate[]
+): newCaseTypes.GetRequiredQuestionsAction => {
+    return {
+        type: newCaseConstants.GET_REQUIRED_QUESTIONS,
+        payload: data
+    };
+};
+
+export const getInitialNotRequiredQuestions = (
+    data: QuestionTemplate[]
+): newCaseTypes.GetInitialNotRequiredQuestionsAction => {
+    return {
+        type: newCaseConstants.GET_INITIAL_NOT_REQUIRED_QUESTIONS,
+        payload: data
+    };
+};
+
+export const getNotRequiredQuestions = (
+    data: QuestionTemplate[]
+): newCaseTypes.GetNotRequiredQuestionsAction => {
+    return {
+        type: newCaseConstants.GET_NOT_REQUIRED_QUESTIONS,
+        payload: data
+    };
+};
+
+export const getInitialRequiredQuestions = (
+    data: QuestionTemplate[]
+): newCaseTypes.GetInitialRequiredQuestionsAction => {
+    return {
+        type: newCaseConstants.GET_INITIAL_REQUIRED_QUESTIONS,
+        payload: data
+    };
+};
+
+export const asyncGetPrimarySpecialities: newCaseTypes.asyncGetPrimarySpecialitiesSig = () => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(newCaseActionStart());
@@ -67,14 +97,9 @@ export const asyncGetPrimarySpecialities = () => {
     };
 };
 
-export const getSecondarySpecialities = (data: Speciality[]): GetSecondarySpecialitiesAction => {
-    return {
-        type: GET_SECONDARY_SPECIALITIES,
-        payload: data
-    };
-};
-
-export const asyncGetSecondarySpecialities = (parentId: number) => {
+export const asyncGetSecondarySpecialities: newCaseTypes.asyncGetSecondarySpecialitiesSig = (
+    parentId: number
+) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(newCaseActionStart());
@@ -89,16 +114,7 @@ export const asyncGetSecondarySpecialities = (parentId: number) => {
     };
 };
 
-export const getInitialRequiredQuestions = (
-    data: QuestionTemplate[]
-): GetInitialRequiredQuestionsAction => {
-    return {
-        type: GET_INITIAL_REQUIRED_QUESTIONS,
-        payload: data
-    };
-};
-
-export const asyncGetInitialRequiredQuestions = () => {
+export const asyncGetInitialRequiredQuestions: newCaseTypes.asyncGetInitialRequiredQuestionsSig = () => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(newCaseActionStart());
@@ -113,14 +129,9 @@ export const asyncGetInitialRequiredQuestions = () => {
     };
 };
 
-export const getRequiredQuestions = (data: QuestionTemplate[]): GetRequiredQuestionsAction => {
-    return {
-        type: GET_REQUIRED_QUESTIONS,
-        payload: data
-    };
-};
-
-export const asyncGetRequiredQuestions = (specialityId: number) => {
+export const asyncGetRequiredQuestions: newCaseTypes.asyncGetRequiredQuestionsSig = (
+    specialityId: number
+) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(newCaseActionStart());
@@ -135,16 +146,7 @@ export const asyncGetRequiredQuestions = (specialityId: number) => {
     };
 };
 
-export const getInitialNotRequiredQuestions = (
-    data: QuestionTemplate[]
-): GetInitialNotRequiredQuestionsAction => {
-    return {
-        type: GET_INITIAL_NOT_REQUIRED_QUESTIONS,
-        payload: data
-    };
-};
-
-export const asyncGetInitialNotRequiredQuestions = () => {
+export const asyncGetInitialNotRequiredQuestions: newCaseTypes.asyncGetInitialNotRequiredQuestionsSig = () => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(newCaseActionStart());
@@ -159,16 +161,9 @@ export const asyncGetInitialNotRequiredQuestions = () => {
     };
 };
 
-export const getNotRequiredQuestions = (
-    data: QuestionTemplate[]
-): GetNotRequiredQuestionsAction => {
-    return {
-        type: GET_NOT_REQUIRED_QUESTIONS,
-        payload: data
-    };
-};
-
-export const asyncGetNotRequiredQuestions = (specialityId: number) => {
+export const asyncGetNotRequiredQuestions: newCaseTypes.asyncGetNotRequiredQuestionsSig = (
+    specialityId: number
+) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(newCaseActionStart());
@@ -183,7 +178,7 @@ export const asyncGetNotRequiredQuestions = (specialityId: number) => {
     };
 };
 
-export const getInitialQuestionValues = () => {
+export const getInitialQuestionValues: newCaseTypes.getInitialQuestionValuesSig = () => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(newCaseActionStart());
@@ -207,7 +202,7 @@ export const getInitialQuestionValues = () => {
     };
 };
 
-export const addNewCase = (
+export const addNewCase: newCaseTypes.addNewCaseSig = (
     specialityId: number,
     questionDescription: string,
     patientId: number

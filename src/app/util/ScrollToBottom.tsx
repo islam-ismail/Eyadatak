@@ -1,7 +1,9 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter, RouteComponentProps } from "react-router-dom";
 
-class ScrollToBottom extends React.Component {
+type CompProps = RouteComponentProps;
+
+class ScrollToBottom extends React.Component<CompProps> {
     componentDidUpdate() {
         const messages = document.getElementById("messages");
         if (messages) {

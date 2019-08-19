@@ -2,7 +2,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 
 // Generate the years since 1900
-export const generateYears = (startYear: number) => {
+export const generateYears = (startYear?: number) => {
     let years = [];
     const currentYear = new Date().getFullYear();
     startYear = startYear || 1900;
@@ -76,11 +76,11 @@ export const setLocale = (locale: string) => {
 
 // Get Locale from Local Storage
 export const getLocale = (): string => {
-    return <string>localStorage.getItem("eyadatak-locale");
+    return localStorage.getItem("eyadatak-locale") as string;
 };
 
 //Set the Authorization Header in the default header
-export const setAuthorizationHeader = (token: string) => {
+export const setAuthorizationHeader = (token: string | null) => {
     if (token) {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     } else {
@@ -91,7 +91,7 @@ export const setAuthorizationHeader = (token: string) => {
 //Check the expiration date of the token
 export const isTokenExpired = (token: string) => {
     if (token) {
-        const decodedToken = jwt_decode(token);
+        const decodedToken = jwt_decode<{ exp: number }>(token);
         if (decodedToken.exp < Date.now() / 1000) {
             return true;
         } else {
@@ -100,7 +100,7 @@ export const isTokenExpired = (token: string) => {
     }
 };
 
-export const adjustDateTimeZone = serverDate => {
+export const adjustDateTimeZone = (serverDate: string) => {
     // Adjusted it (- 2) as the timezone on server is Africa/Cairo
     const offset = -new Date().getTimezoneOffset() / 60 - 2;
     const d = new Date(serverDate);
@@ -131,7 +131,7 @@ export const adjustDateTimeZone = serverDate => {
     return dateString;
 };
 
-export const adjustDateZone = serverDate => {
+export const adjustDateZone = (serverDate: string) => {
     // Adjusted it (- 2) as the timezone on server is Africa/Cairo
     const offset = -new Date().getTimezoneOffset() / 60 - 2;
     const d = new Date(serverDate);

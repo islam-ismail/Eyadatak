@@ -1,10 +1,17 @@
-import React, { Component } from "react";
+import React, { Component, FormEvent } from "react";
 // import TableHead from '@material-ui/core/TableHead'
 // import TableRow from '@material-ui/core/TableRow'
 // import TableCell from '@material-ui/core/TableCell'
 // import TableSortLabel from '@material-ui/core/TableSortLabel'
 
-class MyCasesListTableHeader extends Component {
+export interface CompProps {
+    userType: string;
+    order?: string;
+    orderBy?: string;
+    prepareSort: (sortId: string) => void;
+}
+
+class MyCasesListTableHeader extends Component<CompProps> {
     headerData = [
         {
             id: this.props.userType !== "doctor" ? "doctor_name" : "patient_name",
@@ -17,7 +24,7 @@ class MyCasesListTableHeader extends Component {
         { id: "latestReply", label: "أحدث رد" }
     ];
 
-    sortRequest = sortId => event => {
+    sortRequest = (sortId: string) => (event: FormEvent) => {
         this.props.prepareSort(sortId);
         event.preventDefault();
     };

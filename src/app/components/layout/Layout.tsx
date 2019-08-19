@@ -1,8 +1,8 @@
-import React from "react";
+import React, { ReactNode, SFC } from "react";
 import Header from "./Header";
 import SideNav from "./SideNav";
 
-const Layout = props => {
+const Layout: SFC = props => {
     return (
         <>
             <Header />

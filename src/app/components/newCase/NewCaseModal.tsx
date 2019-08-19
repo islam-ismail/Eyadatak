@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, ComponentType } from "react";
 import Modal from "react-modal";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -6,8 +6,24 @@ import NewCaseForm from "./NewCaseForm";
 import Button from "../../UIComponents/Button";
 import Loader from "../layout/Loader";
 import * as actions from "../globalState/globalStateActions";
+import { AppState } from "../../reducers/rootReducer";
+import { GlobalStateActionSignatures } from "../globalState/globalStateTypes";
 
-class NewCaseModal extends Component {
+const mapState = (state: AppState) => ({
+    loading: state.global.loading
+});
+
+type CompStateProps = ReturnType<typeof mapState>;
+
+type CompActionProps = GlobalStateActionSignatures;
+interface CompOwnProps {
+    openNewCaseModal: boolean;
+    closeNewCaseModal: () => void;
+}
+
+type CompProps = CompOwnProps & CompStateProps & CompActionProps;
+
+class NewCaseModal extends Component<CompProps> {
     render() {
         const { openNewCaseModal, closeNewCaseModal, loading } = this.props;
 
@@ -51,11 +67,7 @@ class NewCaseModal extends Component {
     }
 }
 
-const mapState = state => ({
-    loading: state.global.loading
-});
-
-export default compose(
+export default compose<ComponentType<CompOwnProps>>(
     connect(
         mapState,
         actions

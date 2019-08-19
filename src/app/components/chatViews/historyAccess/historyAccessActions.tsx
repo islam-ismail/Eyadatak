@@ -1,55 +1,83 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import {
-    HISTORY_ACCESS_ACTION_START,
-    HISTORY_ACCESS_ACTION_FINISH,
-    HISTORY_ACCESS_ACTION_ERROR,
-    REQUEST_FULL_ACCESS,
-    REQUEST_SPECIALITY_ACCESS,
-    GET_REQUEST_STATUS_AND_ACCESS_LEVEL,
-    GET_HISTORY_CASES
-} from "./historyAccessConstants";
+import * as historyAccessConstants from "./historyAccessConstants";
 import { AppAction } from "../../../types/app-action";
-import { GetRequestStatusAction, GetApprovedHistoryCasesAction } from "./historyAccessTypes";
+import * as historyAccessTypes from "./historyAccessTypes";
 import { MedicalCase } from "../../../types/models/MedicalCase";
 import { PatientHistoryAccess } from "../../../types/models/PatientHistoryAccess";
 import { Dispatch } from "redux";
 import { User } from "../../../types/models/User";
+import { CaseChatElement } from "../chatCaseTypes";
 
-export const historyAccessActionStart = (): AppAction => {
+export const historyAccessActionStart = (): historyAccessTypes.HistoryAccessActionStartAction => {
     return {
-        type: HISTORY_ACCESS_ACTION_START,
+        type: historyAccessConstants.HISTORY_ACCESS_ACTION_START,
         excludeRefresh: true
     };
 };
 
-export const historyAccessActionFinish = (): AppAction => {
+export const historyAccessActionFinish = (): historyAccessTypes.HistoryAccessActionFinishAction => {
     return {
-        type: HISTORY_ACCESS_ACTION_FINISH,
+        type: historyAccessConstants.HISTORY_ACCESS_ACTION_FINISH,
         excludeRefresh: true
     };
 };
 
-export const historyAccessActionError = (): AppAction => {
+export const historyAccessActionError = (): historyAccessTypes.HistoryAccessActionErrorAction => {
     return {
-        type: HISTORY_ACCESS_ACTION_ERROR,
+        type: historyAccessConstants.HISTORY_ACCESS_ACTION_ERROR,
         excludeRefresh: true
     };
 };
 
-export const requestFullHistoryAccess = (): AppAction => {
+export const requestFullHistoryAccess = (): historyAccessTypes.RequestFullHistoryAccessAction => {
     return {
-        type: REQUEST_FULL_ACCESS
+        type: historyAccessConstants.REQUEST_FULL_ACCESS
     };
 };
 
-export const requestSpecialityHistoryAccess = (): AppAction => {
+export const requestSpecialityHistoryAccess = (): historyAccessTypes.RequestSpecialityHistoryAccessAction => {
     return {
-        type: REQUEST_SPECIALITY_ACCESS
+        type: historyAccessConstants.REQUEST_SPECIALITY_ACCESS
     };
 };
 
-export const requestHistoryAccess = (accessLevel: string, caseId: number) => {
+export const getApprovedHistoryCases = (
+    historyCases: MedicalCase[]
+): historyAccessTypes.GetApprovedHistoryCasesAction => {
+    return {
+        type: historyAccessConstants.GET_HISTORY_CASES,
+        payload: historyCases
+    };
+};
+
+export const getRequestStatus = (
+    allAccessRequests: CaseChatElement[],
+    requestStatus: string,
+    accessLevel: string,
+    historyAccessId: number,
+    waitingApproval: boolean,
+    waitingLevel: string
+    // allDeclined,
+    // specialityDeclined
+): historyAccessTypes.GetRequestStatusAction => {
+    return {
+        type: historyAccessConstants.GET_REQUEST_STATUS_AND_ACCESS_LEVEL,
+        payload: {
+            requestStatus: requestStatus,
+            accessLevel: accessLevel,
+            historyAccessId: historyAccessId,
+            waitingApproval: waitingApproval,
+            waitingLevel: waitingLevel,
+            allAccessRequests: allAccessRequests
+        }
+    };
+};
+
+export const requestHistoryAccess: historyAccessTypes.requestHistoryAccessSig = (
+    accessLevel: string,
+    caseId: number
+) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(historyAccessActionStart());
@@ -67,39 +95,11 @@ export const requestHistoryAccess = (accessLevel: string, caseId: number) => {
     };
 };
 
-export const getRequestStatus = (
-    allAccessRequests: PatientHistoryAccess[],
-    requestStatus: string,
+export const getHistoryCases: historyAccessTypes.getHistoryCasesSig = (
+    patientId: number,
     accessLevel: string,
-    historyAccessId: number,
-    waitingApproval: boolean,
-    waitingLevel: string
-    // allDeclined,
-    // specialityDeclined
-): GetRequestStatusAction => {
-    return {
-        type: GET_REQUEST_STATUS_AND_ACCESS_LEVEL,
-        payload: {
-            requestStatus: requestStatus,
-            accessLevel: accessLevel,
-            historyAccessId: historyAccessId,
-            waitingApproval: waitingApproval,
-            waitingLevel: waitingLevel,
-            allAccessRequests: allAccessRequests
-        }
-    };
-};
-
-export const getApprovedHistoryCases = (
-    historyCases: MedicalCase[]
-): GetApprovedHistoryCasesAction => {
-    return {
-        type: GET_HISTORY_CASES,
-        payload: historyCases
-    };
-};
-
-export const getHistoryCases = (patientId: number, accessLevel: string, specialityId: number) => {
+    specialityId: number
+) => {
     return async (dispatch: Dispatch<AppAction>) => {
         const response = await axios.get(`doctor/patient_history_access/patient/${patientId}`);
         const data = response.data;
@@ -124,7 +124,7 @@ export const getHistoryCases = (patientId: number, accessLevel: string, speciali
     };
 };
 
-export const getAccessRequestStatus = (
+export const getAccessRequestStatus: historyAccessTypes.getAccessRequestStatusSig = (
     caseId: number,
     user: User,
     patientId: number,
@@ -218,9 +218,19 @@ export const getAccessRequestStatus = (
                 }
             }
 
+            const allAccessRequestsElements: CaseChatElement[] = [];
+            allAccessRequests.forEach((accessRequest, index) => {
+                allAccessRequestsElements.push({
+                    id: index,
+                    type: "accessRequest",
+                    created_at: accessRequest.created_at,
+                    accessRequest: accessRequest
+                });
+            });
+
             dispatch(
                 getRequestStatus(
-                    allAccessRequests,
+                    allAccessRequestsElements,
                     requestStatus,
                     accessLevel,
                     historyAccessId,
@@ -243,7 +253,10 @@ export const getAccessRequestStatus = (
     };
 };
 
-export const approveHistoryAccess = (historyAccessId: number, accessLevel: string) => {
+export const approveHistoryAccess: historyAccessTypes.approveHistoryAccessSig = (
+    historyAccessId: number,
+    accessLevel: string
+) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(historyAccessActionStart());
@@ -261,7 +274,9 @@ export const approveHistoryAccess = (historyAccessId: number, accessLevel: strin
     };
 };
 
-export const declineHistoryAccess = (historyAccessId: number) => {
+export const declineHistoryAccess: historyAccessTypes.declineHistoryAccessSig = (
+    historyAccessId: number
+) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(historyAccessActionStart());

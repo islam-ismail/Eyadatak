@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Route, Switch, withRouter } from "react-router-dom";
+import React, { Component, ComponentType } from "react";
+import { Route, Switch, withRouter, RouteComponentProps } from "react-router-dom";
 import axios from "axios";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -18,6 +18,8 @@ import Error404 from "./components/errorsPages/Error404";
 import Auth from "./components/auth/Auth";
 import Loader from "./components/layout/Loader";
 import { AppState } from "./reducers/rootReducer";
+import { AuthActionsSignatures } from "./components/auth/authTypes";
+import { GlobalStateActionSignatures } from "./components/globalState/globalStateTypes";
 
 let baseURL: string;
 if (process.env.NODE_ENV !== "production") {
@@ -26,11 +28,20 @@ if (process.env.NODE_ENV !== "production") {
     baseURL = "http://eyadatak.com/backend/api";
 }
 
-interface classProps {
-    locale: string;
-    loading: boolean;
-}
-class App extends Component<classProps> {
+const mapState = (state: AppState) => ({
+    locale: state.global.locale,
+    loading: state.global.loading
+});
+
+type CompStateProps = ReturnType<typeof mapState>;
+
+type CompActionProps = AuthActionsSignatures & GlobalStateActionSignatures;
+
+interface CompOwnProps {}
+
+type CompProps = CompOwnProps & CompStateProps & CompActionProps;
+
+class App extends Component<CompProps> {
     componentDidMount() {
         let locale: string;
         locale = getLocale();
@@ -49,7 +60,7 @@ class App extends Component<classProps> {
         }
     }
 
-    componentDidUpdate(prevProps: classProps) {
+    componentDidUpdate(prevProps: CompProps) {
         if (prevProps.locale !== this.props.locale) {
             setLocale(this.props.locale);
             const locale = getLocale();
@@ -101,20 +112,15 @@ class App extends Component<classProps> {
 
 Modal.setAppElement("#root");
 
-const stateProps = (state: AppState) => ({
-    locale: state.global.locale,
-    loading: state.global.loading
-});
-
 const dispatchProps = {
     ...authActions,
     ...globalStateActions
 };
 
-export default compose(
+export default compose<ComponentType>(
     withRouter,
     connect(
-        stateProps,
+        mapState,
         dispatchProps
     )
 )(App);

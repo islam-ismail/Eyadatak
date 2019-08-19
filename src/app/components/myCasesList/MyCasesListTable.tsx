@@ -1,18 +1,41 @@
-import React, { Component } from "react";
+import React, { Component, ComponentType, ChangeEvent, MouseEvent } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
-// import Table from '@material-ui/core/Table'
-// import TableBody from '@material-ui/core/TableBody'
-// import TableCell from '@material-ui/core/TableCell'
-// import TablePagination from '@material-ui/core/TablePagination'
-// import TableRow from '@material-ui/core/TableRow'
 import * as actions from "./myCasesListActions";
 import MyCasesListTableHeader from "./MyCasesListTableHeader";
 import { adjustDateZone } from "../../util/helpersFunc";
 import magnifyingGlass from "../../assets/images/magnifying-glass.svg";
+import { MedicalCase } from "../../types/models/MedicalCase";
+import { AppState } from "../../reducers/rootReducer";
+import { SortAndFilterOptions } from "./myCasesListReducer";
+import { MyCasesListActionsSignatures } from "./myCasesListTypes";
 
-class MyCasesListTable extends Component {
-    state = {
+const mapState = (state: AppState) => ({
+    locale: state.global.locale,
+    filteredCases: state.myCasesList.filteredCases,
+    sortAndFilter: state.myCasesList.sortAndFilter
+});
+
+type CompStateProps = ReturnType<typeof mapState>;
+
+type CompActionProps = MyCasesListActionsSignatures;
+
+interface CompOwnProps {
+    userType: string;
+    caseClicked: (clickedCase: MedicalCase) => void;
+}
+
+type CompProps = CompOwnProps & CompStateProps & CompActionProps;
+
+interface CompState {
+    filteredCases: MedicalCase[];
+    sortAndFilter: SortAndFilterOptions;
+    page: number;
+    rowsPerPage: number;
+}
+
+class MyCasesListTable extends Component<CompProps, CompState> {
+    state: CompState = {
         filteredCases: [],
         sortAndFilter: {
             order: "desc",
@@ -30,7 +53,7 @@ class MyCasesListTable extends Component {
         }));
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: CompProps) {
         if (prevProps.filteredCases !== this.props.filteredCases) {
             this.setState(() => ({
                 filteredCases: this.props.filteredCases
@@ -46,18 +69,18 @@ class MyCasesListTable extends Component {
         }
     }
 
-    prepareSort = sortId => {
+    prepareSort = (orderBy: string) => {
         let order = "desc";
         if (
-            sortId === this.props.sortAndFilter.orderBy &&
+            orderBy === this.props.sortAndFilter.orderBy &&
             this.props.sortAndFilter.order === "desc"
         ) {
             order = "asc";
         }
-        this.props.sortCasesListRequest(sortId, order, this.state.filteredCases);
+        this.props.sortCasesListRequest(orderBy, order, this.state.filteredCases);
     };
 
-    handleChangePage = event => {
+    handleChangePage = (event: string) => {
         if (event === "prev") {
             if (this.state.page !== 0) this.setState(() => ({ page: this.state.page - 1 }));
         } else {
@@ -66,17 +89,17 @@ class MyCasesListTable extends Component {
         }
     };
 
-    handleChangeRowsPerPage = event => {
-        this.setState(() => ({ rowsPerPage: event.target.value }));
+    handleChangeRowsPerPage = (event: ChangeEvent<HTMLSelectElement>) => {
+        this.setState(() => ({ rowsPerPage: parseInt(event.target.value, 10) }));
         event.persist();
     };
 
-    handleRowClick = (event, clickedCase) => {
+    handleRowClick = (event: MouseEvent<HTMLAnchorElement>, clickedCase: MedicalCase) => {
         event.preventDefault();
         this.props.caseClicked(clickedCase);
     };
 
-    handleFilterChange = event => {
+    handleFilterChange = (event: ChangeEvent<HTMLSelectElement>) => {
         this.prepareSort(event.target.value);
         event.persist();
     };
@@ -252,13 +275,7 @@ class MyCasesListTable extends Component {
     }
 }
 
-const mapState = state => ({
-    locale: state.global.locale,
-    filteredCases: state.myCasesList.filteredCases,
-    sortAndFilter: state.myCasesList.sortAndFilter
-});
-
-export default compose(
+export default compose<ComponentType<CompOwnProps>>(
     connect(
         mapState,
         actions

@@ -1,11 +1,24 @@
-import React from "react";
+import React, { ComponentType } from "react";
 import { connect } from "react-redux";
+import { withRouter, RouteComponentProps } from "react-router-dom";
 import { compose } from "redux";
-import { withRouter } from "react-router-dom";
-import * as actions from "./authActions";
 import { getJWT, isTokenExpired } from "../../util/helpersFunc";
+import * as actions from "./authActions";
+import { AppState } from "../../reducers/rootReducer";
+import { AuthActionsSignatures } from "./authTypes";
 
-class Auth extends React.Component {
+const mapState = (state: AppState) => ({
+    authenticated: state.auth.authenticated,
+    loading: state.global.loading
+});
+
+type CompStateProps = ReturnType<typeof mapState>;
+
+type CompActionProps = AuthActionsSignatures;
+
+type CompProps = RouteComponentProps & CompStateProps & CompActionProps;
+
+class Auth extends React.Component<CompProps> {
     componentDidMount() {
         const token = getJWT();
 
@@ -15,7 +28,7 @@ class Auth extends React.Component {
         }
     }
 
-    componentDidUpdate(prevProp) {
+    componentDidUpdate(prevProp: CompProps) {
         if (
             prevProp.authenticated !== this.props.authenticated &&
             this.props.authenticated === false
@@ -33,12 +46,7 @@ class Auth extends React.Component {
     }
 }
 
-const mapState = state => ({
-    authenticated: state.auth.authenticated,
-    loading: state.global.loading
-});
-
-export default compose(
+export default compose<ComponentType>(
     withRouter,
     connect(
         mapState,

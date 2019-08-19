@@ -1,8 +1,15 @@
-import React, { Component } from "react";
+import React, {
+    Component,
+    ComponentType,
+    MouseEvent,
+    EventHandler,
+    ChangeEventHandler,
+    MouseEventHandler
+} from "react";
 import Modal from "react-modal";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { reduxForm, reset, Field } from "redux-form";
+import { reduxForm, reset, Field, InjectedFormProps } from "redux-form";
 import Button from "../../UIComponents/Button";
 import TextInputRegular from "../../form/TextInputRegular";
 import RadioGroup from "../../form/RadioGroup";
@@ -11,9 +18,39 @@ import TextAreaRegular from "../../form/TextAreaRegular";
 import DropzoneInput from "../../form/DropzoneInput";
 import Loader from "../layout/Loader";
 import * as actions from "./questionTemplateActions";
+import { AppState } from "../../reducers/rootReducer";
+import { QuestionTemplateActionsSignatures } from "./questionTemplateTypes";
 
-class QuestionTemplateModal extends Component {
-    state = {
+const mapState = (state: AppState) => ({
+    loading: state.global.loading,
+    savedQuestions: state.questionTemplate.savedQuestions,
+    templateToSend: state.questionTemplate.templateToSend
+});
+
+type CompStateProps = ReturnType<typeof mapState>;
+
+type CompActionProps = QuestionTemplateActionsSignatures;
+
+interface CompOwnProps {
+    openQuestionTemplateModal: boolean;
+    closeQuestionTemplateModal: MouseEventHandler;
+    caseId: number;
+}
+
+interface FormData {}
+
+type CompProps = InjectedFormProps<FormData> & CompOwnProps & CompStateProps & CompActionProps;
+
+interface CompState extends Omit<CompStateProps, "loading"> {
+    answerType: string;
+    answerOptions: string[];
+    newQuestionText: string;
+    newAnswerOption: string;
+    anythingSelected: boolean;
+}
+
+class QuestionTemplateModal extends Component<CompProps, CompState> {
+    state: CompState = {
         savedQuestions: [],
         templateToSend: [],
         answerType: "",
@@ -30,7 +67,7 @@ class QuestionTemplateModal extends Component {
         }));
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: CompProps) {
         if (prevProps.savedQuestions !== this.props.savedQuestions) {
             this.setState(() => ({
                 savedQuestions: this.props.savedQuestions
@@ -43,22 +80,22 @@ class QuestionTemplateModal extends Component {
         }
     }
 
-    handleRadioChange = (event, value) => {
+    handleRadioChange: ChangeEventHandler<HTMLInputElement> = e => {
         this.setState(() => ({
-            answerType: value,
+            answerType: e.target.value,
             answerOptions: [],
             newAnswerOption: "",
             anythingSelected: true
         }));
     };
 
-    handleQuestionTextChange = e => {
+    handleQuestionTextChange: ChangeEventHandler<HTMLInputElement> = e => {
         this.setState(() => ({
             newQuestionText: e.target.value
         }));
     };
 
-    handleAnswerOptionsTextChange = e => {
+    handleAnswerOptionsTextChange: ChangeEventHandler<HTMLInputElement> = e => {
         this.setState(() => ({
             newAnswerOption: e.target.value
         }));
@@ -102,7 +139,7 @@ class QuestionTemplateModal extends Component {
             answerOptions: [],
             anythingSelected: false
         }));
-        this.props.dispatch(reset("createNewQuestionForm"));
+        this.props.reset();
     };
 
     render() {
@@ -362,13 +399,7 @@ class QuestionTemplateModal extends Component {
     }
 }
 
-const mapState = state => ({
-    loading: state.global.loading,
-    savedQuestions: state.questionTemplate.savedQuestions,
-    templateToSend: state.questionTemplate.templateToSend
-});
-
-export default compose(
+export default compose<ComponentType<CompOwnProps>>(
     connect(
         mapState,
         actions

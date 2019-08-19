@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, ComponentType, EventHandler, MouseEvent } from "react";
 // import Modal from 'react-modal'
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -6,13 +6,39 @@ import { connect } from "react-redux";
 import { HistoryChatMessage } from "./HistoryChatMessage";
 import * as actions from "./historyCaseActions";
 import { adjustDateZone } from "../../../util/helpersFunc";
+import { AppState } from "../../../reducers/rootReducer";
+import { HistoryCaseSignatures } from "./historyCaseTypes";
+import { CaseChatElement } from "../chatCaseTypes";
+import { MedicalCase } from "../../../types/models/MedicalCase";
 
-class HistoryCaseModal extends Component {
-    state = {
+const mapState = (state: AppState) => ({
+    loading: state.global.loading,
+    historyCaseChatData: state.historyCase.historyCaseChatData
+});
+
+type CompStateProps = ReturnType<typeof mapState>;
+
+type CompActionProps = HistoryCaseSignatures;
+
+interface CompOwnProps {
+    openHistoryCaseModal: boolean;
+    closeHistoryCaseModal: EventHandler<MouseEvent>;
+    historyCase: MedicalCase;
+}
+
+type CompProps = CompOwnProps & CompStateProps & CompActionProps;
+
+interface CompState {
+    historyCase?: MedicalCase;
+    historyCaseChatData: CaseChatElement[];
+}
+
+class HistoryCaseModal extends Component<CompProps, CompState> {
+    state: CompState = {
         historyCaseChatData: []
     };
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: CompProps) {
         if (prevProps.historyCase !== this.props.historyCase) {
             this.setState(() => ({
                 historyCase: this.props.historyCase
@@ -70,7 +96,10 @@ class HistoryCaseModal extends Component {
                                                 التخصص<span>{historyCase.speciality.title_ar}</span>
                                             </p>
                                             <p>
-                                                الطبيب<span>{historyCase.doctor.name}</span>
+                                                الطبيب
+                                                <span>
+                                                    {historyCase.doctor && historyCase.doctor.name}
+                                                </span>
                                             </p>
                                             <p>
                                                 تاريخ إغلاق السؤال
@@ -113,12 +142,7 @@ class HistoryCaseModal extends Component {
     }
 }
 
-const mapState = state => ({
-    loading: state.global.loading,
-    historyCaseChatData: state.historyCase.historyCaseChatData
-});
-
-export default compose(
+export default compose<ComponentType<CompOwnProps>>(
     connect(
         mapState,
         actions

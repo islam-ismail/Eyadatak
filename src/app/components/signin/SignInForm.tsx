@@ -1,25 +1,40 @@
-import React, { Component } from "react";
+import React, { Component, ComponentType } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { reduxForm, Field } from "redux-form";
-import { withRouter } from "react-router-dom";
+import { reduxForm, Field, InjectedFormProps } from "redux-form";
 import TextInput from "../../form/TextInput";
 import * as actions from "../auth/authActions";
 import { composeValidators, combineValidators, isRequired, matchesPattern } from "revalidate";
 import { IS_EMAIL } from "../../util/constants";
+import { AppState } from "../../reducers/rootReducer";
+import { SignInFormData, AuthActionsSignatures } from "../auth/authTypes";
 
-class SignInForm extends Component {
-    componentDidUpdate() {
-        const { authenticated, history } = this.props;
-        if (authenticated) {
-            history.push("/dashboard");
-        }
-    }
+const mapState = (state: AppState) => ({
+    signedInUser: state.auth.signedInUser,
+    authenticated: state.auth.authenticated
+});
+
+type CompStateProps = ReturnType<typeof mapState>;
+
+interface CompOwnProps {
+    switchScreens: (screenName: string) => void;
+}
+
+type CompActionProps = AuthActionsSignatures;
+
+type FormData = SignInFormData;
+
+type CompProps = InjectedFormProps<FormData> & CompStateProps & CompActionProps & CompOwnProps;
+
+class SignInForm extends Component<CompProps> {
+    handleFormSubmit = (values: FormData) => {
+        this.props.asyncSignIn(values);
+    };
 
     render() {
-        const { handleSubmit, asyncSignIn, switchScreens } = this.props;
+        const { handleSubmit, switchScreens } = this.props;
         return (
-            <form onSubmit={handleSubmit(asyncSignIn)}>
+            <form onSubmit={handleSubmit(this.handleFormSubmit)}>
                 <div className="form-group">
                     <Field
                         name="email"
@@ -63,13 +78,7 @@ const validate = combineValidators({
     password: isRequired({ message: "برجاء إدخال كلمة المرور" })
 });
 
-const mapState = state => ({
-    signedInUser: state.auth.signedInUser,
-    authenticated: state.auth.authenticated
-});
-
-export default compose(
-    withRouter,
+export default compose<ComponentType<CompOwnProps>>(
     connect(
         mapState,
         actions

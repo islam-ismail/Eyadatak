@@ -1,49 +1,53 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import {
-    TRANSFER_CASE_ACTION_START,
-    TRANSFER_CASE_ACTION_FINISH,
-    TRANSFER_CASE_ACTION_ERROR,
-    GET_SPECIALITY_DOCTORS,
-    TRANSFER_REQUEST_SUCCESSFUL
-} from "./transferCaseConstants";
-import { getPrimarySpecialities, getSecondarySpecialities } from "../newCase/newCaseActions";
-import { getChatCaseReplies } from "../chatViews/chatCaseActions";
-import { AppAction } from "../../types/app-action";
-import { GetDoctorsListAction, DoctorsWithSpecialities } from "./transferCaseTypes";
-import { Doctor } from "../../types/models/Doctor";
 import { Dispatch } from "redux";
+import { ThunkDispatch } from "redux-thunk";
+import { AppAction } from "../../types/app-action";
+import { Doctor } from "../../types/models/Doctor";
 import { MedicalCase } from "../../types/models/MedicalCase";
+import { getChatCaseReplies } from "../chatViews/chatCaseActions";
+import { getPrimarySpecialities, getSecondarySpecialities } from "../newCase/newCaseActions";
+import * as transferCaseConstants from "./transferCaseConstants";
+import * as transferCaseTypes from "./transferCaseTypes";
 
-export const transferCaseActionStart = (): AppAction => {
+export const transferCaseActionStart = (): transferCaseTypes.TransferCaseActionStartAction => {
     return {
-        type: TRANSFER_CASE_ACTION_START,
+        type: transferCaseConstants.TRANSFER_CASE_ACTION_START,
         excludeRefresh: true
     };
 };
 
-export const transferCaseActionFinish = (): AppAction => {
+export const transferCaseActionFinish = (): transferCaseTypes.TransferCaseActionFinishAction => {
     return {
-        type: TRANSFER_CASE_ACTION_FINISH,
+        type: transferCaseConstants.TRANSFER_CASE_ACTION_FINISH,
         excludeRefresh: true
     };
 };
 
-export const transferCaseActionError = (): AppAction => {
+export const transferCaseActionError = (): transferCaseTypes.TransferCaseActionErrorAction => {
     return {
-        type: TRANSFER_CASE_ACTION_ERROR,
+        type: transferCaseConstants.TRANSFER_CASE_ACTION_ERROR,
         excludeRefresh: true
     };
 };
 
-export const getDoctorsList = (doctorsList: DoctorsWithSpecialities[]): GetDoctorsListAction => {
+export const getDoctorsList = (
+    doctorsList: transferCaseTypes.DoctorsWithSpecialities[]
+): transferCaseTypes.GetDoctorsListAction => {
     return {
-        type: GET_SPECIALITY_DOCTORS,
+        type: transferCaseConstants.GET_SPECIALITY_DOCTORS,
         payload: doctorsList
     };
 };
 
-export const getTopLevelSpecialities = () => {
+export const transferRequestSuccessful = (): transferCaseTypes.TransferRequestSuccessfulAction => {
+    return {
+        type: transferCaseConstants.TRANSFER_REQUEST_SUCCESSFUL,
+        excludeRefresh: true
+    };
+};
+
+export const getTopLevelSpecialities: transferCaseTypes.getTopLevelSpecialitiesSig = () => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(transferCaseActionStart());
@@ -61,7 +65,9 @@ export const getTopLevelSpecialities = () => {
     };
 };
 
-export const getSecondLevelSpecialities = (parentId: number) => {
+export const getSecondLevelSpecialities: transferCaseTypes.getSecondLevelSpecialitiesSig = (
+    parentId: number
+) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(transferCaseActionStart());
@@ -79,7 +85,9 @@ export const getSecondLevelSpecialities = (parentId: number) => {
     };
 };
 
-export const getSpecialityDoctorsList = (selectedSpecialityID: number) => {
+export const getSpecialityDoctorsList: transferCaseTypes.getSpecialityDoctorsListSig = (
+    selectedSpecialityID: number
+) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(transferCaseActionStart());
@@ -88,7 +96,7 @@ export const getSpecialityDoctorsList = (selectedSpecialityID: number) => {
             const data = response.data;
             const doctors: Doctor[] = data.data.doctors;
 
-            let doctorsWithSpecialities: DoctorsWithSpecialities[] = [];
+            let doctorsWithSpecialities: transferCaseTypes.DoctorsWithSpecialities[] = [];
             await doctors.map(doctor =>
                 doctor.specialities.map(doctorSpeciality =>
                     doctorsWithSpecialities.push({
@@ -114,19 +122,12 @@ export const getSpecialityDoctorsList = (selectedSpecialityID: number) => {
     };
 };
 
-export const transferRequestSuccessful = (): AppAction => {
-    return {
-        type: TRANSFER_REQUEST_SUCCESSFUL,
-        excludeRefresh: true
-    };
-};
-
-export const transferCaseToDoctor = (
+export const transferCaseToDoctor: transferCaseTypes.transferCaseToDoctorSig = (
     transferCase: MedicalCase,
     toDoctorId: number,
     toSpecialityId: number
 ) => {
-    return async (dispatch: Dispatch<AppAction>) => {
+    return async (dispatch: ThunkDispatch<{}, {}, AppAction>) => {
         try {
             dispatch(transferCaseActionStart());
 
@@ -146,8 +147,11 @@ export const transferCaseToDoctor = (
     };
 };
 
-export const transferCaseToSpeciality = (transferCase: MedicalCase, toSpecialityId: number) => {
-    return async (dispatch: Dispatch<AppAction>) => {
+export const transferCaseToSpeciality: transferCaseTypes.transferCaseToSpecialitySig = (
+    transferCase: MedicalCase,
+    toSpecialityId: number
+) => {
+    return async (dispatch: ThunkDispatch<{}, {}, AppAction>) => {
         try {
             dispatch(transferCaseActionStart());
 
@@ -167,8 +171,11 @@ export const transferCaseToSpeciality = (transferCase: MedicalCase, toSpeciality
     };
 };
 
-export const deleteTransfer = (transferCase: MedicalCase, transferId: number) => {
-    return async (dispatch: Dispatch<AppAction>) => {
+export const deleteTransfer: transferCaseTypes.deleteTransferSig = (
+    transferCase: MedicalCase,
+    transferId: number
+) => {
+    return async (dispatch: ThunkDispatch<{}, {}, AppAction>) => {
         try {
             dispatch(transferCaseActionStart());
 

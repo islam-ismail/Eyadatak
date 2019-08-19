@@ -5,8 +5,10 @@ import {
     ASYNC_ACTION_ERROR,
     SWITCH_TO_ARABIC,
     SWITCH_TO_ENGLISH,
-    SET_LOCALE
+    SET_LOCALE,
+    GlobalStateActionTypes
 } from "./globalStateConstants";
+import { GlobalStateActions, setLocaleAction } from "./globalStateTypes";
 
 export interface GlobalState {
     locale: string;
@@ -18,53 +20,56 @@ const initialState: GlobalState = {
     loading: false
 };
 
-export const asynActionStarted = (state: GlobalState, payload: any) => {
+export const asynActionStarted = (state: GlobalState) => {
     return {
         ...state,
         loading: true
     };
 };
 
-export const asynActionFinished = (state: GlobalState, payload: any) => {
+export const asynActionFinished = (state: GlobalState) => {
     return {
         ...state,
         loading: false
     };
 };
 
-export const asynActionError = (state: GlobalState, payload: any) => {
+export const asynActionError = (state: GlobalState) => {
     return {
         ...state,
         loading: false
     };
 };
 
-export const switchToArabic = (state: GlobalState, payload: any) => {
+export const switchToArabic = (state: GlobalState) => {
     return {
         ...state,
         locale: "ar"
     };
 };
 
-export const switchToEnglish = (state: GlobalState, payload: any) => {
+export const switchToEnglish = (state: GlobalState) => {
     return {
         ...state,
         locale: "en"
     };
 };
 
-export const setLocale = (state: GlobalState, payload: string) => {
+export const setLocale = (state: GlobalState, action: setLocaleAction) => {
     return {
         ...state,
-        locale: payload
+        locale: action.payload
     };
 };
 
-export default createReducer(initialState, {
-    [ASYNC_ACTION_START]: asynActionStarted,
-    [ASYNC_ACTION_FINISH]: asynActionFinished,
-    [ASYNC_ACTION_ERROR]: asynActionError,
-    [SWITCH_TO_ARABIC]: switchToArabic,
-    [SWITCH_TO_ENGLISH]: switchToEnglish,
-    [SET_LOCALE]: setLocale
-});
+export default createReducer<GlobalState, GlobalStateActionTypes, GlobalStateActions>(
+    initialState,
+    {
+        [ASYNC_ACTION_START]: asynActionStarted,
+        [ASYNC_ACTION_FINISH]: asynActionFinished,
+        [ASYNC_ACTION_ERROR]: asynActionError,
+        [SWITCH_TO_ARABIC]: switchToArabic,
+        [SWITCH_TO_ENGLISH]: switchToEnglish,
+        [SET_LOCALE]: setLocale
+    }
+);

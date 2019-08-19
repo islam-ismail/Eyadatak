@@ -1,6 +1,17 @@
-import React from "react";
+import React, { SFC, ReactNode, EventHandler, MouseEvent } from "react";
+interface FieldConfig {
+    type?: "button" | "submit" | "reset";
+    theme?: string;
+    size?: string;
+    disabled?: boolean;
+    icon?: string;
+    title?: string;
+    extraclasses?: string;
+    children: string | ReactNode | Element;
+    onClick?: EventHandler<MouseEvent>;
+}
 
-const Button = props => {
+const Button: SFC<FieldConfig> = props => {
     const {
         type = "button",
         theme = "default",

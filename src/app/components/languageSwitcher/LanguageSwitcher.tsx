@@ -1,10 +1,16 @@
-import React, { Component } from "react";
+import React, { Component, ComponentType, MouseEventHandler } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import * as actions from "../globalState/globalStateActions";
 import Button from "../../UIComponents/Button";
+import { AppState } from "../../reducers/rootReducer";
+interface CompProps {
+    locale: string;
+    switchToArabic: MouseEventHandler;
+    switchToEnglish: MouseEventHandler;
+}
 
-class LanguageSwitcher extends Component {
+class LanguageSwitcher extends Component<CompProps> {
     render() {
         const { locale, switchToArabic, switchToEnglish } = this.props;
         const content =
@@ -21,11 +27,11 @@ class LanguageSwitcher extends Component {
     }
 }
 
-const mapState = state => ({
+const mapState = (state: AppState) => ({
     locale: state.global.locale
 });
 
-export default compose(
+export default compose<ComponentType<CompProps>>(
     connect(
         mapState,
         actions

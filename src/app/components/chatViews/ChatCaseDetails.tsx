@@ -1,7 +1,11 @@
 import React from "react";
 import { adjustDateZone } from "../../util/helpersFunc";
+import { MedicalCase } from "../../types/models/MedicalCase";
 
-export const ChatCaseDetails = props => {
+export const ChatCaseDetails = (props: {
+    chatCase: MedicalCase;
+    uploadedFiles?: { name: string; url: string }[];
+}) => {
     const { chatCase, uploadedFiles } = props;
     let caseStatus;
     switch (chatCase.status) {

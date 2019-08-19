@@ -1,6 +1,7 @@
 import React from "react";
+import { Doctor } from "../../types/models/Doctor";
 
-export const DoctorDetailsPanel = props => {
+export const DoctorDetailsPanel = (props: { doctor: Doctor; detailsActive: string }) => {
     const { doctor, detailsActive } = props;
     let age = 0;
     if (doctor && doctor.name) {

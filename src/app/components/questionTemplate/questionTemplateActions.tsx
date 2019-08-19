@@ -1,63 +1,59 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import {
-    QUESTION_TEMPLATE_ACTION_START,
-    QUESTION_TEMPLATE_ACTION_FINISH,
-    QUESTION_TEMPLATE_ACTION_ERROR,
-    GET_SAVED_QUESTIONS,
-    ADD_QUESTION_TO_TEMPLATE,
-    SEND_CASE_QUESTIONS
-} from "./questionTemplateConstants";
+import * as questionTemplateConstants from "./questionTemplateConstants";
 import { AppAction } from "../../types/app-action";
-import { GetSavedQuestionsAction, AddQuestionToTemplateAction } from "./questionTemplateTypes";
+import * as questionTemplateTypes from "./questionTemplateTypes";
 import { QuestionTemplate } from "../../types/models/QuestionTemplate";
 import { Dispatch } from "redux";
+import { ThunkDispatch } from "redux-thunk";
 
-export const questionTemplateActionStart = (): AppAction => {
+export const questionTemplateActionStart = (): questionTemplateTypes.QuestionTemplateActionStartedAction => {
     return {
-        type: QUESTION_TEMPLATE_ACTION_START,
+        type: questionTemplateConstants.QUESTION_TEMPLATE_ACTION_START,
         excludeRefresh: true
     };
 };
 
-export const questionTemplateActionFinish = (): AppAction => {
+export const questionTemplateActionFinish = (): questionTemplateTypes.QuestionTemplateActionFinishedAction => {
     return {
-        type: QUESTION_TEMPLATE_ACTION_FINISH,
+        type: questionTemplateConstants.QUESTION_TEMPLATE_ACTION_FINISH,
         excludeRefresh: true
     };
 };
 
-export const questionTemplateActionError = (): AppAction => {
+export const questionTemplateActionError = (): questionTemplateTypes.QuestionTemplateActionErrorAction => {
     return {
-        type: QUESTION_TEMPLATE_ACTION_ERROR,
+        type: questionTemplateConstants.QUESTION_TEMPLATE_ACTION_ERROR,
         excludeRefresh: true
     };
 };
 
-export const getSavedQuestions = (savedQuestions: QuestionTemplate[]): GetSavedQuestionsAction => {
+export const getSavedQuestions = (
+    savedQuestions: QuestionTemplate[]
+): questionTemplateTypes.GetSavedQuestionsAction => {
     return {
-        type: GET_SAVED_QUESTIONS,
+        type: questionTemplateConstants.GET_SAVED_QUESTIONS,
         payload: savedQuestions
     };
 };
 
 export const addQuestionToTemplate = (
     questionToAdd: QuestionTemplate
-): AddQuestionToTemplateAction => {
+): questionTemplateTypes.AddQuestionToTemplateAction => {
     return {
-        type: ADD_QUESTION_TO_TEMPLATE,
+        type: questionTemplateConstants.ADD_QUESTION_TO_TEMPLATE,
         payload: questionToAdd
     };
 };
 
-export const sendCaseQuestions = (): AppAction => {
+export const sendCaseQuestions = (): questionTemplateTypes.SendCaseQuestionsAction => {
     return {
-        type: SEND_CASE_QUESTIONS,
+        type: questionTemplateConstants.SEND_CASE_QUESTIONS,
         excludeRefresh: true
     };
 };
 
-export const getSavedQuestionsList = () => {
+export const getSavedQuestionsList: questionTemplateTypes.getSavedQuestionsListSig = () => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(questionTemplateActionStart());
@@ -76,13 +72,13 @@ export const getSavedQuestionsList = () => {
     };
 };
 
-export const saveNewQuestion = (
+export const saveNewQuestion: questionTemplateTypes.saveNewQuestionSig = (
     questionText: string,
     questionType: string,
     answerOptions: string[],
     addNewQuestionToTemplate: boolean
 ) => {
-    return async (dispatch: Dispatch<AppAction>) => {
+    return async (dispatch: ThunkDispatch<{}, {}, AppAction>) => {
         try {
             dispatch(questionTemplateActionStart());
 
@@ -109,7 +105,10 @@ export const saveNewQuestion = (
     };
 };
 
-export const sendCaseTemplateQuestions = (questionIds: number[], caseId: number) => {
+export const sendCaseTemplateQuestions: questionTemplateTypes.sendCaseTemplateQuestionsSig = (
+    questionIds: number[],
+    caseId: number
+) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(questionTemplateActionStart());

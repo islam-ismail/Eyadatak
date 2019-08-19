@@ -1,17 +1,8 @@
 import { createReducer } from "../../reducers/reducerUtil";
-import {
-    NEW_CASE_ACTION_START,
-    NEW_CASE_ACTION_FINISH,
-    NEW_CASE_ACTION_ERROR,
-    GET_PRIMARY_SPECIALITIES,
-    GET_SECONDARY_SPECIALITIES,
-    GET_INITIAL_REQUIRED_QUESTIONS,
-    GET_REQUIRED_QUESTIONS,
-    GET_INITIAL_NOT_REQUIRED_QUESTIONS,
-    GET_NOT_REQUIRED_QUESTIONS
-} from "./newCaseConstants";
+import * as newCaseConstants from "./newCaseConstants";
 import { Speciality } from "../../types/models/Speciality";
 import { QuestionTemplate } from "../../types/models/QuestionTemplate";
+import * as newCaseTypes from "./newCaseTypes";
 
 export interface NewCaseState {
     primarySpecialities: Speciality[];
@@ -33,80 +24,99 @@ const initialState: NewCaseState = {
     loading: false
 };
 
-export const newCaseActionStarted = (state: NewCaseState, payload: any) => {
+export const newCaseActionStarted = (state: NewCaseState) => {
     return {
         ...state,
         loading: true
     };
 };
 
-export const newCaseActionFinished = (state: NewCaseState, payload: any) => {
+export const newCaseActionFinished = (state: NewCaseState) => {
     return {
         ...state,
         loading: false
     };
 };
 
-export const newCaseActionError = (state: NewCaseState, payload: any) => {
+export const newCaseActionError = (state: NewCaseState) => {
     return {
         ...state,
         loading: false
     };
 };
 
-export const getPrimarySpecialities = (state: NewCaseState, payload: Speciality[]) => {
+export const getPrimarySpecialities = (
+    state: NewCaseState,
+    action: newCaseTypes.GetPrimarySpecialitiesAction
+) => {
     return {
         ...state,
-        primarySpecialities: payload
+        primarySpecialities: action.payload
     };
 };
 
-export const getSecondarySpecialities = (state: NewCaseState, payload: Speciality[]) => {
+export const getSecondarySpecialities = (
+    state: NewCaseState,
+    action: newCaseTypes.GetSecondarySpecialitiesAction
+) => {
     return {
         ...state,
-        secondarySpecialities: payload
+        secondarySpecialities: action.payload
     };
 };
 
-export const getInitialRequiredQuestions = (state: NewCaseState, payload: QuestionTemplate[]) => {
+export const getInitialRequiredQuestions = (
+    state: NewCaseState,
+    action: newCaseTypes.GetInitialRequiredQuestionsAction
+) => {
     return {
         ...state,
-        initialRequiredQuestions: payload
+        initialRequiredQuestions: action.payload
     };
 };
 
-export const getRequiredQuestions = (state: NewCaseState, payload: QuestionTemplate[]) => {
+export const getRequiredQuestions = (
+    state: NewCaseState,
+    action: newCaseTypes.GetRequiredQuestionsAction
+) => {
     return {
         ...state,
-        requiredQuestions: payload
+        requiredQuestions: action.payload
     };
 };
 
 export const getInitialNotRequiredQuestions = (
     state: NewCaseState,
-    payload: QuestionTemplate[]
+    action: newCaseTypes.GetInitialNotRequiredQuestionsAction
 ) => {
     return {
         ...state,
-        initialNotRequiredQuestions: payload
+        initialNotRequiredQuestions: action.payload
     };
 };
 
-export const getNotRequiredQuestions = (state: NewCaseState, payload: QuestionTemplate[]) => {
+export const getNotRequiredQuestions = (
+    state: NewCaseState,
+    action: newCaseTypes.GetNotRequiredQuestionsAction
+) => {
     return {
         ...state,
-        notRequiredQuestions: payload
+        notRequiredQuestions: action.payload
     };
 };
 
-export default createReducer(initialState, {
-    [NEW_CASE_ACTION_START]: newCaseActionStarted,
-    [NEW_CASE_ACTION_FINISH]: newCaseActionFinished,
-    [NEW_CASE_ACTION_ERROR]: newCaseActionError,
-    [GET_PRIMARY_SPECIALITIES]: getPrimarySpecialities,
-    [GET_SECONDARY_SPECIALITIES]: getSecondarySpecialities,
-    [GET_INITIAL_REQUIRED_QUESTIONS]: getInitialRequiredQuestions,
-    [GET_REQUIRED_QUESTIONS]: getRequiredQuestions,
-    [GET_INITIAL_NOT_REQUIRED_QUESTIONS]: getInitialNotRequiredQuestions,
-    [GET_NOT_REQUIRED_QUESTIONS]: getNotRequiredQuestions
+export default createReducer<
+    NewCaseState,
+    newCaseConstants.NewCaseActionTypes,
+    newCaseTypes.NewCaseActions
+>(initialState, {
+    [newCaseConstants.NEW_CASE_ACTION_START]: newCaseActionStarted,
+    [newCaseConstants.NEW_CASE_ACTION_FINISH]: newCaseActionFinished,
+    [newCaseConstants.NEW_CASE_ACTION_ERROR]: newCaseActionError,
+    [newCaseConstants.GET_PRIMARY_SPECIALITIES]: getPrimarySpecialities,
+    [newCaseConstants.GET_SECONDARY_SPECIALITIES]: getSecondarySpecialities,
+    [newCaseConstants.GET_INITIAL_REQUIRED_QUESTIONS]: getInitialRequiredQuestions,
+    [newCaseConstants.GET_REQUIRED_QUESTIONS]: getRequiredQuestions,
+    [newCaseConstants.GET_INITIAL_NOT_REQUIRED_QUESTIONS]: getInitialNotRequiredQuestions,
+    [newCaseConstants.GET_NOT_REQUIRED_QUESTIONS]: getNotRequiredQuestions
 });

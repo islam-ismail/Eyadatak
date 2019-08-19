@@ -1,7 +1,18 @@
-import React from "react";
+import React, { SFC } from "react";
 import { adjustDateZone } from "../../util/helpersFunc";
+import { MedicalCase } from "../../types/models/MedicalCase";
 
-export const PatientHistoryPanel = props => {
+interface CompProps {
+    questionsOrHistoryActive: string;
+    caseIsClosed: boolean;
+    requestStatus: string;
+    accessLevel: string;
+    historyCases: MedicalCase[];
+    waitingApproval: boolean;
+    openHistoryAccessModal: (t: string) => void;
+    handleHistoryCaseClick: (historyCase: MedicalCase) => void;
+}
+export const PatientHistoryPanel: SFC<CompProps> = props => {
     const { questionsOrHistoryActive } = props;
     return (
         <div className={`history aside${questionsOrHistoryActive === "active" ? "-active" : ""}`}>
@@ -24,7 +35,7 @@ export const PatientHistoryPanel = props => {
                                                 <a
                                                     href="/"
                                                     onClick={e =>
-                                                        props.handleHistoryCaseClick(e, historyCase)
+                                                        props.handleHistoryCaseClick(historyCase)
                                                     }
                                                 >
                                                     <h4>{historyCase.description}</h4>

@@ -1,9 +1,17 @@
-import React, { Component } from "react";
+import React, { Component, MouseEventHandler, EventHandler, MouseEvent } from "react";
 import userInfo from "../../assets/images/user-info.svg";
 import help from "../../assets/images/help.svg";
 import note from "../../assets/images/note.svg";
 
-class ChatSideNav extends Component {
+interface CompProps {
+    detailsActive: string;
+    toggleDetails: MouseEventHandler;
+    questionsOrHistoryActive: string;
+    toggleQuestionsOrHistory: MouseEventHandler;
+    removeNote: boolean;
+}
+
+class ChatSideNav extends Component<CompProps> {
     render() {
         return (
             <div className="aside-nav">
