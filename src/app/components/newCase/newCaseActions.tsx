@@ -6,6 +6,22 @@ import * as newCaseTypes from "./newCaseTypes";
 import { Speciality } from "../../types/models/Speciality";
 import { QuestionTemplate } from "../../types/models/QuestionTemplate";
 import { Dispatch } from "redux";
+import { addNewCaseToMyList } from "../myCasesList/myCasesListActions";
+import {
+    Api_SpecialitiesViewAll_Endpoint,
+    Api_SpecialitiesViewAll_Response
+} from "../../types/api-endpoints/specialities";
+import {
+    Api_QuestionTemplatesViewRequired_Endpoint,
+    Api_QuestionTemplatesViewRequired_Response,
+    Api_QuestionTemplatesViewNotRequired_Endpoint,
+    Api_QuestionTemplatesViewNotRequired_Response
+} from "../../types/api-endpoints/question-templates";
+import {
+    Api_PatientMedicalCasesAdd_Endpoint,
+    Api_PatientMedicalCasesAdd_Payload,
+    Api_PatientMedicalCasesAdd_Response
+} from "../../types/api-endpoints/patient";
 
 export const newCaseActionStart = (): newCaseTypes.NewCaseActionStartAction => {
     return {
@@ -28,67 +44,71 @@ export const newCaseActionError = (): newCaseTypes.NewCaseActionErrorAction => {
     };
 };
 
-export const getPrimarySpecialities = (
+export const setPrimarySpecialities = (
     data: Speciality[]
-): newCaseTypes.GetPrimarySpecialitiesAction => {
+): newCaseTypes.SetPrimarySpecialitiesAction => {
     return {
-        type: newCaseConstants.GET_PRIMARY_SPECIALITIES,
+        type: newCaseConstants.SET_PRIMARY_SPECIALITIES,
         payload: data
     };
 };
 
-export const getSecondarySpecialities = (
+export const setSecondarySpecialities = (
     data: Speciality[]
-): newCaseTypes.GetSecondarySpecialitiesAction => {
+): newCaseTypes.SetSecondarySpecialitiesAction => {
     return {
-        type: newCaseConstants.GET_SECONDARY_SPECIALITIES,
+        type: newCaseConstants.SET_SECONDARY_SPECIALITIES,
         payload: data
     };
 };
 
-export const getRequiredQuestions = (
+export const setRequiredQuestions = (
     data: QuestionTemplate[]
-): newCaseTypes.GetRequiredQuestionsAction => {
+): newCaseTypes.SetRequiredQuestionsAction => {
     return {
-        type: newCaseConstants.GET_REQUIRED_QUESTIONS,
+        type: newCaseConstants.SET_REQUIRED_QUESTIONS,
         payload: data
     };
 };
 
-export const getInitialNotRequiredQuestions = (
+export const setInitialNotRequiredQuestions = (
     data: QuestionTemplate[]
-): newCaseTypes.GetInitialNotRequiredQuestionsAction => {
+): newCaseTypes.SetInitialNotRequiredQuestionsAction => {
     return {
-        type: newCaseConstants.GET_INITIAL_NOT_REQUIRED_QUESTIONS,
+        type: newCaseConstants.SET_INITIAL_NOT_REQUIRED_QUESTIONS,
         payload: data
     };
 };
 
-export const getNotRequiredQuestions = (
+export const setNotRequiredQuestions = (
     data: QuestionTemplate[]
-): newCaseTypes.GetNotRequiredQuestionsAction => {
+): newCaseTypes.SetNotRequiredQuestionsAction => {
     return {
-        type: newCaseConstants.GET_NOT_REQUIRED_QUESTIONS,
+        type: newCaseConstants.SET_NOT_REQUIRED_QUESTIONS,
         payload: data
     };
 };
 
-export const getInitialRequiredQuestions = (
+export const setInitialRequiredQuestions = (
     data: QuestionTemplate[]
-): newCaseTypes.GetInitialRequiredQuestionsAction => {
+): newCaseTypes.SetInitialRequiredQuestionsAction => {
     return {
-        type: newCaseConstants.GET_INITIAL_REQUIRED_QUESTIONS,
+        type: newCaseConstants.SET_INITIAL_REQUIRED_QUESTIONS,
         payload: data
     };
 };
 
-export const asyncGetPrimarySpecialities: newCaseTypes.asyncGetPrimarySpecialitiesSig = () => {
+export const asyncSetPrimarySpecialities: newCaseTypes.asyncSetPrimarySpecialitiesSig = () => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(newCaseActionStart());
-            const response = await axios.get("specialities/0");
-            const data = response.data;
-            dispatch(getPrimarySpecialities(data.data.specialities));
+
+            const response = await axios.get(Api_SpecialitiesViewAll_Endpoint());
+            const responseData: Api_SpecialitiesViewAll_Response = response.data;
+            if (responseData.data) {
+                dispatch(setPrimarySpecialities(responseData.data.specialities));
+            }
+
             dispatch(newCaseActionFinish());
         } catch (error) {
             toast.error(error.response.data.error_message);
@@ -97,15 +117,19 @@ export const asyncGetPrimarySpecialities: newCaseTypes.asyncGetPrimarySpecialiti
     };
 };
 
-export const asyncGetSecondarySpecialities: newCaseTypes.asyncGetSecondarySpecialitiesSig = (
+export const asyncSetSecondarySpecialities: newCaseTypes.asyncSetSecondarySpecialitiesSig = (
     parentId: number
 ) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(newCaseActionStart());
-            const response = await axios.get(`specialities/${parentId}`);
-            const data = response.data;
-            dispatch(getSecondarySpecialities(data.data.specialities));
+
+            const response = await axios.get(Api_SpecialitiesViewAll_Endpoint(parentId));
+            const responseData: Api_SpecialitiesViewAll_Response = response.data;
+            if (responseData.data) {
+                dispatch(setSecondarySpecialities(responseData.data.specialities));
+            }
+
             dispatch(newCaseActionFinish());
         } catch (error) {
             toast.error(error.response.data.error_message);
@@ -114,13 +138,17 @@ export const asyncGetSecondarySpecialities: newCaseTypes.asyncGetSecondarySpecia
     };
 };
 
-export const asyncGetInitialRequiredQuestions: newCaseTypes.asyncGetInitialRequiredQuestionsSig = () => {
+export const asyncSetInitialRequiredQuestions: newCaseTypes.asyncSetInitialRequiredQuestionsSig = () => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(newCaseActionStart());
-            const response = await axios.get(`question_templates/0/required`);
-            const data = response.data;
-            dispatch(getInitialRequiredQuestions(data.data.question_templates));
+
+            const response = await axios.get(Api_QuestionTemplatesViewRequired_Endpoint());
+            const responseData: Api_QuestionTemplatesViewRequired_Response = response.data;
+            if (responseData.data) {
+                dispatch(setInitialRequiredQuestions(responseData.data.question_templates));
+            }
+
             dispatch(newCaseActionFinish());
         } catch (error) {
             toast.error(error.response.data.error_message);
@@ -129,15 +157,21 @@ export const asyncGetInitialRequiredQuestions: newCaseTypes.asyncGetInitialRequi
     };
 };
 
-export const asyncGetRequiredQuestions: newCaseTypes.asyncGetRequiredQuestionsSig = (
+export const asyncSetRequiredQuestions: newCaseTypes.asyncSetRequiredQuestionsSig = (
     specialityId: number
 ) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(newCaseActionStart());
-            const response = await axios.get(`question_templates/${specialityId}/required`);
-            const data = response.data;
-            dispatch(getRequiredQuestions(data.data.question_templates));
+
+            const response = await axios.get(
+                Api_QuestionTemplatesViewRequired_Endpoint(specialityId)
+            );
+            const responseData: Api_QuestionTemplatesViewRequired_Response = response.data;
+            if (responseData.data) {
+                dispatch(setRequiredQuestions(responseData.data.question_templates));
+            }
+
             dispatch(newCaseActionFinish());
         } catch (error) {
             toast.error(error.response.data.error_message);
@@ -146,13 +180,17 @@ export const asyncGetRequiredQuestions: newCaseTypes.asyncGetRequiredQuestionsSi
     };
 };
 
-export const asyncGetInitialNotRequiredQuestions: newCaseTypes.asyncGetInitialNotRequiredQuestionsSig = () => {
+export const asyncSetInitialNotRequiredQuestions: newCaseTypes.asyncSetInitialNotRequiredQuestionsSig = () => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(newCaseActionStart());
-            const response = await axios.get(`question_templates/0/not_required`);
-            const data = response.data;
-            dispatch(getInitialNotRequiredQuestions(data.data.question_templates));
+
+            const response = await axios.get(Api_QuestionTemplatesViewNotRequired_Endpoint());
+            const responseData: Api_QuestionTemplatesViewNotRequired_Response = response.data;
+            if (responseData.data) {
+                dispatch(setInitialNotRequiredQuestions(responseData.data.question_templates));
+            }
+
             dispatch(newCaseActionFinish());
         } catch (error) {
             toast.error(error.response.data.error_message);
@@ -161,15 +199,21 @@ export const asyncGetInitialNotRequiredQuestions: newCaseTypes.asyncGetInitialNo
     };
 };
 
-export const asyncGetNotRequiredQuestions: newCaseTypes.asyncGetNotRequiredQuestionsSig = (
+export const asyncSetNotRequiredQuestions: newCaseTypes.asyncSetNotRequiredQuestionsSig = (
     specialityId: number
 ) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(newCaseActionStart());
-            const response = await axios.get(`question_templates/${specialityId}/not_required`);
-            const data = response.data;
-            dispatch(getNotRequiredQuestions(data.data.question_templates));
+
+            const response = await axios.get(
+                Api_QuestionTemplatesViewNotRequired_Endpoint(specialityId)
+            );
+            const responseData: Api_QuestionTemplatesViewNotRequired_Response = response.data;
+            if (responseData.data) {
+                dispatch(setNotRequiredQuestions(responseData.data.question_templates));
+            }
+
             dispatch(newCaseActionFinish());
         } catch (error) {
             toast.error(error.response.data.error_message);
@@ -178,21 +222,27 @@ export const asyncGetNotRequiredQuestions: newCaseTypes.asyncGetNotRequiredQuest
     };
 };
 
-export const getInitialQuestionValues: newCaseTypes.getInitialQuestionValuesSig = () => {
+export const setInitialQuestionValues: newCaseTypes.setInitialQuestionValuesSig = () => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(newCaseActionStart());
-            const response1 = await axios.get("specialities/0");
-            const data1 = response1.data;
-            dispatch(getPrimarySpecialities(data1.data.specialities));
+            const response1 = await axios.get(Api_SpecialitiesViewAll_Endpoint());
+            const responseData1: Api_SpecialitiesViewAll_Response = response1.data;
+            if (responseData1.data) {
+                dispatch(setPrimarySpecialities(responseData1.data.specialities));
+            }
 
-            const response2 = await axios.get(`question_templates/0/required`);
-            const data2 = response2.data;
-            dispatch(getInitialRequiredQuestions(data2.data.question_templates));
+            const response2 = await axios.get(Api_QuestionTemplatesViewRequired_Endpoint());
+            const responseData2: Api_QuestionTemplatesViewRequired_Response = response2.data;
+            if (responseData2.data) {
+                dispatch(setInitialRequiredQuestions(responseData2.data.question_templates));
+            }
 
-            const response3 = await axios.get(`question_templates/0/not_required`);
-            const data3 = response3.data;
-            dispatch(getInitialNotRequiredQuestions(data3.data.question_templates));
+            const response3 = await axios.get(Api_QuestionTemplatesViewNotRequired_Endpoint());
+            const responseData3: Api_QuestionTemplatesViewNotRequired_Response = response3.data;
+            if (responseData3.data) {
+                dispatch(setInitialNotRequiredQuestions(responseData3.data.question_templates));
+            }
 
             dispatch(newCaseActionFinish());
         } catch (error) {
@@ -211,12 +261,26 @@ export const addNewCase: newCaseTypes.addNewCaseSig = (
         try {
             dispatch(newCaseActionStart());
 
-            const response = await axios.post(`patient/medical_cases/${patientId}`, {
+            const payload: Api_PatientMedicalCasesAdd_Payload = {
                 speciality_id: specialityId,
                 description: questionDescription
-            });
-            const data = response.data;
-            console.log("addNewCase() - data:", data);
+            };
+            const response = await axios.post(
+                Api_PatientMedicalCasesAdd_Endpoint(patientId),
+                payload
+            );
+            const responseData: Api_PatientMedicalCasesAdd_Response = response.data;
+            if (
+                responseData.status === false ||
+                !responseData.data ||
+                !responseData.data.medical_case
+            ) {
+                throw new Error(responseData.error_message);
+            }
+
+            if (responseData.data.medical_case) {
+                dispatch(addNewCaseToMyList(responseData.data.medical_case));
+            }
 
             dispatch(newCaseActionFinish());
         } catch (error) {

@@ -1,12 +1,11 @@
-import React, { HTMLProps, SFC } from "react";
+import React, { SFC } from "react";
 import DatePicker, { ReactDatePickerProps } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { WrappedFieldProps } from "redux-form";
 
-interface FieldConfig {
-    input: ReactDatePickerProps;
+interface FieldConfig extends WrappedFieldProps {
     type: string;
     label: string;
-    meta: { touched: boolean; dirty: boolean; error: string };
     props: ReactDatePickerProps[];
 }
 const DateInput: SFC<FieldConfig> = ({

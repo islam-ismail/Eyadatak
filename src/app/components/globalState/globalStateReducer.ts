@@ -15,7 +15,7 @@ export interface GlobalState {
     loading: boolean;
 }
 
-const initialState: GlobalState = {
+export const initialGlobalState: GlobalState = {
     locale: "en",
     loading: false
 };
@@ -63,7 +63,7 @@ export const setLocale = (state: GlobalState, action: setLocaleAction) => {
 };
 
 export default createReducer<GlobalState, GlobalStateActionTypes, GlobalStateActions>(
-    initialState,
+    initialGlobalState,
     {
         [ASYNC_ACTION_START]: asynActionStarted,
         [ASYNC_ACTION_FINISH]: asynActionFinished,

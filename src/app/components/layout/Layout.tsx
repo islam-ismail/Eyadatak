@@ -1,4 +1,4 @@
-import React, { ReactNode, SFC } from "react";
+import React, { SFC } from "react";
 import Header from "./Header";
 import SideNav from "./SideNav";
 

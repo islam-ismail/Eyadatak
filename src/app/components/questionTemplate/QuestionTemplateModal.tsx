@@ -1,15 +1,8 @@
-import React, {
-    Component,
-    ComponentType,
-    MouseEvent,
-    EventHandler,
-    ChangeEventHandler,
-    MouseEventHandler
-} from "react";
+import React, { Component, ComponentType, ChangeEventHandler, MouseEventHandler } from "react";
 import Modal from "react-modal";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { reduxForm, reset, Field, InjectedFormProps } from "redux-form";
+import { reduxForm, Field, InjectedFormProps } from "redux-form";
 import Button from "../../UIComponents/Button";
 import TextInputRegular from "../../form/TextInputRegular";
 import RadioGroup from "../../form/RadioGroup";
@@ -61,7 +54,7 @@ class QuestionTemplateModal extends Component<CompProps, CompState> {
     };
 
     componentDidMount() {
-        this.props.getSavedQuestionsList();
+        this.props.setSavedQuestionsList();
         this.setState(() => ({
             answerOptions: []
         }));

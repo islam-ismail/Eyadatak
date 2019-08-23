@@ -3,58 +3,61 @@ import { QuestionTemplate } from "../../types/models/QuestionTemplate";
 import { Speciality } from "../../types/models/Speciality";
 import * as newCaseConstants from "./newCaseConstants";
 import { Dispatch } from "redux";
+import { MedicalCase } from "../../types/models/MedicalCase";
 
 /**
  * actions signature
  */
-export interface GetPrimarySpecialitiesAction extends AppAction {
-    type: typeof newCaseConstants.GET_PRIMARY_SPECIALITIES;
+export interface SetPrimarySpecialitiesAction extends AppAction {
+    type: typeof newCaseConstants.SET_PRIMARY_SPECIALITIES;
     payload: Speciality[];
 }
 
-export interface GetSecondarySpecialitiesAction extends AppAction {
-    type: typeof newCaseConstants.GET_SECONDARY_SPECIALITIES;
+export interface SetSecondarySpecialitiesAction extends AppAction {
+    type: typeof newCaseConstants.SET_SECONDARY_SPECIALITIES;
     payload: Speciality[];
 }
 
-export interface GetInitialRequiredQuestionsAction extends AppAction {
-    type: typeof newCaseConstants.GET_INITIAL_REQUIRED_QUESTIONS;
+export interface SetInitialRequiredQuestionsAction extends AppAction {
+    type: typeof newCaseConstants.SET_INITIAL_REQUIRED_QUESTIONS;
     payload: QuestionTemplate[];
 }
 
-export interface GetRequiredQuestionsAction extends AppAction {
-    type: typeof newCaseConstants.GET_REQUIRED_QUESTIONS;
+export interface SetRequiredQuestionsAction extends AppAction {
+    type: typeof newCaseConstants.SET_REQUIRED_QUESTIONS;
     payload: QuestionTemplate[];
 }
 
-export interface GetInitialNotRequiredQuestionsAction extends AppAction {
-    type: typeof newCaseConstants.GET_INITIAL_NOT_REQUIRED_QUESTIONS;
+export interface SetInitialNotRequiredQuestionsAction extends AppAction {
+    type: typeof newCaseConstants.SET_INITIAL_NOT_REQUIRED_QUESTIONS;
     payload: QuestionTemplate[];
 }
 
-export interface GetNotRequiredQuestionsAction extends AppAction {
-    type: typeof newCaseConstants.GET_NOT_REQUIRED_QUESTIONS;
+export interface SetNotRequiredQuestionsAction extends AppAction {
+    type: typeof newCaseConstants.SET_NOT_REQUIRED_QUESTIONS;
     payload: QuestionTemplate[];
 }
 
 export interface NewCaseActionStartAction extends AppAction {
     type: typeof newCaseConstants.NEW_CASE_ACTION_START;
+    excludeRefresh: boolean;
 }
 
 export interface NewCaseActionFinishAction extends AppAction {
     type: typeof newCaseConstants.NEW_CASE_ACTION_FINISH;
+    excludeRefresh: boolean;
 }
 
 export interface NewCaseActionErrorAction extends AppAction {
     type: typeof newCaseConstants.NEW_CASE_ACTION_ERROR;
 }
 
-export type NewCaseActions = GetPrimarySpecialitiesAction &
-    GetSecondarySpecialitiesAction &
-    GetInitialRequiredQuestionsAction &
-    GetRequiredQuestionsAction &
-    GetInitialNotRequiredQuestionsAction &
-    GetNotRequiredQuestionsAction &
+export type NewCaseActions = SetPrimarySpecialitiesAction &
+    SetSecondarySpecialitiesAction &
+    SetInitialRequiredQuestionsAction &
+    SetRequiredQuestionsAction &
+    SetInitialNotRequiredQuestionsAction &
+    SetNotRequiredQuestionsAction &
     NewCaseActionStartAction &
     NewCaseActionFinishAction &
     NewCaseActionErrorAction;
@@ -68,29 +71,29 @@ export type addNewCaseSig = (
     patientId: number
 ) => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
-export type getInitialQuestionValuesSig = () => (dispatch: Dispatch<AppAction>) => Promise<void>;
+export type setInitialQuestionValuesSig = () => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
-export type asyncGetNotRequiredQuestionsSig = (
+export type asyncSetNotRequiredQuestionsSig = (
     specialityId: number
 ) => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
-export type asyncGetInitialNotRequiredQuestionsSig = () => (
+export type asyncSetInitialNotRequiredQuestionsSig = () => (
     dispatch: Dispatch<AppAction>
 ) => Promise<void>;
 
-export type asyncGetRequiredQuestionsSig = (
+export type asyncSetRequiredQuestionsSig = (
     specialityId: number
 ) => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
-export type asyncGetInitialRequiredQuestionsSig = () => (
+export type asyncSetInitialRequiredQuestionsSig = () => (
     dispatch: Dispatch<AppAction>
 ) => Promise<void>;
 
-export type asyncGetSecondarySpecialitiesSig = (
+export type asyncSetSecondarySpecialitiesSig = (
     parentId: number
 ) => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
-export type asyncGetPrimarySpecialitiesSig = () => (dispatch: Dispatch<AppAction>) => Promise<void>;
+export type asyncSetPrimarySpecialitiesSig = () => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
 export interface NewCaseActionsSignatures {
     addNewCase: (
@@ -98,11 +101,11 @@ export interface NewCaseActionsSignatures {
         questionDescription: string,
         patientId: number
     ) => Promise<void>;
-    getInitialQuestionValues: () => Promise<void>;
-    asyncGetNotRequiredQuestions: (specialityId: number) => Promise<void>;
-    asyncGetInitialNotRequiredQuestions: () => Promise<void>;
-    asyncGetRequiredQuestions: (specialityId: number) => Promise<void>;
-    asyncGetInitialRequiredQuestions: () => Promise<void>;
-    asyncGetSecondarySpecialities: (parentId: number) => Promise<void>;
-    asyncGetPrimarySpecialities: () => Promise<void>;
+    setInitialQuestionValues: () => Promise<void>;
+    asyncSetNotRequiredQuestions: (specialityId: number) => Promise<void>;
+    asyncSetInitialNotRequiredQuestions: () => Promise<void>;
+    asyncSetRequiredQuestions: (specialityId: number) => Promise<void>;
+    asyncSetInitialRequiredQuestions: () => Promise<void>;
+    asyncSetSecondarySpecialities: (parentId: number) => Promise<void>;
+    asyncSetPrimarySpecialities: () => Promise<void>;
 }

@@ -1,9 +1,8 @@
-import React, { HTMLProps, SFC } from "react";
+import React, { SFC } from "react";
+import { WrappedFieldProps } from "redux-form";
 
-interface FieldConfig {
-    input: HTMLProps<HTMLInputElement>;
+interface FieldConfig extends WrappedFieldProps {
     label: string;
-    meta?: { touched: boolean; dirty: boolean; error: string };
     type: string;
     placeholder: string;
 }

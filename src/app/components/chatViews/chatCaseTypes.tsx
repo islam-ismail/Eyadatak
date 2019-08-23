@@ -1,7 +1,7 @@
 import {
-    GET_CASE_REPLIES,
-    GET_CASE_DOCTOR,
-    GET_CASE_PATIENT,
+    SET_CASE_REPLIES,
+    SET_CASE_DOCTOR,
+    SET_CASE_PATIENT,
     CHAT_CASE_ACTION_START,
     CHAT_CASE_ACTION_FINISH,
     CHAT_CASE_ACTION_ERROR
@@ -56,8 +56,8 @@ export interface ChatCaseActionErrorAction extends AppAction {
     excludeRefresh: boolean;
 }
 
-export interface GetCaseChatDataAction extends AppAction {
-    type: typeof GET_CASE_REPLIES;
+export interface SetCaseChatDataAction extends AppAction {
+    type: typeof SET_CASE_REPLIES;
     payload: {
         replies: CaseChatElement[];
         questions: CaseChatElement[];
@@ -65,22 +65,22 @@ export interface GetCaseChatDataAction extends AppAction {
     };
 }
 
-export interface GetCasePatientAction extends AppAction {
-    type: typeof GET_CASE_PATIENT;
+export interface SetCasePatientAction extends AppAction {
+    type: typeof SET_CASE_PATIENT;
     payload: User;
 }
 
-export interface GetCaseDoctorAction extends AppAction {
-    type: typeof GET_CASE_DOCTOR;
+export interface SetCaseDoctorAction extends AppAction {
+    type: typeof SET_CASE_DOCTOR;
     payload: Doctor;
 }
 
 export type ChatCaseActions = ChatCaseActionStartAction &
     ChatCaseActionFinishAction &
     ChatCaseActionErrorAction &
-    GetCaseChatDataAction &
-    GetCasePatientAction &
-    GetCaseDoctorAction;
+    SetCaseChatDataAction &
+    SetCasePatientAction &
+    SetCaseDoctorAction;
 
 /** action creators signature */
 export type groupAnswersAndQuestionsSig = (
@@ -88,20 +88,20 @@ export type groupAnswersAndQuestionsSig = (
     groupWhat: string
 ) => CaseChatElement[];
 
-export type getChatCaseRepliesSig = (
+export type setChatCaseRepliesSig = (
     caseId: number,
     chatCase: MedicalCase,
     userType: string,
     clearFirst?: boolean
 ) => (dispatch: ThunkDispatch<{}, {}, AppAction>) => void;
 
-export type getDoctorChatCaseRepliesSig = (
+export type setDoctorChatCaseRepliesSig = (
     caseId: number,
     chatCase: MedicalCase,
     clearFirst: boolean
 ) => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
-export type getPatientChatCaseRepliesSig = (
+export type setPatientChatCaseRepliesSig = (
     caseId: number,
     chatCase: MedicalCase,
     clearFirst: boolean
@@ -121,10 +121,10 @@ export type handleUploadFilesSig = (
 export type handleSubmitAnswersSig = (
     caseId: number,
     answers: any[],
-    caseQuestions: CaseQuestion[]
+    caseQuestions: CaseChatElement[]
 ) => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
-export type getHistoryAccessRequestStatusSig = (
+export type setHistoryAccessRequestStatusSig = (
     caseId: number,
     user: User,
     patientId: number,
@@ -148,18 +148,18 @@ export type deleteTransferRequestSig = (
 
 export interface ChatCaseSignatures {
     groupAnswersAndQuestions: groupAnswersAndQuestionsSig;
-    getChatCaseReplies: (
+    setChatCaseReplies: (
         caseId: number,
         chatCase: MedicalCase,
         userType: string,
         clearFirst?: boolean
     ) => void;
-    getDoctorChatCaseReplies: (
+    setDoctorChatCaseReplies: (
         caseId: number,
         chatCase: MedicalCase,
         clearFirst: boolean
     ) => Promise<void>;
-    getPatientChatCaseReplies: (
+    setPatientChatCaseReplies: (
         caseId: number,
         chatCase: MedicalCase,
         clearFirst: boolean
@@ -175,7 +175,7 @@ export interface ChatCaseSignatures {
         answers: any[],
         caseQuestions: CaseChatElement[]
     ) => Promise<void>;
-    getHistoryAccessRequestStatus: (
+    setHistoryAccessRequestStatus: (
         caseId: number,
         user: User,
         patientId: number,

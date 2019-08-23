@@ -6,6 +6,16 @@ import * as questionTemplateTypes from "./questionTemplateTypes";
 import { QuestionTemplate } from "../../types/models/QuestionTemplate";
 import { Dispatch } from "redux";
 import { ThunkDispatch } from "redux-thunk";
+import {
+    Api_DoctorQuestionTemplatesViewAll_Endpoint,
+    Api_DoctorQuestionTemplatesViewAll_Response,
+    Api_DoctorQuestionTemplatesAdd_Endpoint,
+    Api_DoctorQuestionTemplatesAdd_Payload,
+    Api_DoctorQuestionTemplatesAdd_Response,
+    Api_DoctorCaseQuestionsAdd_Endpoint,
+    Api_DoctorCaseQuestionsAdd_Payload,
+    Api_DoctorCaseQuestionsAdd_Response
+} from "../../types/api-endpoints/doctor";
 
 export const questionTemplateActionStart = (): questionTemplateTypes.QuestionTemplateActionStartedAction => {
     return {
@@ -28,11 +38,11 @@ export const questionTemplateActionError = (): questionTemplateTypes.QuestionTem
     };
 };
 
-export const getSavedQuestions = (
+export const setSavedQuestions = (
     savedQuestions: QuestionTemplate[]
-): questionTemplateTypes.GetSavedQuestionsAction => {
+): questionTemplateTypes.SetSavedQuestionsAction => {
     return {
-        type: questionTemplateConstants.GET_SAVED_QUESTIONS,
+        type: questionTemplateConstants.SET_SAVED_QUESTIONS,
         payload: savedQuestions
     };
 };
@@ -53,15 +63,18 @@ export const sendCaseQuestions = (): questionTemplateTypes.SendCaseQuestionsActi
     };
 };
 
-export const getSavedQuestionsList: questionTemplateTypes.getSavedQuestionsListSig = () => {
+export const setSavedQuestionsList: questionTemplateTypes.setSavedQuestionsListSig = () => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(questionTemplateActionStart());
 
-            const response = await axios.get(`doctor/question_templates`);
-            const data = response.data;
-            const savedQuestions = data.data.question_templates;
-            dispatch(getSavedQuestions(savedQuestions));
+            let savedQuestions: QuestionTemplate[] = [];
+            const response = await axios.get(Api_DoctorQuestionTemplatesViewAll_Endpoint());
+            const responseData: Api_DoctorQuestionTemplatesViewAll_Response = response.data;
+            if (responseData.data) {
+                savedQuestions = responseData.data.question_templates;
+                dispatch(setSavedQuestions(savedQuestions));
+            }
 
             dispatch(questionTemplateActionFinish());
         } catch (error) {
@@ -82,19 +95,22 @@ export const saveNewQuestion: questionTemplateTypes.saveNewQuestionSig = (
         try {
             dispatch(questionTemplateActionStart());
 
-            const response = await axios.post(`doctor/question_templates`, {
+            const payload: Api_DoctorQuestionTemplatesAdd_Payload = {
                 question_text_en: questionText,
                 question_text_ar: questionText,
                 question_type: questionType,
                 question_options_en: answerOptions,
                 question_options_ar: answerOptions
-            });
-            const data = response.data;
+            };
 
-            if (addNewQuestionToTemplate)
-                dispatch(addQuestionToTemplate(data.data.question_template));
+            const response = await axios.post(Api_DoctorQuestionTemplatesAdd_Endpoint(), payload);
+            const responseData: Api_DoctorQuestionTemplatesAdd_Response = response.data;
 
-            dispatch(getSavedQuestionsList());
+            if (addNewQuestionToTemplate && responseData.data) {
+                dispatch(addQuestionToTemplate(responseData.data.question_template));
+            }
+
+            dispatch(setSavedQuestionsList());
 
             dispatch(questionTemplateActionFinish());
         } catch (error) {
@@ -116,10 +132,15 @@ export const sendCaseTemplateQuestions: questionTemplateTypes.sendCaseTemplateQu
             console.log("questionIds:", questionIds, "caseId:", caseId);
             await Promise.all(
                 questionIds.map(async questionId => {
-                    const response = await axios.post(`doctor/case_questions/${caseId}`, {
+                    const payload: Api_DoctorCaseQuestionsAdd_Payload = {
                         question_template_id: questionId
-                    });
-                    console.log("response:", response);
+                    };
+                    const response = await axios.post(
+                        Api_DoctorCaseQuestionsAdd_Endpoint(caseId),
+                        payload
+                    );
+                    const responseData: Api_DoctorCaseQuestionsAdd_Response = response.data;
+                    console.log("response:", responseData);
                 })
             );
 

@@ -8,7 +8,7 @@ export interface TransferCaseState {
     loading?: boolean;
 }
 
-const initialState: TransferCaseState = {
+export const initialTransferCaseState: TransferCaseState = {
     specialityDoctorsList: [],
     transferRequestedSuccessfully: false
 };
@@ -34,9 +34,9 @@ export const transferCaseActionError = (state: TransferCaseState): TransferCaseS
     };
 };
 
-export const getSpecialityDoctors = (
+export const setSpecialityDoctors = (
     state: TransferCaseState,
-    action: transferCaseTypes.GetDoctorsListAction
+    action: transferCaseTypes.SetDoctorsListAction
 ): TransferCaseState => {
     return {
         ...state,
@@ -55,10 +55,10 @@ export default createReducer<
     TransferCaseState,
     transferCaseConstants.TransferCaseActionTypes,
     transferCaseTypes.TransferCaseActions
->(initialState, {
+>(initialTransferCaseState, {
     [transferCaseConstants.TRANSFER_CASE_ACTION_START]: transferCaseActionStarted,
     [transferCaseConstants.TRANSFER_CASE_ACTION_FINISH]: transferCaseActionFinished,
     [transferCaseConstants.TRANSFER_CASE_ACTION_ERROR]: transferCaseActionError,
-    [transferCaseConstants.GET_SPECIALITY_DOCTORS]: getSpecialityDoctors,
+    [transferCaseConstants.SET_SPECIALITY_DOCTORS]: setSpecialityDoctors,
     [transferCaseConstants.TRANSFER_REQUEST_SUCCESSFUL]: transferRequestSuccessful
 });

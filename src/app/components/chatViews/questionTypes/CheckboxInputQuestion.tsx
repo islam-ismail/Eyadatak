@@ -17,7 +17,7 @@ export const CheckboxInputQuestion: SFC<CompProps> = props => {
         <>
             <div className="checkbox-group">
                 <CheckboxGroup
-                    input={{ name: `unanswered_case_questions[${props.question.id}]` }}
+                    name={`unanswered_case_questions[${props.question.id}]`}
                     options={checkBoxesOptions}
                 />
             </div>

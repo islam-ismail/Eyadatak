@@ -10,8 +10,8 @@ export interface DoctorsWithSpecialities {
     specialityId: number;
 }
 
-export interface GetDoctorsListAction extends AppAction {
-    type: typeof transferCaseConstants.GET_SPECIALITY_DOCTORS;
+export interface SetDoctorsListAction extends AppAction {
+    type: typeof transferCaseConstants.SET_SPECIALITY_DOCTORS;
     payload: DoctorsWithSpecialities[];
 }
 
@@ -35,7 +35,7 @@ export interface TransferCaseActionErrorAction extends AppAction {
     excludeRefresh: boolean;
 }
 
-export type TransferCaseActions = GetDoctorsListAction &
+export type TransferCaseActions = SetDoctorsListAction &
     TransferRequestSuccessfulAction &
     TransferCaseActionStartAction &
     TransferCaseActionFinishAction &
@@ -57,20 +57,20 @@ export type transferCaseToDoctorSig = (
     toSpecialityId: number
 ) => (dispatch: ThunkDispatch<{}, {}, AppAction>) => Promise<void>;
 
-export type getSpecialityDoctorsListSig = (
+export type setSpecialityDoctorsListSig = (
     selectedSpecialityID: number
 ) => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
-export type getSecondLevelSpecialitiesSig = (
+export type setSecondLevelSpecialitiesSig = (
     parentId: number
 ) => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
-export type getTopLevelSpecialitiesSig = () => (dispatch: Dispatch<AppAction>) => Promise<void>;
+export type setTopLevelSpecialitiesSig = () => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
 export interface TransferCaseActionsSignatures {
-    getSecondLevelSpecialities: getSecondLevelSpecialitiesSig;
-    getSpecialityDoctorsList: getSpecialityDoctorsListSig;
-    getTopLevelSpecialities: getTopLevelSpecialitiesSig;
+    setSecondLevelSpecialities: setSecondLevelSpecialitiesSig;
+    setSpecialityDoctorsList: setSpecialityDoctorsListSig;
+    setTopLevelSpecialities: setTopLevelSpecialitiesSig;
     transferCaseToDoctor: transferCaseToDoctorSig;
     transferCaseToSpeciality: transferCaseToSpecialitySig;
     deleteTransfer: deleteTransferSig;

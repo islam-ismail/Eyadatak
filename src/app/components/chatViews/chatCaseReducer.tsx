@@ -13,7 +13,7 @@ export interface ChatCaseState {
     lastReplyId?: number;
 }
 
-const initialState: ChatCaseState = {
+export const initialChatCaseState: ChatCaseState = {
     caseChatData: [],
     caseUnansweredQuestions: [],
     caseDoctor: null,
@@ -41,9 +41,9 @@ export const chatCaseActionError = (state: ChatCaseState) => {
     };
 };
 
-export const getCaseChatData = (
+export const setCaseChatData = (
     state: ChatCaseState,
-    action: chatCaseTypes.GetCaseChatDataAction
+    action: chatCaseTypes.SetCaseChatDataAction
 ) => {
     return {
         ...state,
@@ -53,16 +53,16 @@ export const getCaseChatData = (
     };
 };
 
-export const getCaseDoctor = (state: ChatCaseState, action: chatCaseTypes.GetCaseDoctorAction) => {
+export const setCaseDoctor = (state: ChatCaseState, action: chatCaseTypes.SetCaseDoctorAction) => {
     return {
         ...state,
         caseDoctor: action.payload
     };
 };
 
-export const getCasePatient = (
+export const setCasePatient = (
     state: ChatCaseState,
-    action: chatCaseTypes.GetCasePatientAction
+    action: chatCaseTypes.SetCasePatientAction
 ) => {
     return {
         ...state,
@@ -74,11 +74,11 @@ export default createReducer<
     ChatCaseState,
     chatCaseConstants.ChatCaseActionTypes,
     chatCaseTypes.ChatCaseActions
->(initialState, {
+>(initialChatCaseState, {
     [chatCaseConstants.CHAT_CASE_ACTION_START]: chatCaseActionStarted,
     [chatCaseConstants.CHAT_CASE_ACTION_FINISH]: chatCaseActionFinished,
     [chatCaseConstants.CHAT_CASE_ACTION_ERROR]: chatCaseActionError,
-    [chatCaseConstants.GET_CASE_REPLIES]: getCaseChatData,
-    [chatCaseConstants.GET_CASE_DOCTOR]: getCaseDoctor,
-    [chatCaseConstants.GET_CASE_PATIENT]: getCasePatient
+    [chatCaseConstants.SET_CASE_REPLIES]: setCaseChatData,
+    [chatCaseConstants.SET_CASE_DOCTOR]: setCaseDoctor,
+    [chatCaseConstants.SET_CASE_PATIENT]: setCasePatient
 });

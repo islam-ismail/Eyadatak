@@ -1,14 +1,14 @@
 import { createReducer } from "../../../reducers/reducerUtil";
 import * as historyCaseConstants from "./historyCaseConstants";
 import { CaseChatElement } from "../chatCaseTypes";
-import { GetHistoryCaseChatDataAction, HistoryCaseActions } from "./historyCaseTypes";
+import { SetHistoryCaseChatDataAction, HistoryCaseActions } from "./historyCaseTypes";
 
 export interface HistoryCaseState {
     historyCaseChatData: CaseChatElement[];
     loading?: boolean;
 }
 
-const initialState: HistoryCaseState = {
+export const initialHistoryCaseState: HistoryCaseState = {
     historyCaseChatData: [],
     loading: false
 };
@@ -34,9 +34,9 @@ export const historyCaseActionError = (state: HistoryCaseState): HistoryCaseStat
     };
 };
 
-export const getHistoryCaseChatData = (
+export const setHistoryCaseChatData = (
     state: HistoryCaseState,
-    action: GetHistoryCaseChatDataAction
+    action: SetHistoryCaseChatDataAction
 ): HistoryCaseState => {
     return {
         ...state,
@@ -48,9 +48,9 @@ export default createReducer<
     HistoryCaseState,
     historyCaseConstants.HistoryCaseActionTypes,
     HistoryCaseActions
->(initialState, {
+>(initialHistoryCaseState, {
     [historyCaseConstants.HISTORY_CASE_ACTION_START]: historyCaseActionStarted,
     [historyCaseConstants.HISTORY_CASE_ACTION_FINISH]: historyCaseActionFinished,
     [historyCaseConstants.HISTORY_CASE_ACTION_ERROR]: historyCaseActionError,
-    [historyCaseConstants.GET_HISTORY_CASE_REPLIES]: getHistoryCaseChatData
+    [historyCaseConstants.SET_HISTORY_CASE_REPLIES]: setHistoryCaseChatData
 });

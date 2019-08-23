@@ -3,12 +3,26 @@ import { toast } from "react-toastify";
 import { Dispatch } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import { AppAction } from "../../types/app-action";
-import { Doctor } from "../../types/models/Doctor";
 import { MedicalCase } from "../../types/models/MedicalCase";
-import { getChatCaseReplies } from "../chatViews/chatCaseActions";
-import { getPrimarySpecialities, getSecondarySpecialities } from "../newCase/newCaseActions";
+import { setChatCaseReplies } from "../chatViews/chatCaseActions";
+import { setPrimarySpecialities, setSecondarySpecialities } from "../newCase/newCaseActions";
 import * as transferCaseConstants from "./transferCaseConstants";
 import * as transferCaseTypes from "./transferCaseTypes";
+import {
+    Api_SpecialitiesViewAll_Endpoint,
+    Api_SpecialitiesViewAll_Response
+} from "../../types/api-endpoints/specialities";
+import {
+    Api_DoctorsViewAll_Endpoint,
+    Api_DoctorsViewAll_Response
+} from "../../types/api-endpoints/doctors";
+import {
+    Api_DoctorCaseTransfersTransferCaseByDoctor_Endpoint,
+    Api_DoctorCaseTransfersTransferCaseByDoctor_Payload,
+    Api_DoctorCaseTransfersRemoveCaseTransfer_Endpoint,
+    Api_DoctorCaseTransfersTransferCaseBySpeciality_Endpoint,
+    Api_DoctorCaseTransfersTransferCaseBySpeciality_Payload
+} from "../../types/api-endpoints/doctor";
 
 export const transferCaseActionStart = (): transferCaseTypes.TransferCaseActionStartAction => {
     return {
@@ -31,11 +45,11 @@ export const transferCaseActionError = (): transferCaseTypes.TransferCaseActionE
     };
 };
 
-export const getDoctorsList = (
+export const setDoctorsList = (
     doctorsList: transferCaseTypes.DoctorsWithSpecialities[]
-): transferCaseTypes.GetDoctorsListAction => {
+): transferCaseTypes.SetDoctorsListAction => {
     return {
-        type: transferCaseConstants.GET_SPECIALITY_DOCTORS,
+        type: transferCaseConstants.SET_SPECIALITY_DOCTORS,
         payload: doctorsList
     };
 };
@@ -47,14 +61,17 @@ export const transferRequestSuccessful = (): transferCaseTypes.TransferRequestSu
     };
 };
 
-export const getTopLevelSpecialities: transferCaseTypes.getTopLevelSpecialitiesSig = () => {
+export const setTopLevelSpecialities: transferCaseTypes.setTopLevelSpecialitiesSig = () => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(transferCaseActionStart());
 
-            const response = await axios.get("specialities/0");
-            const data = response.data;
-            dispatch(getPrimarySpecialities(data.data.specialities));
+            const response = await axios.get(Api_SpecialitiesViewAll_Endpoint());
+            const responseData: Api_SpecialitiesViewAll_Response = response.data;
+
+            if (responseData.data) {
+                dispatch(setPrimarySpecialities(responseData.data.specialities));
+            }
 
             dispatch(transferCaseActionFinish());
         } catch (error) {
@@ -65,17 +82,19 @@ export const getTopLevelSpecialities: transferCaseTypes.getTopLevelSpecialitiesS
     };
 };
 
-export const getSecondLevelSpecialities: transferCaseTypes.getSecondLevelSpecialitiesSig = (
+export const setSecondLevelSpecialities: transferCaseTypes.setSecondLevelSpecialitiesSig = (
     parentId: number
 ) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(transferCaseActionStart());
 
-            const response = await axios.get(`specialities/${parentId}`);
-            const data = response.data;
-            dispatch(getSecondarySpecialities(data.data.specialities));
+            const response = await axios.get(Api_SpecialitiesViewAll_Endpoint(parentId));
+            const responseData: Api_SpecialitiesViewAll_Response = response.data;
 
+            if (responseData.data) {
+                dispatch(setSecondarySpecialities(responseData.data.specialities));
+            }
             dispatch(transferCaseActionFinish());
         } catch (error) {
             console.log("error:", error);
@@ -85,33 +104,35 @@ export const getSecondLevelSpecialities: transferCaseTypes.getSecondLevelSpecial
     };
 };
 
-export const getSpecialityDoctorsList: transferCaseTypes.getSpecialityDoctorsListSig = (
+export const setSpecialityDoctorsList: transferCaseTypes.setSpecialityDoctorsListSig = (
     selectedSpecialityID: number
 ) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(transferCaseActionStart());
 
-            const response = await axios.get(`doctors`);
-            const data = response.data;
-            const doctors: Doctor[] = data.data.doctors;
+            const response = await axios.get(Api_DoctorsViewAll_Endpoint());
+            const responseData: Api_DoctorsViewAll_Response = response.data;
+            if (responseData.data) {
+                const doctors = responseData.data.doctors;
 
-            let doctorsWithSpecialities: transferCaseTypes.DoctorsWithSpecialities[] = [];
-            await doctors.map(doctor =>
-                doctor.specialities.map(doctorSpeciality =>
-                    doctorsWithSpecialities.push({
-                        key: doctor.id,
-                        value: doctor.name,
-                        specialityId: doctorSpeciality.id
-                    })
-                )
-            );
+                let doctorsWithSpecialities: transferCaseTypes.DoctorsWithSpecialities[] = [];
+                await doctors.map(doctor =>
+                    doctor.specialities.map(doctorSpeciality =>
+                        doctorsWithSpecialities.push({
+                            key: doctor.id,
+                            value: doctor.name,
+                            specialityId: doctorSpeciality.id
+                        })
+                    )
+                );
 
-            const filteredDoctors = doctorsWithSpecialities.filter(
-                doctorSpeciality => doctorSpeciality.specialityId === selectedSpecialityID
-            );
+                const filteredDoctors = doctorsWithSpecialities.filter(
+                    doctorSpeciality => doctorSpeciality.specialityId === selectedSpecialityID
+                );
 
-            dispatch(getDoctorsList(filteredDoctors));
+                dispatch(setDoctorsList(filteredDoctors));
+            }
 
             dispatch(transferCaseActionFinish());
         } catch (error) {
@@ -131,11 +152,18 @@ export const transferCaseToDoctor: transferCaseTypes.transferCaseToDoctorSig = (
         try {
             dispatch(transferCaseActionStart());
 
-            await axios.post(`doctor/case_transfers/transfer_case_by_doctor/${transferCase.id}`, {
+            const payload: Api_DoctorCaseTransfersTransferCaseByDoctor_Payload = {
                 speciality_id: toSpecialityId,
                 doctor_id: toDoctorId
-            });
-            dispatch(getChatCaseReplies(transferCase.id, transferCase, "doctor"));
+            };
+
+            await axios.post(
+                Api_DoctorCaseTransfersTransferCaseByDoctor_Endpoint(transferCase.id),
+                payload
+            );
+
+            dispatch(setChatCaseReplies(transferCase.id, transferCase, "doctor"));
+
             dispatch(transferRequestSuccessful());
 
             dispatch(transferCaseActionFinish());
@@ -155,11 +183,14 @@ export const transferCaseToSpeciality: transferCaseTypes.transferCaseToSpecialit
         try {
             dispatch(transferCaseActionStart());
 
+            const payload: Api_DoctorCaseTransfersTransferCaseBySpeciality_Payload = {
+                speciality_id: toSpecialityId
+            };
             await axios.post(
-                `doctor/case_transfers/transfer_case_by_speciality/${transferCase.id}`,
-                { speciality_id: toSpecialityId }
+                Api_DoctorCaseTransfersTransferCaseBySpeciality_Endpoint(transferCase.id),
+                payload
             );
-            dispatch(getChatCaseReplies(transferCase.id, transferCase, "doctor"));
+            dispatch(setChatCaseReplies(transferCase.id, transferCase, "doctor"));
             dispatch(transferRequestSuccessful());
 
             dispatch(transferCaseActionFinish());
@@ -179,13 +210,13 @@ export const deleteTransfer: transferCaseTypes.deleteTransferSig = (
         try {
             dispatch(transferCaseActionStart());
 
-            await axios.delete(`doctor/case_transfers/${transferId}`);
+            await axios.delete(Api_DoctorCaseTransfersRemoveCaseTransfer_Endpoint(transferId));
             // const response = await axios.delete(`doctor/case_transfers/${transferId}`)
             // const data = response.data
             // console.log('response:', response)
             // console.log('data.status:', data.status)
             // console.log('data.success_message:', data.success_message)
-            dispatch(getChatCaseReplies(transferCase.id, transferCase, "doctor"));
+            dispatch(setChatCaseReplies(transferCase.id, transferCase, "doctor"));
 
             dispatch(transferCaseActionFinish());
         } catch (error) {

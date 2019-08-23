@@ -1,31 +1,13 @@
-import React, { Component, ComponentType } from "react";
+import React, { Component } from "react";
 import SignInForm from "./SignInForm";
-import { compose } from "redux";
-import { RouteComponentProps, withRouter } from "react-router";
-import { AppState } from "../../reducers/rootReducer";
-import { connect } from "react-redux";
-
-const mapState = (state: AppState) => ({
-    signedInUser: state.auth.signedInUser,
-    authenticated: state.auth.authenticated
-});
-
-type CompStateProps = ReturnType<typeof mapState>;
 
 interface CompOwnProps {
     switchScreens: (screenName: string) => void;
 }
 
-type CompProps = RouteComponentProps & CompOwnProps & CompStateProps;
+type CompProps = CompOwnProps;
 
-class SignIn extends Component<CompProps> {
-    componentDidUpdate() {
-        const { authenticated, history } = this.props;
-        if (authenticated) {
-            history.push("/dashboard");
-        }
-    }
-
+export default class SignIn extends Component<CompProps> {
     render() {
         return (
             <div className="login-form">
@@ -37,8 +19,3 @@ class SignIn extends Component<CompProps> {
         );
     }
 }
-
-export default compose<ComponentType<CompOwnProps>>(
-    withRouter,
-    connect<CompStateProps, {}, CompOwnProps, AppState>(mapState)
-)(SignIn);

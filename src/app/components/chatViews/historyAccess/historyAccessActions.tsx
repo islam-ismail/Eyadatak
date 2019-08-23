@@ -42,16 +42,16 @@ export const requestSpecialityHistoryAccess = (): historyAccessTypes.RequestSpec
     };
 };
 
-export const getApprovedHistoryCases = (
+export const setApprovedHistoryCases = (
     historyCases: MedicalCase[]
-): historyAccessTypes.GetApprovedHistoryCasesAction => {
+): historyAccessTypes.SetApprovedHistoryCasesAction => {
     return {
-        type: historyAccessConstants.GET_HISTORY_CASES,
+        type: historyAccessConstants.SET_HISTORY_CASES,
         payload: historyCases
     };
 };
 
-export const getRequestStatus = (
+export const setRequestStatus = (
     allAccessRequests: CaseChatElement[],
     requestStatus: string,
     accessLevel: string,
@@ -60,16 +60,16 @@ export const getRequestStatus = (
     waitingLevel: string
     // allDeclined,
     // specialityDeclined
-): historyAccessTypes.GetRequestStatusAction => {
+): historyAccessTypes.SetRequestStatusAction => {
     return {
-        type: historyAccessConstants.GET_REQUEST_STATUS_AND_ACCESS_LEVEL,
+        type: historyAccessConstants.SET_REQUEST_STATUS_AND_ACCESS_LEVEL,
         payload: {
             requestStatus: requestStatus,
             accessLevel: accessLevel,
             historyAccessId: historyAccessId,
             waitingApproval: waitingApproval,
             waitingLevel: waitingLevel,
-            allAccessRequests: allAccessRequests
+            allAccessRequests: allAccessRequests || []
         }
     };
 };
@@ -95,7 +95,7 @@ export const requestHistoryAccess: historyAccessTypes.requestHistoryAccessSig = 
     };
 };
 
-export const getHistoryCases: historyAccessTypes.getHistoryCasesSig = (
+export const setHistoryCases: historyAccessTypes.setHistoryCasesSig = (
     patientId: number,
     accessLevel: string,
     specialityId: number
@@ -120,11 +120,11 @@ export const getHistoryCases: historyAccessTypes.getHistoryCasesSig = (
             })
         );
 
-        dispatch(getApprovedHistoryCases(historyCases));
+        dispatch(setApprovedHistoryCases(historyCases));
     };
 };
 
-export const getAccessRequestStatus: historyAccessTypes.getAccessRequestStatusSig = (
+export const setAccessRequestStatus: historyAccessTypes.setAccessRequestStatusSig = (
     caseId: number,
     user: User,
     patientId: number,
@@ -135,7 +135,7 @@ export const getAccessRequestStatus: historyAccessTypes.getAccessRequestStatusSi
         try {
             dispatch(historyAccessActionStart());
             if (clearFirst) {
-                dispatch(getRequestStatus([], "", "", 0, false, ""));
+                dispatch(setRequestStatus([], "", "", 0, false, ""));
             }
 
             const requestURL =
@@ -229,7 +229,7 @@ export const getAccessRequestStatus: historyAccessTypes.getAccessRequestStatusSi
             });
 
             dispatch(
-                getRequestStatus(
+                setRequestStatus(
                     allAccessRequestsElements,
                     requestStatus,
                     accessLevel,
@@ -241,7 +241,7 @@ export const getAccessRequestStatus: historyAccessTypes.getAccessRequestStatusSi
                 )
             );
             // if (user.type === "doctor") {
-            //     dispatch(getHistoryCases(patientId, accessLevel, specialityId);
+            //     dispatch(setHistoryCases(patientId, accessLevel, specialityId);
             // }
 
             dispatch(historyAccessActionFinish());

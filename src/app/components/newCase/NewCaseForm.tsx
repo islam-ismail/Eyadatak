@@ -72,16 +72,16 @@ class NewCaseForm extends Component<CompProps, CompState> {
     componentDidMount() {
         // Get all the initial questions and specialities for the form
         // in one call
-        this.props.getInitialQuestionValues();
+        this.props.setInitialQuestionValues();
         this.setTopLevelSpecialities();
 
-        // // fire the getPrimarySpecialities and assign it to state
-        // this.props.asyncGetPrimarySpecialities();
+        // // fire the setPrimarySpecialities and assign it to state
+        // this.props.asyncSetPrimarySpecialities();
         // this.setTopLevelSpecialities();
 
         // // fire the get Required and Not Required questions
-        // this.props.asyncGetInitialRequiredQuestions();
-        // this.props.asyncGetInitialNotRequiredQuestions();
+        // this.props.asyncSetInitialRequiredQuestions();
+        // this.props.asyncSetInitialNotRequiredQuestions();
     }
 
     // Check for updates in the store state to update the specialities and other stuff
@@ -192,7 +192,7 @@ class NewCaseForm extends Component<CompProps, CompState> {
 
         if (event.target.name === "top_level_speciality") {
             if (value) {
-                this.props.asyncGetSecondarySpecialities(value);
+                this.props.asyncSetSecondarySpecialities(value);
 
                 this.setState(() => ({
                     primarySpecialityID: value,
@@ -295,7 +295,7 @@ class NewCaseForm extends Component<CompProps, CompState> {
                             <div className="inputs-row horizontal" key={question.id}>
                                 <h3>{question.question_text_en}</h3>
                                 <CheckboxGroup
-                                    input={{ name: `speciality_questions[${question.id}]` }}
+                                    name={`speciality_questions[${question.id}]`}
                                     options={checkBoxesOptions}
                                 />
                             </div>

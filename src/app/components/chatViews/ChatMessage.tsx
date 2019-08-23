@@ -8,7 +8,7 @@ import { CaseReply } from "../../types/models/CaseReply";
 import { CaseQuestionAnswer } from "../../types/models/CaseQuestionAnswer";
 import { QuestionTemplate } from "../../types/models/QuestionTemplate";
 import { CaseTransfer } from "../../types/models/CaseTransfer";
-import { CaseQuestion } from "../../types/models/CaseQuestion";
+// import { CaseQuestion } from "../../types/models/CaseQuestion";
 
 interface CompProps {
     message: CaseChatElement | { type: "Closed" };
@@ -379,7 +379,7 @@ export const ChatMessage: SFC<CompProps> = props => {
             );
         case "question":
         case "questionGroup":
-            const caseQuestion = message.question as CaseQuestion;
+            // const caseQuestion = message.question as CaseQuestion;
             return (
                 <>
                     <div className={className}>

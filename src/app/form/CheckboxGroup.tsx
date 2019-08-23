@@ -1,25 +1,8 @@
 import React, { Component, ChangeEvent } from "react";
-
-// const CheckBox = ({ input, label, value, meta: { touched, error } }) => {
-//     return (
-//         <div className="checkboxes-group">
-//             <label className="checkbox-check">
-//                 <input type="checkbox" {...input} />{" "}
-//                 <span className="check-mark" />
-//                 <i>{label}</i>
-//             </label>
-//             {touched && !!error && <span className="error">{error}</span>}
-//         </div>
-//     );
-// };
-
-// export default CheckBox;
-
 import { Field } from "redux-form";
 
 interface CompProps {
-    input: { name: string; value?: string[]; onChange?: (arr: string[]) => void };
-    meta?: { touched: boolean; error: string };
+    name: string;
     options: {
         label: string;
         value: string;
@@ -32,16 +15,16 @@ class CheckboxGroup extends Component<CompProps> {
         meta,
         options
     }: {
-        input: { name: string; value: string[]; onChange: (arr: string[]) => void };
+        input: { value: string[]; onChange: (arr: string[]) => void };
         meta: { touched: boolean; error: string };
         options: {
             label: string;
             value: string;
         }[];
     }) => {
-        const { name, onChange } = input;
+        const { onChange } = input;
         const { touched, error } = meta;
-        const inputValue = input.value;
+        const inputValue = input.value || [];
 
         const checkboxes = options.map(
             ({ label, value }: { label: string; value: string }, index: number) => {
@@ -61,7 +44,7 @@ class CheckboxGroup extends Component<CompProps> {
                     <div key={`checkbox-${index}`} className="checkbox">
                         <input
                             type="checkbox"
-                            name={`${name}[${index}]`}
+                            name={`${this.props.name}[${index}]`}
                             value={value}
                             checked={checked}
                             onChange={handleChange}

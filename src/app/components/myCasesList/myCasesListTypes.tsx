@@ -10,9 +10,14 @@ import { Doctor } from "../../types/models/Doctor";
 /**
  * actions signature
  */
-export interface GetMyCasesAction extends AppAction {
-    type: typeof myCasesListConstants.GET_MY_CASES;
+export interface SetMyCasesAction extends AppAction {
+    type: typeof myCasesListConstants.SET_MY_CASES;
     payload: MedicalCase[];
+}
+
+export interface addNewCaseToMyListAction extends AppAction {
+    type: typeof myCasesListConstants.ADD_NEW_CASE_ACTION;
+    payload: MedicalCase;
 }
 
 export interface SortCasesListAction extends AppAction {
@@ -29,8 +34,8 @@ export interface FilterCasesAction extends AppAction {
     payload: MedicalCase[];
 }
 
-export interface GetPendingTransfersAction extends AppAction {
-    type: typeof myCasesListConstants.GET_PENDING_TRANSFERS;
+export interface SetPendingTransfersAction extends AppAction {
+    type: typeof myCasesListConstants.SET_PENDING_TRANSFERS;
     payload: CaseTransfer[];
 }
 
@@ -50,14 +55,15 @@ export interface ClearCaseListsAction extends AppAction {
     type: typeof myCasesListConstants.CLEAR_CASE_LISTS;
 }
 
-export type MyCasesListActions = GetMyCasesAction &
+export type MyCasesListActions = SetMyCasesAction &
     SortCasesListAction &
     FilterCasesAction &
-    GetPendingTransfersAction &
+    SetPendingTransfersAction &
     MyCasesListActionStartedAction &
     MyCasesListActionFinishedAction &
     MyCasesListActionErrorAction &
-    ClearCaseListsAction;
+    ClearCaseListsAction &
+    addNewCaseToMyListAction;
 
 /**
  * action creators signature
@@ -72,7 +78,7 @@ export type acceptCaseTransferSig = (
     toDoctorId: number
 ) => (dispatch: ThunkDispatch<{}, {}, AppAction>) => Promise<void>;
 
-export type getPendingTransfersListSig = (
+export type setPendingTransfersListSig = (
     toDoctorId: number
 ) => (dispatch: ThunkDispatch<{}, {}, AppAction>) => Promise<void>;
 
@@ -89,22 +95,22 @@ export type sortCasesListRequestSig = (
     medicalCases: MedicalCase[]
 ) => (dispatch: ThunkDispatch<{}, {}, AppAction>) => Promise<void>;
 
-export type getPatientCasesListSig = (
+export type setPatientCasesListSig = (
     patient: User
 ) => (dispatch: ThunkDispatch<{}, {}, AppAction>) => Promise<void>;
 
-export type getDoctorCasesListSig = (
+export type setDoctorCasesListSig = (
     doctor: Doctor
 ) => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
-export type getMyCasesListSig = (
+export type setMyCasesListSig = (
     user: User
 ) => (dispatch: ThunkDispatch<{}, {}, AppAction>) => void;
 
 export interface MyCasesListActionsSignatures {
     rejectCaseTransfer: (transferId: number, toDoctorId: number) => Promise<void>;
     acceptCaseTransfer: (transferId: number, toDoctorId: number) => Promise<void>;
-    getPendingTransfersList: (toDoctorId: number) => Promise<void>;
+    setPendingTransfersList: (toDoctorId: number) => Promise<void>;
     clearCaseLists: () => Promise<void>;
     filterCasesList: (filterBy: string, medicalCases: MedicalCase[]) => Promise<void>;
     sortCasesListRequest: (
@@ -112,7 +118,7 @@ export interface MyCasesListActionsSignatures {
         order: string,
         medicalCases: MedicalCase[]
     ) => Promise<void>;
-    getPatientCasesList: (patient: User) => Promise<void>;
-    getDoctorCasesList: (doctor: Doctor) => Promise<void>;
-    getMyCasesList: (user: User) => void;
+    setPatientCasesList: (patient: User) => Promise<void>;
+    setDoctorCasesList: (doctor: Doctor) => Promise<void>;
+    setMyCasesList: (user: User) => void;
 }

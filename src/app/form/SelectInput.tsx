@@ -1,9 +1,8 @@
-import React, { Component, HTMLProps } from "react";
+import React, { Component } from "react";
+import { WrappedFieldProps } from "redux-form";
 
-interface CompProps {
-    input: HTMLProps<HTMLSelectElement>;
+interface CompProps extends WrappedFieldProps {
     label: string;
-    meta?: { touched: boolean; dirty: boolean; error: string };
     options: {
         key: number;
         title: string;

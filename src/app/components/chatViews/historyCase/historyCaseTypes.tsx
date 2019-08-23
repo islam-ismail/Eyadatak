@@ -1,5 +1,5 @@
 import {
-    GET_HISTORY_CASE_REPLIES,
+    SET_HISTORY_CASE_REPLIES,
     HISTORY_CASE_ACTION_START,
     HISTORY_CASE_ACTION_FINISH,
     HISTORY_CASE_ACTION_ERROR
@@ -13,8 +13,8 @@ import { Dispatch } from "redux";
  * actions signature
  */
 
-export interface GetHistoryCaseChatDataAction extends AppAction {
-    type: typeof GET_HISTORY_CASE_REPLIES;
+export interface SetHistoryCaseChatDataAction extends AppAction {
+    type: typeof SET_HISTORY_CASE_REPLIES;
     payload: CaseChatElement[];
 }
 
@@ -33,7 +33,7 @@ export interface HistoryCaseActionErrorAction extends AppAction {
     excludeRefresh: boolean;
 }
 
-export type HistoryCaseActions = GetHistoryCaseChatDataAction &
+export type HistoryCaseActions = SetHistoryCaseChatDataAction &
     HistoryCaseActionStartAction &
     HistoryCaseActionErrorAction &
     HistoryCaseActionFinishAction &
@@ -42,14 +42,14 @@ export type HistoryCaseActions = GetHistoryCaseChatDataAction &
 /**
  * action creators signature
  */
-export type getHistoryCaseRepliesSig = (
+export type setHistoryCaseRepliesSig = (
     caseId: number,
     chatCase: MedicalCase,
     clearFirst: boolean
 ) => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
 export interface HistoryCaseSignatures {
-    getHistoryCaseReplies: (
+    setHistoryCaseReplies: (
         caseId: number,
         chatCase: MedicalCase,
         clearFirst: boolean

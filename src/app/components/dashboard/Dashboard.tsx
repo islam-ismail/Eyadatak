@@ -20,8 +20,8 @@ interface ComponentStateProps {
 }
 
 interface ComponentActionProps {
-    getMyCasesList(signedInUser: User): any;
-    getPendingTransfersList(id: number): any;
+    setMyCasesList(signedInUser: User): any;
+    setPendingTransfersList(id: number): any;
 }
 
 type ComponentProps = ComponentStateProps & ComponentActionProps;
@@ -39,7 +39,7 @@ class Dashboard extends Component<ComponentProps, ComponentState> {
 
     componentDidMount() {
         if (this.props.authenticated && this.props.signedInUser) {
-            this.props.getMyCasesList(this.props.signedInUser);
+            this.props.setMyCasesList(this.props.signedInUser);
         }
         // if (this.props.authenticated) {
         //   if (!this.props.medicalCases ||
@@ -47,7 +47,7 @@ class Dashboard extends Component<ComponentProps, ComponentState> {
         //     (this.props.location.state &&
         //       this.props.location.state.source === 'SideNav')
         //   ) {
-        //     this.props.getMyCasesList(this.props.signedInUser)
+        //     this.props.setMyCasesList(this.props.signedInUser)
         //   } else {
         //     this.setState(() => ({
         //       myCases: this.props.medicalCases
@@ -59,7 +59,7 @@ class Dashboard extends Component<ComponentProps, ComponentState> {
             this.props.signedInUser &&
             this.props.signedInUser.type === "doctor"
         ) {
-            this.props.getPendingTransfersList(this.props.signedInUser.id);
+            this.props.setPendingTransfersList(this.props.signedInUser.id);
         }
     }
 

@@ -8,7 +8,7 @@ export interface AuthState {
     signedInUser: User | null;
 }
 
-const initialState: AuthState = {
+export const initialAuthState: AuthState = {
     authenticated: false,
     signedInUser: null
 };
@@ -29,7 +29,7 @@ export const signOut = (state: AuthState) => {
     };
 };
 
-export default createReducer<AuthState, AuthActionTypes, AuthActions>(initialState, {
+export default createReducer<AuthState, AuthActionTypes, AuthActions>(initialAuthState, {
     [SIGN_IN]: signIn,
     [SIGN_OUT]: signOut
 });

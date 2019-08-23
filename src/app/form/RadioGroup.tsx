@@ -1,9 +1,8 @@
-import React, { HTMLProps, SFC } from "react";
+import React, { SFC } from "react";
+import { WrappedFieldProps } from "redux-form";
 
-interface FieldConfig {
-    input: HTMLProps<HTMLInputElement>;
+interface FieldConfig extends WrappedFieldProps {
     label: string;
-    meta?: { touched: boolean; error: string };
     options: {
         key: number;
         title: string;
@@ -12,7 +11,6 @@ interface FieldConfig {
 }
 
 const RadioGroup: SFC<FieldConfig> = props => {
-    props.meta = { touched: false, error: "" };
     return (
         <>
             {props.input.name === "specialityOrDoctor" ? (

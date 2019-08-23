@@ -8,8 +8,8 @@ import { CaseChatElement } from "../chatCaseTypes";
 /**
  * actions signature
  */
-export interface GetRequestStatusAction extends AppAction {
-    type: typeof historyAccessConstants.GET_REQUEST_STATUS_AND_ACCESS_LEVEL;
+export interface SetRequestStatusAction extends AppAction {
+    type: typeof historyAccessConstants.SET_REQUEST_STATUS_AND_ACCESS_LEVEL;
     payload: {
         requestStatus: string;
         accessLevel: string;
@@ -20,8 +20,8 @@ export interface GetRequestStatusAction extends AppAction {
     };
 }
 
-export interface GetApprovedHistoryCasesAction extends AppAction {
-    type: typeof historyAccessConstants.GET_HISTORY_CASES;
+export interface SetApprovedHistoryCasesAction extends AppAction {
+    type: typeof historyAccessConstants.SET_HISTORY_CASES;
     payload: MedicalCase[];
 }
 
@@ -48,8 +48,8 @@ export interface RequestSpecialityHistoryAccessAction extends AppAction {
     type: typeof historyAccessConstants.REQUEST_SPECIALITY_ACCESS;
 }
 
-export type HistoryAccessActions = GetRequestStatusAction &
-    GetApprovedHistoryCasesAction &
+export type HistoryAccessActions = SetRequestStatusAction &
+    SetApprovedHistoryCasesAction &
     HistoryAccessActionStartAction &
     HistoryAccessActionFinishAction &
     HistoryAccessActionErrorAction &
@@ -64,13 +64,13 @@ export type requestHistoryAccessSig = (
     caseId: number
 ) => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
-export type getHistoryCasesSig = (
+export type setHistoryCasesSig = (
     patientId: number,
     accessLevel: string,
     specialityId: number
 ) => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
-export type getAccessRequestStatusSig = (
+export type setAccessRequestStatusSig = (
     caseId: number,
     user: User,
     patientId: number,
@@ -89,12 +89,12 @@ export type declineHistoryAccessSig = (
 
 export interface HistoryAccessSignatures {
     requestHistoryAccess: (accessLevel: string, caseId: number) => Promise<void>;
-    getHistoryCases: (
+    setHistoryCases: (
         patientId: number,
         accessLevel: string,
         specialityId: number
     ) => Promise<void>;
-    getAccessRequestStatus: (
+    setAccessRequestStatus: (
         caseId: number,
         user: User,
         patientId: number,

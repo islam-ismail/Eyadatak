@@ -19,7 +19,7 @@ export interface MyCasesListState {
     pendingTransfers: CaseTransfer[];
 }
 
-const initialState: MyCasesListState = {
+export const initialMyCasesListState: MyCasesListState = {
     medicalCases: [],
     filteredCases: [],
     sortAndFilter: {
@@ -53,7 +53,17 @@ export const myCasesListActionError = (state: MyCasesListState) => {
     };
 };
 
-export const getMyCases = (state: MyCasesListState, action: myCasesListTypes.GetMyCasesAction) => {
+export const addNewCase = (
+    state: MyCasesListState,
+    action: myCasesListTypes.addNewCaseToMyListAction
+) => {
+    return {
+        ...state,
+        medicalCases: [...state.medicalCases, action.payload]
+    };
+};
+
+export const setMyCases = (state: MyCasesListState, action: myCasesListTypes.SetMyCasesAction) => {
     return {
         ...state,
         medicalCases: action.payload,
@@ -98,9 +108,9 @@ export const clearCaseLists = (state: MyCasesListState) => {
     };
 };
 
-export const getPendingTransfers = (
+export const setPendingTransfers = (
     state: MyCasesListState,
-    action: myCasesListTypes.GetPendingTransfersAction
+    action: myCasesListTypes.SetPendingTransfersAction
 ) => {
     return {
         ...state,
@@ -112,13 +122,14 @@ export default createReducer<
     MyCasesListState,
     myCasesListConstants.MyCasesListActionTypes,
     myCasesListTypes.MyCasesListActions
->(initialState, {
+>(initialMyCasesListState, {
+    [myCasesListConstants.ADD_NEW_CASE_ACTION]: addNewCase,
     [myCasesListConstants.MY_CASES_LIST_ACTION_START]: myCasesListActionStarted,
     [myCasesListConstants.MY_CASES_LIST_ACTION_FINISH]: myCasesListActionFinished,
     [myCasesListConstants.MY_CASES_LIST_ACTION_ERROR]: myCasesListActionError,
-    [myCasesListConstants.GET_MY_CASES]: getMyCases,
+    [myCasesListConstants.SET_MY_CASES]: setMyCases,
     [myCasesListConstants.SORT_CASES_LIST]: sortCasesList,
     [myCasesListConstants.FILTER_CASES]: filterCases,
     [myCasesListConstants.CLEAR_CASE_LISTS]: clearCaseLists,
-    [myCasesListConstants.GET_PENDING_TRANSFERS]: getPendingTransfers
+    [myCasesListConstants.SET_PENDING_TRANSFERS]: setPendingTransfers
 });

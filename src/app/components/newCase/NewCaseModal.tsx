@@ -1,4 +1,4 @@
-import React, { Component, ComponentType } from "react";
+import React, { Component, ComponentType, MouseEventHandler } from "react";
 import Modal from "react-modal";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -18,7 +18,7 @@ type CompStateProps = ReturnType<typeof mapState>;
 type CompActionProps = GlobalStateActionSignatures;
 interface CompOwnProps {
     openNewCaseModal: boolean;
-    closeNewCaseModal: () => void;
+    closeNewCaseModal: MouseEventHandler;
 }
 
 type CompProps = CompOwnProps & CompStateProps & CompActionProps;

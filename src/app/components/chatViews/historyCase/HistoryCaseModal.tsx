@@ -43,7 +43,7 @@ class HistoryCaseModal extends Component<CompProps, CompState> {
             this.setState(() => ({
                 historyCase: this.props.historyCase
             }));
-            this.props.getHistoryCaseReplies(
+            this.props.setHistoryCaseReplies(
                 this.props.historyCase.id,
                 this.props.historyCase,
                 true

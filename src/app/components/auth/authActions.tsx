@@ -11,6 +11,18 @@ import { User } from "../../types/models/User";
 import * as authTypes from "./authTypes";
 import { Dispatch } from "redux";
 import { ThunkDispatch } from "redux-thunk";
+import {
+    Api_AuthRegister_Endpoint,
+    Api_AuthRegister_Payload,
+    Api_AuthRegister_Response,
+    Api_AuthLogin_Endpoint,
+    Api_AuthLogin_Payload,
+    Api_AuthLogin_Response,
+    Api_AuthMe_Endpoint,
+    Api_AuthMe_Response,
+    Api_AuthRefresh_Endpoint,
+    Api_AuthRefresh_Response
+} from "../../types/api-endpoints/auth";
 
 export const signIn: authTypes.signInSig = (data: { user: User }): authTypes.SignInAction => {
     return {
@@ -29,13 +41,13 @@ export const signOut: authTypes.signOutSig = (): authTypes.SignOutAction => {
     };
 };
 
-export const asyncSignUp: authTypes.asyncSignUpSig = (formData: authTypes.SignUpFormData) => {
+export const asyncSignUp: authTypes.asyncSignUpSig = (formData: Api_AuthRegister_Payload) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(globalStateActions.asyncActionStart());
-            const response = await axios.post("auth/register", formData);
-            const data = response.data;
-            toast.success(data.success_message);
+            const response = await axios.post(Api_AuthRegister_Endpoint(), formData);
+            const responseData: Api_AuthRegister_Response = response.data;
+            toast.success(responseData.success_message);
             dispatch(globalStateActions.asyncActionFinish());
             dispatch(reset("signupForm"));
         } catch (error) {
@@ -45,23 +57,21 @@ export const asyncSignUp: authTypes.asyncSignUpSig = (formData: authTypes.SignUp
     };
 };
 
-export const asyncSignIn: authTypes.asyncSignInSig = (formData: authTypes.SignInFormData) => {
+export const asyncSignIn: authTypes.asyncSignInSig = (formData: Api_AuthLogin_Payload) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(globalStateActions.asyncActionStart());
-            const response = await axios.post("auth/login", formData);
-            if (response.data && response.data.status) {
-                const data: {
-                    user: User;
-                    access_token: string;
-                    expires_in: number;
-                } = response.data.data;
-                dispatch(signIn(data));
-                const token = data.access_token;
-                localStorage.setItem("eyadatak-jwt", token);
-                setAuthorizationHeader(token);
-                dispatch(globalStateActions.asyncActionFinish());
-                toast.success(`Welcome back, ${data.user.name}`);
+            const response = await axios.post(Api_AuthLogin_Endpoint(), formData);
+            const responseData: Api_AuthLogin_Response = response.data;
+            if (responseData && responseData.status) {
+                if (responseData.data) {
+                    dispatch(signIn(responseData.data));
+                    const token = responseData.data.access_token;
+                    localStorage.setItem("eyadatak-jwt", token);
+                    setAuthorizationHeader(token);
+                    dispatch(globalStateActions.asyncActionFinish());
+                    toast.success(`Welcome back, ${responseData.data.user.name}`);
+                }
             }
         } catch (error) {
             toast.error(error.response.data.error_message);
@@ -76,11 +86,13 @@ export const autoSignIn: authTypes.autoSignInSig = () => {
         const token = getJWT();
         if (token && !isTokenExpired(token)) {
             try {
-                const response = await axios.get("auth/me");
-                const data = response.data;
-                setAuthorizationHeader(token);
-                dispatch(signIn(data.data));
-                dispatch(globalStateActions.asyncActionFinish());
+                const response = await axios.get(Api_AuthMe_Endpoint());
+                const responseData: Api_AuthMe_Response = response.data;
+                if (responseData.data) {
+                    setAuthorizationHeader(token);
+                    dispatch(signIn(responseData.data));
+                    dispatch(globalStateActions.asyncActionFinish());
+                }
             } catch (error) {
                 dispatch(signOut());
                 dispatch(globalStateActions.asyncActionError());
@@ -98,13 +110,15 @@ export const refreshToken: authTypes.refreshTokenSig = () => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(globalStateActions.asyncActionStart());
-            const response = await axios.post("auth/refresh");
-            const data = response.data;
-            const token = data.data.access_token;
-            localStorage.setItem("eyadatak-jwt", token);
-            setAuthorizationHeader(token);
-            dispatch(signIn(data.data));
-            dispatch(globalStateActions.asyncActionFinish());
+            const response = await axios.post(Api_AuthRefresh_Endpoint());
+            const responseData: Api_AuthRefresh_Response = response.data;
+            if (responseData.data) {
+                const token = responseData.data.access_token;
+                localStorage.setItem("eyadatak-jwt", token);
+                setAuthorizationHeader(token);
+                dispatch(signIn(responseData.data));
+                dispatch(globalStateActions.asyncActionFinish());
+            }
         } catch (error) {
             toast.error(error.response.data.error_message);
             dispatch(signOut());

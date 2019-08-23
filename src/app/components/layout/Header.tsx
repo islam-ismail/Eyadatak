@@ -1,4 +1,4 @@
-import React, { Component, ComponentType } from "react";
+import React, { Component, ComponentType, MouseEventHandler } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { compose } from "redux";
@@ -37,13 +37,13 @@ class Header extends Component<CompProps, CompState> {
         signOut();
     };
 
-    handleOpenModal = () => {
+    handleOpenModal: MouseEventHandler = e => {
         this.setState(() => ({
             openNewCaseModal: true
         }));
     };
 
-    handleCloseModal = () => {
+    handleCloseModal: MouseEventHandler = e => {
         this.setState(() => ({
             openNewCaseModal: false
         }));

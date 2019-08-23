@@ -7,10 +7,7 @@ import SelectInputRegular from "../../form/SelectInputRegular";
 import RadioGroup from "../../form/RadioGroup";
 // import Loader from '../layout/Loader'
 import * as actions from "./transferCaseActions";
-import { Doctor } from "../../types/models/Doctor";
-import { Speciality } from "../../types/models/Speciality";
 import { DoctorsWithSpecialities, TransferCaseActionsSignatures } from "./transferCaseTypes";
-import { User } from "../../types/models/User";
 import { AppState } from "../../reducers/rootReducer";
 import { MedicalCase } from "../../types/models/MedicalCase";
 
@@ -70,7 +67,7 @@ class TransferCaseModal extends Component<CompProps, CompState> {
     };
 
     componentDidMount() {
-        this.props.getTopLevelSpecialities();
+        this.props.setTopLevelSpecialities();
         this.setState(() => ({
             transferRequestedSuccessfully: false
         }));
@@ -129,14 +126,14 @@ class TransferCaseModal extends Component<CompProps, CompState> {
 
         if (event.target.name === "top_level_speciality") {
             if (value) {
-                this.props.getSecondLevelSpecialities(value);
+                this.props.setSecondLevelSpecialities(value);
 
                 this.setState(() => ({
                     primarySpecialityID: value,
                     selectedSpecialityID: value
                 }));
                 if (this.state.transferDoctor) {
-                    this.props.getSpecialityDoctorsList(value);
+                    this.props.setSpecialityDoctorsList(value);
                 }
             } else {
                 this.setState(() => ({
@@ -153,14 +150,14 @@ class TransferCaseModal extends Component<CompProps, CompState> {
                     selectedSpecialityID: value
                 }));
                 if (this.state.transferDoctor) {
-                    this.props.getSpecialityDoctorsList(value);
+                    this.props.setSpecialityDoctorsList(value);
                 }
             } else if (prevSpecialityID) {
                 this.setState(() => ({
                     selectedSpecialityID: prevSpecialityID
                 }));
                 if (this.state.transferDoctor) {
-                    this.props.getSpecialityDoctorsList(prevSpecialityID);
+                    this.props.setSpecialityDoctorsList(prevSpecialityID);
                 }
             }
         }
@@ -186,7 +183,7 @@ class TransferCaseModal extends Component<CompProps, CompState> {
         const value = event.target.value;
 
         if (value === "doctor") {
-            this.props.getSpecialityDoctorsList(this.state.selectedSpecialityID);
+            this.props.setSpecialityDoctorsList(this.state.selectedSpecialityID);
             this.setState(() => ({
                 transferDoctor: true
             }));

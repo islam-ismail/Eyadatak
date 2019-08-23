@@ -1,5 +1,5 @@
 import React, { Component, ComponentType } from "react";
-import { Route, Switch, withRouter, RouteComponentProps } from "react-router-dom";
+import { Route, Switch, withRouter } from "react-router-dom";
 import axios from "axios";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -37,9 +37,7 @@ type CompStateProps = ReturnType<typeof mapState>;
 
 type CompActionProps = AuthActionsSignatures & GlobalStateActionSignatures;
 
-interface CompOwnProps {}
-
-type CompProps = CompOwnProps & CompStateProps & CompActionProps;
+type CompProps = CompStateProps & CompActionProps;
 
 class App extends Component<CompProps> {
     componentDidMount() {

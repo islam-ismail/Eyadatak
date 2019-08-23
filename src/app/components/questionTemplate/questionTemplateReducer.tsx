@@ -3,7 +3,7 @@ import {
     QUESTION_TEMPLATE_ACTION_START,
     QUESTION_TEMPLATE_ACTION_FINISH,
     QUESTION_TEMPLATE_ACTION_ERROR,
-    GET_SAVED_QUESTIONS,
+    SET_SAVED_QUESTIONS,
     ADD_QUESTION_TO_TEMPLATE,
     SEND_CASE_QUESTIONS,
     QuestionTemplateActionTypes
@@ -17,7 +17,7 @@ export interface QuestionTemplateState {
     loading?: boolean;
 }
 
-const initialState: QuestionTemplateState = {
+export const initialQuestionTemplateState: QuestionTemplateState = {
     savedQuestions: [],
     templateToSend: []
 };
@@ -49,7 +49,7 @@ export const questionTemplateActionError = (
     };
 };
 
-export const getSavedQuestions = (
+export const setSavedQuestions = (
     state: QuestionTemplateState,
     payload: QuestionTemplate[]
 ): QuestionTemplateState => {
@@ -79,11 +79,11 @@ export default createReducer<
     QuestionTemplateState,
     QuestionTemplateActionTypes,
     QuestionTemplateActionActions
->(initialState, {
+>(initialQuestionTemplateState, {
     [QUESTION_TEMPLATE_ACTION_START]: questionTemplateActionStarted,
     [QUESTION_TEMPLATE_ACTION_FINISH]: questionTemplateActionFinished,
     [QUESTION_TEMPLATE_ACTION_ERROR]: questionTemplateActionError,
-    [GET_SAVED_QUESTIONS]: getSavedQuestions,
+    [SET_SAVED_QUESTIONS]: setSavedQuestions,
     [ADD_QUESTION_TO_TEMPLATE]: addQuestionToTemplate,
     [SEND_CASE_QUESTIONS]: sendCaseQuestions
 });

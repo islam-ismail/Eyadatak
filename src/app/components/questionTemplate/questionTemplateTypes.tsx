@@ -4,8 +4,8 @@ import { QuestionTemplate } from "../../types/models/QuestionTemplate";
 import { Dispatch } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 
-export interface GetSavedQuestionsAction extends AppAction {
-    type: typeof questionTemplateConstants.GET_SAVED_QUESTIONS;
+export interface SetSavedQuestionsAction extends AppAction {
+    type: typeof questionTemplateConstants.SET_SAVED_QUESTIONS;
     payload: QuestionTemplate[];
 }
 
@@ -32,14 +32,14 @@ export interface QuestionTemplateActionErrorAction extends AppAction {
     excludeRefresh: boolean;
 }
 
-export type QuestionTemplateActionActions = GetSavedQuestionsAction &
+export type QuestionTemplateActionActions = SetSavedQuestionsAction &
     AddQuestionToTemplateAction &
     SendCaseQuestionsAction &
     QuestionTemplateActionStartedAction &
     QuestionTemplateActionFinishedAction &
     QuestionTemplateActionErrorAction;
 
-export type getSavedQuestionsListSig = () => (dispatch: Dispatch<AppAction>) => Promise<void>;
+export type setSavedQuestionsListSig = () => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
 export type saveNewQuestionSig = (
     questionText: string,
@@ -54,14 +54,14 @@ export type sendCaseTemplateQuestionsSig = (
 ) => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
 export interface QuestionTemplateActionsSignatures {
-    getSavedQuestions: (savedQuestions: QuestionTemplate[]) => GetSavedQuestionsAction;
+    setSavedQuestions: (savedQuestions: QuestionTemplate[]) => SetSavedQuestionsAction;
     addQuestionToTemplate: (questionToAdd: QuestionTemplate) => AddQuestionToTemplateAction;
     sendCaseQuestions: () => SendCaseQuestionsAction;
     questionTemplateActionStart: () => QuestionTemplateActionStartedAction;
     questionTemplateActionFinish: () => QuestionTemplateActionFinishedAction;
     questionTemplateActionError: () => QuestionTemplateActionErrorAction;
 
-    getSavedQuestionsList: () => Promise<void>;
+    setSavedQuestionsList: () => Promise<void>;
 
     saveNewQuestion: (
         questionText: string,

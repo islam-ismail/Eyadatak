@@ -1,6 +1,5 @@
 import { combineReducers } from "redux";
 import { reducer as FormReducer } from "redux-form";
-import usersReducer from "../components/users/usersReducer";
 import authReducer from "../components/auth/authReducer";
 import globalStateReducer from "../components/globalState/globalStateReducer";
 import newCaseReducer from "../components/newCase/newCaseReducer";
@@ -15,7 +14,6 @@ const rootReducer = combineReducers({
     global: globalStateReducer,
     auth: authReducer,
     form: FormReducer,
-    users: usersReducer,
     newCase: newCaseReducer,
     myCasesList: myCasesListReducer,
     chatCase: chatCaseReducer,

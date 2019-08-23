@@ -1,4 +1,4 @@
-import React, { Component, MouseEventHandler, EventHandler, MouseEvent } from "react";
+import React, { Component, MouseEventHandler } from "react";
 import userInfo from "../../assets/images/user-info.svg";
 import help from "../../assets/images/help.svg";
 import note from "../../assets/images/note.svg";

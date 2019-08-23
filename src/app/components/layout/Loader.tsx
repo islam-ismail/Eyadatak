@@ -6,14 +6,7 @@ const Loader: SFC<{ loading: boolean }> = props => {
     const groupClasses = props.loading ? "globalLoader show" : "globalLoader";
     return (
         <div className={groupClasses}>
-            <BarLoader
-                height={150}
-                heightUnit={"px"}
-                width={150}
-                widthUnit={"px"}
-                loading={props.loading}
-                color={"#000000"}
-            />
+            <BarLoader height={4} width={100} color="#36D7B7" loading={props.loading} />
         </div>
     );
 };

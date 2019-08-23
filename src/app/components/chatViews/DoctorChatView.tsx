@@ -95,7 +95,7 @@ class DoctorChatView extends Component<CompProps, CompState> {
     };
 
     componentDidMount() {
-        this.props.getChatCaseReplies(this.props.chatCase.id, this.props.chatCase, "doctor", true);
+        this.props.setChatCaseReplies(this.props.chatCase.id, this.props.chatCase, "doctor", true);
 
         // this.setState(() => ({
         //   caseChatData: this.props.caseChatData,
@@ -106,7 +106,7 @@ class DoctorChatView extends Component<CompProps, CompState> {
         //   waitingApproval: this.props.waitingApproval
         // }))
 
-        this.props.getHistoryAccessRequestStatus(
+        this.props.setHistoryAccessRequestStatus(
             this.props.chatCase.id,
             this.props.signedInUser as User,
             (this.props.chatCase.patient as User).id,

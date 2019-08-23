@@ -8,6 +8,8 @@ import { composeValidators, combineValidators, isRequired, matchesPattern } from
 import { IS_EMAIL } from "../../util/constants";
 import { AppState } from "../../reducers/rootReducer";
 import { SignInFormData, AuthActionsSignatures } from "../auth/authTypes";
+import { withRouter, RouteComponentProps } from "react-router";
+import leftArrow from "../../assets/images/left-arrow.svg";
 
 const mapState = (state: AppState) => ({
     signedInUser: state.auth.signedInUser,
@@ -24,9 +26,20 @@ type CompActionProps = AuthActionsSignatures;
 
 type FormData = SignInFormData;
 
-type CompProps = InjectedFormProps<FormData> & CompStateProps & CompActionProps & CompOwnProps;
+type CompProps = InjectedFormProps<FormData> &
+    RouteComponentProps &
+    CompStateProps &
+    CompActionProps &
+    CompOwnProps;
 
 class SignInForm extends Component<CompProps> {
+    componentDidUpdate() {
+        const { authenticated, history } = this.props;
+        if (authenticated) {
+            history.push("/dashboard");
+        }
+    }
+
     handleFormSubmit = (values: FormData) => {
         this.props.asyncSignIn(values);
     };
@@ -53,7 +66,7 @@ class SignInForm extends Component<CompProps> {
                 </div>
                 <div className="form-group btn-group">
                     <button className="login" type="submit">
-                        دخول <img src="images/left-arrow.svg" alt="" />
+                        دخول <img src={leftArrow} alt="" />
                     </button>
                     <button
                         className="signup"
@@ -79,6 +92,7 @@ const validate = combineValidators({
 });
 
 export default compose<ComponentType<CompOwnProps>>(
+    withRouter,
     connect(
         mapState,
         actions

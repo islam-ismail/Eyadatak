@@ -1,4 +1,4 @@
-import React, { Component, ComponentType, ChangeEventHandler, MouseEventHandler } from "react";
+import React, { Component, ComponentType, MouseEventHandler } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import ChatSideNav from "./ChatSideNav";
@@ -7,13 +7,12 @@ import { ChatMessage } from "./ChatMessage";
 import { DoctorDetailsPanel } from "./DoctorDetailsPanel";
 import CaseQuestionsPanel from "./CaseQuestionsPanel";
 import * as actions from "./chatCaseActions";
-import { reduxForm, Field, InjectedFormProps, FormSubmitHandler } from "redux-form";
+import { reduxForm, Field, InjectedFormProps } from "redux-form";
 import TextAreaRegular from "../../form/TextAreaRegular";
 import ScrollToBottom from "../../util/ScrollToBottom";
 import { AppState } from "../../reducers/rootReducer";
 import { ChatCaseSignatures, CaseChatElement } from "./chatCaseTypes";
 import { MedicalCase } from "../../types/models/MedicalCase";
-import { PatientHistoryAccess } from "../../types/models/PatientHistoryAccess";
 import { User } from "../../types/models/User";
 
 const mapState = (state: AppState) => ({
@@ -53,7 +52,7 @@ interface CompState extends Omit<CompStateProps, "locale" | "signedInUser"> {
 }
 
 class PatientChatView extends Component<CompProps, CompState> {
-    state: CompState = {
+    readonly state: Readonly<CompState> = {
         caseChatData: [],
         caseDoctor: null,
         caseUnansweredQuestions: [],
@@ -84,8 +83,8 @@ class PatientChatView extends Component<CompProps, CompState> {
             requestRespondedTo: false
         }));
 
-        this.props.getChatCaseReplies(this.props.chatCase.id, this.props.chatCase, "patient", true);
-        this.props.getHistoryAccessRequestStatus(
+        this.props.setChatCaseReplies(this.props.chatCase.id, this.props.chatCase, "patient", true);
+        this.props.setHistoryAccessRequestStatus(
             this.props.chatCase.id,
             this.props.signedInUser as User,
             (this.props.signedInUser as User).id,
@@ -97,7 +96,10 @@ class PatientChatView extends Component<CompProps, CompState> {
         if (prevProps.caseChatData !== this.props.caseChatData) {
             this.setState(() => ({
                 caseChatData: this.props.caseChatData,
-                allChatMessages: [...this.props.caseChatData, ...this.props.allAccessRequests].sort(
+                allChatMessages: [
+                    ...this.props.caseChatData,
+                    ...(this.props.allAccessRequests || [])
+                ].sort(
                     (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
                 )
             }));
@@ -140,18 +142,28 @@ class PatientChatView extends Component<CompProps, CompState> {
         if (prevProps.allAccessRequests !== this.props.allAccessRequests) {
             this.setState(() => ({
                 allAccessRequests: this.props.allAccessRequests,
-                allChatMessages: [...this.props.caseChatData, ...this.props.allAccessRequests].sort(
+                allChatMessages: [
+                    ...this.props.caseChatData,
+                    ...(this.props.allAccessRequests || [])
+                ].sort(
                     (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
                 )
             }));
         }
         if (
+            this.state.caseChatData &&
+            this.state.allChatMessages &&
+            this.props.allAccessRequests &&
+            this.state.allAccessRequests &&
             this.state.caseChatData.length !== 0 &&
             this.state.allChatMessages.length !==
                 this.state.caseChatData.length + this.state.allAccessRequests.length
         ) {
             this.setState(() => ({
-                allChatMessages: [...this.props.caseChatData, ...this.props.allAccessRequests].sort(
+                allChatMessages: [
+                    ...this.props.caseChatData,
+                    ...(this.props.allAccessRequests || [])
+                ].sort(
                     (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
                 )
             }));
@@ -230,7 +242,7 @@ class PatientChatView extends Component<CompProps, CompState> {
                                     <div
                                         key={
                                             message.id.toString() +
-                                            (message.accessRequest as PatientHistoryAccess).status
+                                            (message.accessRequest && message.accessRequest.status)
                                         }
                                     >
                                         <ChatMessage

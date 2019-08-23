@@ -15,7 +15,7 @@ export interface HistoryAccessState {
     loading?: boolean;
 }
 
-const initialState: HistoryAccessState = {
+export const initialHistoryAccessState: HistoryAccessState = {
     historyCases: [],
     allAccessRequests: [],
     requestStatus: "",
@@ -25,55 +25,40 @@ const initialState: HistoryAccessState = {
     waitingLevel: ""
 };
 
-export const historyAccessActionStarted = (
-    state: HistoryAccessState,
-    payload: any
-): HistoryAccessState => {
+export const historyAccessActionStarted = (state: HistoryAccessState): HistoryAccessState => {
     return {
         ...state,
         loading: true
     };
 };
 
-export const historyAccessActionFinished = (
-    state: HistoryAccessState,
-    payload: any
-): HistoryAccessState => {
+export const historyAccessActionFinished = (state: HistoryAccessState): HistoryAccessState => {
     return {
         ...state,
         loading: false
     };
 };
 
-export const historyAccessActionError = (
-    state: HistoryAccessState,
-    payload: any
-): HistoryAccessState => {
+export const historyAccessActionError = (state: HistoryAccessState): HistoryAccessState => {
     return {
         ...state,
         loading: false
     };
 };
 
-export const requestFullHistoryAccess = (
-    state: HistoryAccessState,
-    payload: any
-): HistoryAccessState => {
+export const requestFullHistoryAccess = (state: HistoryAccessState): HistoryAccessState => {
     return {
         ...state
     };
 };
 
-export const requestSpcialityAccess = (
-    state: HistoryAccessState,
-    payload: any
-): HistoryAccessState => {
+export const requestSpcialityAccess = (state: HistoryAccessState): HistoryAccessState => {
     return {
         ...state
     };
 };
 
-export const getRequestStatus = (
+export const setRequestStatus = (
     state: HistoryAccessState,
     payload: HistoryAccessState
 ): HistoryAccessState => {
@@ -88,7 +73,7 @@ export const getRequestStatus = (
     };
 };
 
-export const getApprovedHistoryCases = (
+export const setApprovedHistoryCases = (
     state: HistoryAccessState,
     payload: MedicalCase[]
 ): HistoryAccessState => {
@@ -102,12 +87,12 @@ export default createReducer<
     HistoryAccessState,
     historyAccessConstants.HistoryAccessActionTypes,
     HistoryAccessActions
->(initialState, {
+>(initialHistoryAccessState, {
     [historyAccessConstants.HISTORY_ACCESS_ACTION_START]: historyAccessActionStarted,
     [historyAccessConstants.HISTORY_ACCESS_ACTION_FINISH]: historyAccessActionFinished,
     [historyAccessConstants.HISTORY_ACCESS_ACTION_ERROR]: historyAccessActionError,
     [historyAccessConstants.REQUEST_FULL_ACCESS]: requestFullHistoryAccess,
     [historyAccessConstants.REQUEST_SPECIALITY_ACCESS]: requestSpcialityAccess,
-    [historyAccessConstants.GET_REQUEST_STATUS_AND_ACCESS_LEVEL]: getRequestStatus,
-    [historyAccessConstants.GET_HISTORY_CASES]: getApprovedHistoryCases
+    [historyAccessConstants.SET_REQUEST_STATUS_AND_ACCESS_LEVEL]: setRequestStatus,
+    [historyAccessConstants.SET_HISTORY_CASES]: setApprovedHistoryCases
 });

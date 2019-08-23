@@ -9,6 +9,15 @@ import * as actions from "../auth/authActions";
 import { IS_EMAIL } from "../../util/constants";
 import { generateYears, months, getDays } from "../../util/helpersFunc";
 import { SignUpFormData, AuthActionsSignatures } from "../auth/authTypes";
+import { RouteComponentProps, withRouter } from "react-router";
+import { AppState } from "../../reducers/rootReducer";
+
+const mapState = (state: AppState) => ({
+    signedInUser: state.auth.signedInUser,
+    authenticated: state.auth.authenticated
+});
+
+type CompStateProps = ReturnType<typeof mapState>;
 
 type CompActionProps = AuthActionsSignatures;
 
@@ -18,7 +27,11 @@ interface CompOwnProps {
 
 type FormData = SignUpFormData & { year: number; month: number; day: number };
 
-type CompProps = InjectedFormProps<FormData> & CompActionProps & CompOwnProps;
+type CompProps = RouteComponentProps &
+    InjectedFormProps<FormData> &
+    CompActionProps &
+    CompOwnProps &
+    CompStateProps;
 
 interface CompState {
     month: string;
@@ -26,10 +39,17 @@ interface CompState {
 }
 
 class SignUpForm extends Component<CompProps, CompState> {
-    state = {
+    state: CompState = {
         month: "January",
         birthdateError: ""
     };
+
+    componentDidUpdate() {
+        const { authenticated, history } = this.props;
+        if (authenticated) {
+            history.push("/dashboard");
+        }
+    }
 
     handleMonthChange: ChangeEventHandler<HTMLSelectElement> = event => {
         this.setState(() => ({
@@ -215,8 +235,9 @@ const validate = revalidate.combineValidators({
 });
 
 export default compose<ComponentType<CompOwnProps>>(
+    withRouter,
     connect(
-        null,
+        mapState,
         actions
     ),
     reduxForm({ form: "signupForm", enableReinitialize: true, validate })

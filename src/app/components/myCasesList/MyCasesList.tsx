@@ -56,7 +56,7 @@ class MyCasesList extends Component<CompProps, CompState> {
                         this.props.location.state.source === "SideNav")) &&
                 this.props.signedInUser
             ) {
-                this.props.getMyCasesList(this.props.signedInUser);
+                this.props.setMyCasesList(this.props.signedInUser);
             } else {
                 this.setState(() => ({
                     myCases: this.props.medicalCases

@@ -68,17 +68,17 @@ class CaseQuestionsPanel extends Component<CompProps, CompOwnState> {
         }));
     };
 
-    handleFormSubmit(values: FormData) {
+    handleFormSubmit = (values: FormData) => {
         this.props.handleSubmitAnswers(
             this.props.caseId,
             values.unanswered_case_questions,
             this.props.caseUnansweredQuestions
         );
-    }
+    };
 
-    handleUploadFiles() {
+    handleUploadFiles = () => {
         this.props.handleUploadFiles(this.props.caseId, this.state.uploadedFiles);
-    }
+    };
 
     render() {
         const { invalid, submitting, pristine, questionsOrHistoryActive } = this.props;

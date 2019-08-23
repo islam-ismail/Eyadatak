@@ -14,6 +14,30 @@ import * as historyAccessActions from "./historyAccess/historyAccessActions";
 import { Dispatch } from "redux";
 import { MedicalCase } from "../../types/models/MedicalCase";
 import { ThunkDispatch } from "redux-thunk";
+import {
+    Api_CaseRepliesViewAll_Endpoint,
+    Api_CaseRepliesViewAll_Response,
+    Api_CaseRepliesAdd_Endpoint,
+    Api_CaseRepliesAdd_Payload
+} from "../../types/api-endpoints/case-replies";
+import {
+    Api_CaseQuestionsViewAnswers_Endpoint,
+    Api_CaseQuestionsViewAnswers_Response,
+    Api_CaseQuestionsViewUnanswered_Endpoint,
+    Api_CaseQuestionsViewUnanswered_Response
+} from "../../types/api-endpoints/case_questions";
+import {
+    Api_CaseTransfersViewMedicalCase_Endpoint,
+    Api_CaseTransfersViewMedicalCase_Response
+} from "../../types/api-endpoints/case-transfers";
+import {
+    Api_PatientCaseQuestionsAnswer_Endpoint,
+    Api_PatientCaseQuestionsAnswer_Payload
+} from "../../types/api-endpoints/patient";
+import {
+    Api_DoctorsView_Endpoint,
+    Api_DoctorsView_Response
+} from "../../types/api-endpoints/doctors";
 
 export const chatCaseActionStart = (): chatCaseTypes.ChatCaseActionStartAction => {
     return {
@@ -36,27 +60,27 @@ export const chatCaseActionError = (): chatCaseTypes.ChatCaseActionErrorAction =
     };
 };
 
-export const getCaseChatData = (
+export const setCaseChatData = (
     replies: chatCaseTypes.CaseChatElement[],
     questions: chatCaseTypes.CaseChatElement[] = [],
     lastReplyId: number = 0
-): chatCaseTypes.GetCaseChatDataAction => {
+): chatCaseTypes.SetCaseChatDataAction => {
     return {
-        type: chatCaseConstants.GET_CASE_REPLIES,
+        type: chatCaseConstants.SET_CASE_REPLIES,
         payload: { replies: replies, questions: questions, lastReplyId: lastReplyId }
     };
 };
 
-export const getCasePatient = (casePatient: User): chatCaseTypes.GetCasePatientAction => {
+export const setCasePatient = (casePatient: User): chatCaseTypes.SetCasePatientAction => {
     return {
-        type: chatCaseConstants.GET_CASE_PATIENT,
+        type: chatCaseConstants.SET_CASE_PATIENT,
         payload: casePatient
     };
 };
 
-export const getCaseDoctor = (caseDoctor: Doctor): chatCaseTypes.GetCaseDoctorAction => {
+export const setCaseDoctor = (caseDoctor: Doctor): chatCaseTypes.SetCaseDoctorAction => {
     return {
-        type: chatCaseConstants.GET_CASE_DOCTOR,
+        type: chatCaseConstants.SET_CASE_DOCTOR,
         payload: caseDoctor
     };
 };
@@ -160,7 +184,7 @@ export const groupAnswersAndQuestions: chatCaseTypes.groupAnswersAndQuestionsSig
     return groupedReplies;
 };
 
-export const getChatCaseReplies: chatCaseTypes.getChatCaseRepliesSig = (
+export const setChatCaseReplies: chatCaseTypes.setChatCaseRepliesSig = (
     caseId: number,
     chatCase: MedicalCase,
     userType: string,
@@ -168,14 +192,14 @@ export const getChatCaseReplies: chatCaseTypes.getChatCaseRepliesSig = (
 ) => {
     return (dispatch: ThunkDispatch<{}, {}, AppAction>) => {
         if (userType === "doctor") {
-            dispatch(getDoctorChatCaseReplies(caseId, chatCase, clearFirst));
+            dispatch(setDoctorChatCaseReplies(caseId, chatCase, clearFirst));
         } else {
-            dispatch(getPatientChatCaseReplies(caseId, chatCase, clearFirst));
+            dispatch(setPatientChatCaseReplies(caseId, chatCase, clearFirst));
         }
     };
 };
 
-export const getDoctorChatCaseReplies: chatCaseTypes.getDoctorChatCaseRepliesSig = (
+export const setDoctorChatCaseReplies: chatCaseTypes.setDoctorChatCaseRepliesSig = (
     caseId: number,
     chatCase: MedicalCase,
     clearFirst: boolean
@@ -183,27 +207,39 @@ export const getDoctorChatCaseReplies: chatCaseTypes.getDoctorChatCaseRepliesSig
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(chatCaseActionStart());
-            if (clearFirst) dispatch(getCaseChatData([]));
+            if (clearFirst) dispatch(setCaseChatData([]));
 
-            const response1 = await axios.get(`case_replies/medical_case/${caseId}`);
-            const data1 = response1.data;
-            const caseReplies: CaseReply[] = data1.data.case_replies;
+            const response1 = await axios.get(Api_CaseRepliesViewAll_Endpoint(caseId));
+            const responseData1: Api_CaseRepliesViewAll_Response = response1.data;
+            let caseReplies: CaseReply[] = [];
+            if (responseData1.data) {
+                caseReplies = responseData1.data.case_replies;
+            }
             const lastReplyId =
                 caseReplies.length !== 0
                     ? Math.max.apply(Math, caseReplies.map(reply => reply.id))
                     : 0;
 
-            const response2 = await axios.get(`case_questions/medical_case/${caseId}/answers`);
-            const data2 = response2.data;
-            const caseAnswers: CaseQuestionAnswer[] = data2.data.answers;
+            const response2 = await axios.get(Api_CaseQuestionsViewAnswers_Endpoint(caseId));
+            const responseData2: Api_CaseQuestionsViewAnswers_Response = response2.data;
+            let caseAnswers: CaseQuestionAnswer[] = [];
+            if (responseData2.data) {
+                caseAnswers = responseData2.data.answers;
+            }
 
-            const response3 = await axios.get(`case_questions/medical_case/${caseId}/unanswered`);
-            const data3 = response3.data;
-            const caseUnansweredQuestions: CaseQuestion[] = data3.data.case_questions;
+            const response3 = await axios.get(Api_CaseQuestionsViewUnanswered_Endpoint(caseId));
+            const responseData3: Api_CaseQuestionsViewUnanswered_Response = response3.data;
+            let caseUnansweredQuestions: CaseQuestion[] = [];
+            if (responseData3.data) {
+                caseUnansweredQuestions = responseData3.data.case_questions;
+            }
 
-            const response4 = await axios.get(`case_transfers/${caseId}`);
-            const data4 = response4.data;
-            const caseTransfers: CaseTransfer[] = data4.data.case_transfers;
+            const response4 = await axios.get(Api_CaseTransfersViewMedicalCase_Endpoint(caseId));
+            const responseData4: Api_CaseTransfersViewMedicalCase_Response = response4.data;
+            let caseTransfers: CaseTransfer[] = [];
+            if (responseData4.data) {
+                caseTransfers = responseData4.data.case_transfers;
+            }
 
             const caseChatData: chatCaseTypes.CaseChatElement[] = [];
             let index = 0;
@@ -215,55 +251,47 @@ export const getDoctorChatCaseReplies: chatCaseTypes.getDoctorChatCaseRepliesSig
                 question: chatCase
             });
 
-            await Promise.all(
-                caseReplies.map(async caseReply => {
-                    caseChatData.push({
-                        id: index++,
-                        type: "reply",
-                        created_at: caseReply.created_at,
-                        reply: caseReply
-                    });
-                })
-            );
+            caseReplies.forEach(caseReply => {
+                caseChatData.push({
+                    id: index++,
+                    type: "reply",
+                    created_at: caseReply.created_at,
+                    reply: caseReply
+                });
+            });
 
-            await Promise.all(
-                caseAnswers.map(async caseAnswer => {
-                    caseChatData.push({
-                        id: index++,
-                        type: "answer",
-                        created_at: caseAnswer.created_at,
-                        answer: caseAnswer
-                    });
-                })
-            );
+            caseAnswers.forEach(caseAnswer => {
+                caseChatData.push({
+                    id: index++,
+                    type: "answer",
+                    created_at: caseAnswer.created_at,
+                    answer: caseAnswer
+                });
+            });
 
-            await Promise.all(
-                caseUnansweredQuestions.map(async caseQuestion => {
-                    caseChatData.push({
-                        id: index++,
-                        type: "question",
-                        created_at: caseQuestion.created_at,
-                        question: caseQuestion
-                    });
-                })
-            );
+            caseUnansweredQuestions.forEach(caseQuestion => {
+                caseChatData.push({
+                    id: index++,
+                    type: "question",
+                    created_at: caseQuestion.created_at,
+                    question: caseQuestion
+                });
+            });
 
-            await Promise.all(
-                caseTransfers.map(async caseTransfer => {
-                    caseChatData.push({
-                        id: index++,
-                        type: "transfer",
-                        created_at: caseTransfer.created_at,
-                        transfer: caseTransfer
-                    });
-                })
-            );
+            caseTransfers.forEach(caseTransfer => {
+                caseChatData.push({
+                    id: index++,
+                    type: "transfer",
+                    created_at: caseTransfer.created_at,
+                    transfer: caseTransfer
+                });
+            });
 
             const sortedReplies = caseChatData.sort(
                 (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
             );
             if (sortedReplies.length === 0) {
-                dispatch(getCaseChatData([]));
+                dispatch(setCaseChatData([]));
             } else {
                 const answersGrouped = groupAnswersAndQuestions(sortedReplies, "answer");
                 const groupedQuestions = answersGrouped.filter(reply => reply.type === "question");
@@ -272,12 +300,12 @@ export const getDoctorChatCaseReplies: chatCaseTypes.getDoctorChatCaseRepliesSig
                     "question"
                 );
                 dispatch(
-                    getCaseChatData(answersAndQuestionsGrouped, groupedQuestions, lastReplyId)
+                    setCaseChatData(answersAndQuestionsGrouped, groupedQuestions, lastReplyId)
                 );
             }
 
             if (chatCase.patient) {
-                dispatch(getCasePatient(chatCase.patient));
+                dispatch(setCasePatient(chatCase.patient));
             }
 
             dispatch(chatCaseActionFinish());
@@ -289,7 +317,7 @@ export const getDoctorChatCaseReplies: chatCaseTypes.getDoctorChatCaseRepliesSig
     };
 };
 
-export const getPatientChatCaseReplies: chatCaseTypes.getPatientChatCaseRepliesSig = (
+export const setPatientChatCaseReplies: chatCaseTypes.setPatientChatCaseRepliesSig = (
     caseId: number,
     chatCase: MedicalCase,
     clearFirst: boolean
@@ -297,35 +325,49 @@ export const getPatientChatCaseReplies: chatCaseTypes.getPatientChatCaseRepliesS
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(chatCaseActionStart());
-            if (clearFirst) dispatch(getCaseChatData([]));
+            if (clearFirst) dispatch(setCaseChatData([]));
 
-            const response1 = await axios.get(`case_replies/medical_case/${caseId}`);
-            const data1 = response1.data;
-            const caseReplies: CaseReply[] = data1.data.case_replies;
+            const response1 = await axios.get(Api_CaseRepliesViewAll_Endpoint(caseId));
+            const responseData1: Api_CaseRepliesViewAll_Response = response1.data;
+            let caseReplies: CaseReply[] = [];
+            if (responseData1.data) {
+                caseReplies = responseData1.data.case_replies;
+            }
 
             const lastReplyId =
                 caseReplies.length !== 0
                     ? Math.max.apply(Math, caseReplies.map(reply => reply.id))
                     : 0;
 
-            const response2 = await axios.get(`case_questions/medical_case/${caseId}/answers`);
-            const data2 = response2.data;
-            const caseAnswers: CaseQuestionAnswer[] = data2.data.answers;
+            const response2 = await axios.get(Api_CaseQuestionsViewAnswers_Endpoint(caseId));
+            const responseData2: Api_CaseQuestionsViewAnswers_Response = response2.data;
+            let caseAnswers: CaseQuestionAnswer[] = [];
+            if (responseData2.data) {
+                caseAnswers = responseData2.data.answers;
+            }
 
-            const response3 = await axios.get(`case_questions/medical_case/${caseId}/unanswered`);
-            const data3 = response3.data;
-            const caseUnansweredQuestions: CaseQuestion[] = data3.data.case_questions;
+            const response3 = await axios.get(Api_CaseQuestionsViewUnanswered_Endpoint(caseId));
+            const responseData3: Api_CaseQuestionsViewUnanswered_Response = response3.data;
+            let caseUnansweredQuestions: CaseQuestion[] = [];
+            if (responseData3.data) {
+                caseUnansweredQuestions = responseData3.data.case_questions;
+            }
 
-            const response4 = await axios.get(`case_transfers/${caseId}`);
-            const data4 = response4.data;
-            const caseTransfers: CaseTransfer[] = data4.data.case_transfers;
+            const response4 = await axios.get(Api_CaseTransfersViewMedicalCase_Endpoint(caseId));
+            const responseData4: Api_CaseTransfersViewMedicalCase_Response = response4.data;
+            let caseTransfers: CaseTransfer[] = [];
+            if (responseData4.data) {
+                caseTransfers = responseData4.data.case_transfers;
+            }
 
             let chatCaseDoctor: Doctor | null = null;
             if (chatCase.doctor_id !== 0) {
                 if (chatCase.doctor) {
-                    const response5 = await axios.get(`doctors/${chatCase.doctor.id}`);
-                    const data5 = response5.data;
-                    chatCaseDoctor = data5.data.doctor;
+                    const response5 = await axios.get(Api_DoctorsView_Endpoint(chatCase.doctor.id));
+                    const responseData5: Api_DoctorsView_Response = response5.data;
+                    if (responseData5.data) {
+                        chatCaseDoctor = responseData5.data.doctor;
+                    }
                 }
             }
 
@@ -386,7 +428,7 @@ export const getPatientChatCaseReplies: chatCaseTypes.getPatientChatCaseRepliesS
             const sortedReplies = caseChatData.sort(
                 (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
             );
-            if (sortedReplies.length === 0) dispatch(getCaseChatData([]));
+            if (sortedReplies.length === 0) dispatch(setCaseChatData([]));
             else {
                 const answersGrouped = groupAnswersAndQuestions(sortedReplies, "answer");
                 const groupedQuestions = answersGrouped.filter(reply => reply.type === "question");
@@ -395,12 +437,12 @@ export const getPatientChatCaseReplies: chatCaseTypes.getPatientChatCaseRepliesS
                     "question"
                 );
                 dispatch(
-                    getCaseChatData(answersAndQuestionsGrouped, groupedQuestions, lastReplyId)
+                    setCaseChatData(answersAndQuestionsGrouped, groupedQuestions, lastReplyId)
                 );
             }
 
             if (chatCaseDoctor) {
-                dispatch(getCaseDoctor(chatCaseDoctor));
+                dispatch(setCaseDoctor(chatCaseDoctor));
             }
 
             dispatch(chatCaseActionFinish());
@@ -421,8 +463,12 @@ export const handleSubmitChatReply: chatCaseTypes.handleSubmitChatReplySig = (
         try {
             dispatch(chatCaseActionStart());
 
-            await axios.post(`case_replies/${case_reply.case_id}`, { reply: case_reply.reply });
-            dispatch(getChatCaseReplies(chatCase.id, chatCase, userType, true));
+            const payload: Api_CaseRepliesAdd_Payload = {
+                reply: case_reply.reply
+            };
+            await axios.post(Api_CaseRepliesAdd_Endpoint(case_reply.case_id), payload);
+
+            dispatch(setChatCaseReplies(chatCase.id, chatCase, userType, true));
 
             dispatch(chatCaseActionFinish());
         } catch (error) {
@@ -451,7 +497,10 @@ export const handleUploadFiles: chatCaseTypes.handleUploadFilesSig = (
                         .create({
                             headers: { "Content-Type": "multipart/form-data" }
                         })
-                        .post(`patient/case_questions/${caseId}/${caseQuestionId}`, formData)
+                        .post(
+                            Api_PatientCaseQuestionsAnswer_Endpoint(caseId, caseQuestionId),
+                            formData
+                        )
                         .catch(function(error) {
                             console.log("catch error:", error);
                         });
@@ -470,28 +519,33 @@ export const handleUploadFiles: chatCaseTypes.handleUploadFilesSig = (
 export const handleSubmitAnswers: chatCaseTypes.handleSubmitAnswersSig = (
     caseId: number,
     answers: any[],
-    caseQuestions: CaseQuestion[]
+    caseQuestions: chatCaseTypes.CaseChatElement[]
 ) => {
     return async (dispatch: Dispatch<AppAction>) => {
         try {
             dispatch(chatCaseActionStart());
 
-            await Promise.all(
-                answers.map(async (answer, index) => {
-                    const answeredQuestion = caseQuestions.filter(
-                        caseQuestion => caseQuestion.id === index
-                    );
+            await answers.forEach(async (answer, index) => {
+                const answeredQuestion = caseQuestions.filter(
+                    caseQuestion => caseQuestion.question && caseQuestion.question.id === index
+                );
 
-                    if (answeredQuestion[0].question_template.question_type === "CheckboxInput")
-                        await axios.post(`patient/case_questions/${caseId}/${index}`, {
-                            question_answer: JSON.stringify(answer)
-                        });
-                    else
-                        await axios.post(`patient/case_questions/${caseId}/${index}`, {
-                            question_answer: answer
-                        });
-                })
-            );
+                let question_answer = "";
+                if (answeredQuestion[0] && answeredQuestion[0].question) {
+                    const question = answeredQuestion[0].question as CaseQuestion;
+                    if (question.question_template.question_type === "CheckboxInput") {
+                        question_answer = JSON.stringify(answer);
+                    } else {
+                        question_answer = answer;
+                    }
+
+                    let payload: Api_PatientCaseQuestionsAnswer_Payload = { question_answer };
+                    await axios.post(
+                        Api_PatientCaseQuestionsAnswer_Endpoint(caseId, index),
+                        payload
+                    );
+                }
+            });
 
             dispatch(chatCaseActionFinish());
         } catch (error) {
@@ -502,7 +556,7 @@ export const handleSubmitAnswers: chatCaseTypes.handleSubmitAnswersSig = (
     };
 };
 
-export const getHistoryAccessRequestStatus: chatCaseTypes.getHistoryAccessRequestStatusSig = (
+export const setHistoryAccessRequestStatus: chatCaseTypes.setHistoryAccessRequestStatusSig = (
     caseId: number,
     user: User,
     patientId: number,
@@ -510,7 +564,7 @@ export const getHistoryAccessRequestStatus: chatCaseTypes.getHistoryAccessReques
 ) => {
     return async (dispatch: ThunkDispatch<{}, {}, AppAction>) => {
         dispatch(
-            historyAccessActions.getAccessRequestStatus(caseId, user, patientId, specialityId, true)
+            historyAccessActions.setAccessRequestStatus(caseId, user, patientId, specialityId, true)
         );
     };
 };
@@ -528,11 +582,11 @@ export const respondToHistoryAccessRequest: chatCaseTypes.respondToHistoryAccess
         if (requestStatus === "Approved")
             await dispatch(historyAccessActions.approveHistoryAccess(historyAccessId, accessLevel));
         else await dispatch(historyAccessActions.declineHistoryAccess(historyAccessId));
-        // dispatch(getChatCaseReplies(chatCase.id, chatCase, userType, true))
+        // dispatch(setChatCaseReplies(chatCase.id, chatCase, userType, true))
         setTimeout(
             () =>
                 dispatch(
-                    historyAccessActions.getAccessRequestStatus(
+                    historyAccessActions.setAccessRequestStatus(
                         caseId,
                         user,
                         patientId,

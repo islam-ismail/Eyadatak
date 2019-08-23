@@ -14,7 +14,7 @@ export interface NewCaseState {
     loading: boolean;
 }
 
-const initialState: NewCaseState = {
+export const initialNewCaseState: NewCaseState = {
     primarySpecialities: [],
     secondarySpecialities: [],
     initialRequiredQuestions: [],
@@ -45,9 +45,9 @@ export const newCaseActionError = (state: NewCaseState) => {
     };
 };
 
-export const getPrimarySpecialities = (
+export const setPrimarySpecialities = (
     state: NewCaseState,
-    action: newCaseTypes.GetPrimarySpecialitiesAction
+    action: newCaseTypes.SetPrimarySpecialitiesAction
 ) => {
     return {
         ...state,
@@ -55,9 +55,9 @@ export const getPrimarySpecialities = (
     };
 };
 
-export const getSecondarySpecialities = (
+export const setSecondarySpecialities = (
     state: NewCaseState,
-    action: newCaseTypes.GetSecondarySpecialitiesAction
+    action: newCaseTypes.SetSecondarySpecialitiesAction
 ) => {
     return {
         ...state,
@@ -65,9 +65,9 @@ export const getSecondarySpecialities = (
     };
 };
 
-export const getInitialRequiredQuestions = (
+export const setInitialRequiredQuestions = (
     state: NewCaseState,
-    action: newCaseTypes.GetInitialRequiredQuestionsAction
+    action: newCaseTypes.SetInitialRequiredQuestionsAction
 ) => {
     return {
         ...state,
@@ -75,9 +75,9 @@ export const getInitialRequiredQuestions = (
     };
 };
 
-export const getRequiredQuestions = (
+export const setRequiredQuestions = (
     state: NewCaseState,
-    action: newCaseTypes.GetRequiredQuestionsAction
+    action: newCaseTypes.SetRequiredQuestionsAction
 ) => {
     return {
         ...state,
@@ -85,9 +85,9 @@ export const getRequiredQuestions = (
     };
 };
 
-export const getInitialNotRequiredQuestions = (
+export const setInitialNotRequiredQuestions = (
     state: NewCaseState,
-    action: newCaseTypes.GetInitialNotRequiredQuestionsAction
+    action: newCaseTypes.SetInitialNotRequiredQuestionsAction
 ) => {
     return {
         ...state,
@@ -95,9 +95,9 @@ export const getInitialNotRequiredQuestions = (
     };
 };
 
-export const getNotRequiredQuestions = (
+export const setNotRequiredQuestions = (
     state: NewCaseState,
-    action: newCaseTypes.GetNotRequiredQuestionsAction
+    action: newCaseTypes.SetNotRequiredQuestionsAction
 ) => {
     return {
         ...state,
@@ -109,14 +109,14 @@ export default createReducer<
     NewCaseState,
     newCaseConstants.NewCaseActionTypes,
     newCaseTypes.NewCaseActions
->(initialState, {
+>(initialNewCaseState, {
     [newCaseConstants.NEW_CASE_ACTION_START]: newCaseActionStarted,
     [newCaseConstants.NEW_CASE_ACTION_FINISH]: newCaseActionFinished,
     [newCaseConstants.NEW_CASE_ACTION_ERROR]: newCaseActionError,
-    [newCaseConstants.GET_PRIMARY_SPECIALITIES]: getPrimarySpecialities,
-    [newCaseConstants.GET_SECONDARY_SPECIALITIES]: getSecondarySpecialities,
-    [newCaseConstants.GET_INITIAL_REQUIRED_QUESTIONS]: getInitialRequiredQuestions,
-    [newCaseConstants.GET_REQUIRED_QUESTIONS]: getRequiredQuestions,
-    [newCaseConstants.GET_INITIAL_NOT_REQUIRED_QUESTIONS]: getInitialNotRequiredQuestions,
-    [newCaseConstants.GET_NOT_REQUIRED_QUESTIONS]: getNotRequiredQuestions
+    [newCaseConstants.SET_PRIMARY_SPECIALITIES]: setPrimarySpecialities,
+    [newCaseConstants.SET_SECONDARY_SPECIALITIES]: setSecondarySpecialities,
+    [newCaseConstants.SET_INITIAL_REQUIRED_QUESTIONS]: setInitialRequiredQuestions,
+    [newCaseConstants.SET_REQUIRED_QUESTIONS]: setRequiredQuestions,
+    [newCaseConstants.SET_INITIAL_NOT_REQUIRED_QUESTIONS]: setInitialNotRequiredQuestions,
+    [newCaseConstants.SET_NOT_REQUIRED_QUESTIONS]: setNotRequiredQuestions
 });

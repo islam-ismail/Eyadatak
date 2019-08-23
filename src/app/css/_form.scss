@@ -66,7 +66,6 @@
 
     label {
         color: $textColorLight;
-        position: absolute;
         left: 0.5rem;
         top: 1rem;
         pointer-events: none;
@@ -171,7 +170,7 @@
     select {
         position: relative;
         padding-right: 3rem;
-        background-image: url("../assets/images/dropdown-arrow.svg");
+        background-image: url("app/assets/images/dropdown-arrow.svg");
         background-size: 1.2rem;
         background-position: center right 1rem;
         background-repeat: no-repeat;
@@ -231,8 +230,8 @@
 } //radio-group
 
 .radio-group-transfer {
-  font-weight: bolder;
-  line-height: 3.5rem;
+    font-weight: bolder;
+    line-height: 3.5rem;
 }
 
 .radio-check {
@@ -361,5 +360,5 @@
 } //dropzone
 
 .chat-reply {
-  width: 100%;
+    width: 100%;
 }
