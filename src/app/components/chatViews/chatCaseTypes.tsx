@@ -89,20 +89,17 @@ export type groupAnswersAndQuestionsSig = (
 ) => CaseChatElement[];
 
 export type setChatCaseRepliesSig = (
-    caseId: number,
     chatCase: MedicalCase,
-    userType: string,
+    userType: "doctor" | "patient",
     clearFirst?: boolean
 ) => (dispatch: ThunkDispatch<{}, {}, AppAction>) => void;
 
 export type setDoctorChatCaseRepliesSig = (
-    caseId: number,
     chatCase: MedicalCase,
     clearFirst: boolean
 ) => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
 export type setPatientChatCaseRepliesSig = (
-    caseId: number,
     chatCase: MedicalCase,
     clearFirst: boolean
 ) => (dispatch: Dispatch<AppAction>) => Promise<void>;
@@ -110,19 +107,19 @@ export type setPatientChatCaseRepliesSig = (
 export type handleSubmitChatReplySig = (
     chatCase: MedicalCase,
     case_reply: { case_id: number; reply: string },
-    userType: string
+    userType: "doctor" | "patient"
 ) => (dispatch: ThunkDispatch<{}, {}, AppAction>) => Promise<void>;
 
 export type handleUploadFilesSig = (
-    caseId: number,
+    chatCase: MedicalCase,
     uploadedFiles: File[][]
-) => (dispatch: Dispatch<AppAction>) => Promise<void>;
+) => (dispatch: ThunkDispatch<{}, {}, AppAction>) => Promise<void>;
 
 export type handleSubmitAnswersSig = (
-    caseId: number,
+    chatCase: MedicalCase,
     answers: any[],
     caseQuestions: CaseChatElement[]
-) => (dispatch: Dispatch<AppAction>) => Promise<void>;
+) => (dispatch: ThunkDispatch<{}, {}, AppAction>) => Promise<void>;
 
 export type setHistoryAccessRequestStatusSig = (
     caseId: number,
@@ -149,29 +146,20 @@ export type deleteTransferRequestSig = (
 export interface ChatCaseSignatures {
     groupAnswersAndQuestions: groupAnswersAndQuestionsSig;
     setChatCaseReplies: (
-        caseId: number,
         chatCase: MedicalCase,
-        userType: string,
+        userType: "doctor" | "patient",
         clearFirst?: boolean
     ) => void;
-    setDoctorChatCaseReplies: (
-        caseId: number,
-        chatCase: MedicalCase,
-        clearFirst: boolean
-    ) => Promise<void>;
-    setPatientChatCaseReplies: (
-        caseId: number,
-        chatCase: MedicalCase,
-        clearFirst: boolean
-    ) => Promise<void>;
+    setDoctorChatCaseReplies: (chatCase: MedicalCase, clearFirst: boolean) => Promise<void>;
+    setPatientChatCaseReplies: (chatCase: MedicalCase, clearFirst: boolean) => Promise<void>;
     handleSubmitChatReply: (
         chatCase: MedicalCase,
         case_reply: { case_id: number; reply: string },
-        userType: string
+        userType: "doctor" | "patient"
     ) => Promise<void>;
-    handleUploadFiles: (caseId: number, uploadedFiles: File[][]) => Promise<void>;
+    handleUploadFiles: (chatCase: MedicalCase, uploadedFiles: File[][]) => Promise<void>;
     handleSubmitAnswers: (
-        caseId: number,
+        chatCase: MedicalCase,
         answers: any[],
         caseQuestions: CaseChatElement[]
     ) => Promise<void>;

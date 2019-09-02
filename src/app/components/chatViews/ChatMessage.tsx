@@ -1,6 +1,6 @@
 import React, { SFC, MouseEventHandler } from "react";
 import Button from "../../UIComponents/Button";
-import { adjustDateZone } from "../../util/helpersFunc";
+import { adjustDateZone, apiAssetUrl, apiAssetName } from "../../util/helpersFunc";
 import { CaseChatElement } from "./chatCaseTypes";
 import { PatientHistoryAccess } from "../../types/models/PatientHistoryAccess";
 import { MedicalCase } from "../../types/models/MedicalCase";
@@ -204,32 +204,31 @@ export const ChatMessage: SFC<CompProps> = props => {
                             </div>
                         </div>
                         <div className="msg">
-                            {question_template.question_type === "TextInput" ||
-                                (question_template.question_type === "Textarea" && (
-                                    <>
-                                        <div className="q-text">
-                                            <h4>{question_template.question_text_ar}</h4>
-                                            <p>{answer.question_answer}</p>
-                                        </div>
-                                    </>
-                                ))}
+                            {(question_template.question_type === "TextInput" ||
+                                question_template.question_type === "Textarea" ||
+                                question_template.question_type === "SelectList") && (
+                                <>
+                                    <div className="q-text">
+                                        <h4>{question_template.question_text_ar}</h4>
+                                        <p>{answer.question_answer}</p>
+                                    </div>
+                                </>
+                            )}
                             {question_template.question_type === "RadioInput" && (
                                 <>
                                     <div className="q-radio">
                                         <h4>{question_template.question_text_ar}</h4>
                                         <div className="radio-group">
-                                            {question_template.question_options_ar.map(option => (
-                                                <div key={option} className="radio">
-                                                    <input
-                                                        type="radio"
-                                                        name="q10"
-                                                        value={option}
-                                                        disabled={true}
-                                                        checked={answer.question_answer === option}
-                                                    />
-                                                    <span>{option}</span>
-                                                </div>
-                                            ))}
+                                            <div className="radio">
+                                                <input
+                                                    type="radio"
+                                                    name="q10"
+                                                    value={answer.question_answer}
+                                                    disabled={true}
+                                                    checked={true}
+                                                />
+                                                <span>{answer.question_answer}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </>
@@ -239,22 +238,20 @@ export const ChatMessage: SFC<CompProps> = props => {
                                     <div className="q-check">
                                         <h4>{question_template.question_text_ar}</h4>
                                         <div className="checkbox-group">
-                                            {question_template.question_options_ar.map(option => (
-                                                <div key={option} className="checkbox">
-                                                    <input
-                                                        type="checkbox"
-                                                        name="q3"
-                                                        value={option}
-                                                        disabled={true}
-                                                        checked={
-                                                            JSON.parse(
-                                                                answer.question_answer
-                                                            ).indexOf(option) >= 0
-                                                        }
-                                                    />
-                                                    <span>{option}</span>
-                                                </div>
-                                            ))}
+                                            {JSON.parse(answer.question_answer).map(
+                                                (singleAnswer: any) => (
+                                                    <div key={singleAnswer} className="checkbox">
+                                                        <input
+                                                            type="checkbox"
+                                                            name="q3"
+                                                            value={singleAnswer}
+                                                            disabled={true}
+                                                            checked={true}
+                                                        />
+                                                        <span>{singleAnswer}</span>
+                                                    </div>
+                                                )
+                                            )}
                                         </div>
                                     </div>
                                 </>
@@ -264,9 +261,14 @@ export const ChatMessage: SFC<CompProps> = props => {
                                     <div className="q-file">
                                         <h4>{question_template.question_text_ar}</h4>
                                         {JSON.parse(answer.question_answer).map(
-                                            (file: { name: string; url: string }) => (
-                                                <a key={file.name} href={file.url}>
-                                                    <p>{file.name}</p>
+                                            (file: string, index: number) => (
+                                                <a
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    key={index}
+                                                    href={apiAssetUrl(file)}
+                                                >
+                                                    <p>{apiAssetName(file)}</p>
                                                 </a>
                                             )
                                         )}
@@ -295,37 +297,30 @@ export const ChatMessage: SFC<CompProps> = props => {
                                     </div>
                                 </div>
                                 <div className="msg">
-                                    {question_template.question_type === "TextInput" ||
-                                        (question_template.question_type === "Textarea" && (
-                                            <>
-                                                <div className="q-text">
-                                                    <h4>{question_template.question_text_ar}</h4>
-                                                    <p>{answer.question_answer}</p>
-                                                </div>
-                                            </>
-                                        ))}
+                                    {(question_template.question_type === "TextInput" ||
+                                        question_template.question_type === "Textarea") && (
+                                        <>
+                                            <div className="q-text">
+                                                <h4>{question_template.question_text_ar}</h4>
+                                                <p>{answer.question_answer}</p>
+                                            </div>
+                                        </>
+                                    )}
                                     {question_template.question_type === "RadioInput" && (
                                         <>
                                             <div className="q-radio">
                                                 <h4>{question_template.question_text_ar}</h4>
                                                 <div className="radio-group">
-                                                    {question_template.question_options_ar.map(
-                                                        option => (
-                                                            <div key={option} className="radio">
-                                                                <input
-                                                                    type="radio"
-                                                                    name="q10"
-                                                                    value={option}
-                                                                    disabled={true}
-                                                                    checked={
-                                                                        answer.question_answer ===
-                                                                        option
-                                                                    }
-                                                                />
-                                                                <span>{option}</span>
-                                                            </div>
-                                                        )
-                                                    )}
+                                                    <div className="radio">
+                                                        <input
+                                                            type="radio"
+                                                            name="q10"
+                                                            value={answer.question_answer}
+                                                            disabled={true}
+                                                            checked={true}
+                                                        />
+                                                        <span>{answer.question_answer}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </>
@@ -335,21 +330,20 @@ export const ChatMessage: SFC<CompProps> = props => {
                                             <div className="q-check">
                                                 <h4>{question_template.question_text_ar}</h4>
                                                 <div className="checkbox-group">
-                                                    {question_template.question_options_ar.map(
-                                                        option => (
-                                                            <div key={option} className="checkbox">
+                                                    {JSON.parse(answer.question_answer).map(
+                                                        (singleAnswer: any) => (
+                                                            <div
+                                                                key={singleAnswer}
+                                                                className="checkbox"
+                                                            >
                                                                 <input
                                                                     type="checkbox"
                                                                     name="q3"
-                                                                    value={option}
+                                                                    value={singleAnswer}
                                                                     disabled={true}
-                                                                    checked={
-                                                                        JSON.parse(
-                                                                            answer.question_answer
-                                                                        ).indexOf(option) >= 0
-                                                                    }
+                                                                    checked={true}
                                                                 />
-                                                                <span>{option}</span>
+                                                                <span>{singleAnswer}</span>
                                                             </div>
                                                         )
                                                     )}
@@ -361,10 +355,16 @@ export const ChatMessage: SFC<CompProps> = props => {
                                         <>
                                             <div className="q-file">
                                                 <h4>{question_template.question_text_ar}</h4>
+
                                                 {JSON.parse(answer.question_answer).map(
-                                                    (file: { name: string; url: string }) => (
-                                                        <a key={file.name} href={file.url}>
-                                                            <p>{answer.question_answer}</p>
+                                                    (file: string, index: number) => (
+                                                        <a
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            key={index}
+                                                            href={apiAssetUrl(file)}
+                                                        >
+                                                            <p>{apiAssetName(file)}</p>
                                                         </a>
                                                     )
                                                 )}

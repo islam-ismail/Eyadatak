@@ -9,14 +9,10 @@ import TextAreaRegular from "../../form/TextAreaRegular";
 import TextInputRegular from "../../form/TextInputRegular";
 import { AppState } from "../../reducers/rootReducer";
 import Button from "../../UIComponents/Button";
-// import { composeValidators, combineValidators, isRequired } from "revalidate";
-// import { combineValidators, isRequired } from "revalidate";
 import FileInputQuestion from "../chatViews/questionTypes/FileInputQuestion";
-// import UploadInput from "../../form/UploadInput";
-// import DropzoneInput from "../../form/DropzoneInput";
-// import Dropzone from "react-dropzone";
 import * as actions from "./newCaseActions";
 import { NewCaseActionsSignatures } from "./newCaseTypes";
+import { toast } from "react-toastify";
 
 const mapState = (state: AppState) => ({
     locale: state.global.locale,
@@ -33,16 +29,12 @@ type CompStateProps = ReturnType<typeof mapState>;
 
 type CompActionProps = NewCaseActionsSignatures;
 
-interface CompOwnProps {
-    handleUploadFiles: (caseId: number, uploadedFiles: File[][]) => void;
-    caseId: number;
-}
-
 interface FormData {
     question_description: string;
+    selectedSpecialityID: number;
 }
 
-type CompProps = InjectedFormProps<FormData> & CompOwnProps & CompStateProps & CompActionProps;
+type CompProps = InjectedFormProps<FormData> & CompStateProps & CompActionProps;
 
 type CompState = {
     topLevelSpecialities: {
@@ -70,6 +62,7 @@ class NewCaseForm extends Component<CompProps, CompState> {
     };
 
     componentDidMount() {
+        toast.dismiss();
         // Get all the initial questions and specialities for the form
         // in one call
         this.props.setInitialQuestionValues();
@@ -124,10 +117,6 @@ class NewCaseForm extends Component<CompProps, CompState> {
         this.setState(() => ({
             uploadedFiles: tempArray
         }));
-    };
-
-    handleUploadFiles = () => {
-        this.props.handleUploadFiles(this.props.caseId, this.state.uploadedFiles);
     };
 
     // Set the Top Level Specialities
@@ -254,109 +243,113 @@ class NewCaseForm extends Component<CompProps, CompState> {
 
         let renderRequired;
         let renderNotRequired;
+        let questionLabel: string;
 
         if (initialRequiredQuestions.length > 0) {
-            if (locale === "en") {
-                renderRequired = initialRequiredQuestions.map(question => {
-                    // console.log(question);
-                    if (question.question_type === "TextInput") {
-                        return (
-                            <Field
-                                key={question.id}
+            renderRequired = initialRequiredQuestions.map(question => {
+                if (locale === "en") {
+                    questionLabel = question.question_text_en;
+                } else if (locale === "ar") {
+                    questionLabel = question.question_text_ar;
+                }
+                // console.log(question);
+                if (question.question_type === "TextInput") {
+                    return (
+                        <Field
+                            key={question.id}
+                            name={`speciality_questions[${question.id}]`}
+                            type="text"
+                            component={TextInputRegular}
+                            label={questionLabel}
+                        />
+                    );
+                } else if (question.question_type === "SelectList") {
+                    const selectOptions = question.question_options_en.map((value, key) => ({
+                        key: value,
+                        value
+                    }));
+                    return (
+                        <Field
+                            key={question.id}
+                            name={`speciality_questions[${question.id}]`}
+                            component={SelectInputRegular}
+                            label={questionLabel}
+                            options={selectOptions}
+                        />
+                    );
+                } else if (question.question_type === "CheckboxInput") {
+                    const checkBoxesOptions: {
+                        label: string;
+                        value: string;
+                    }[] = question.question_options_en.map((value, _) => ({
+                        label: value,
+                        value: value
+                    }));
+                    return (
+                        <div className="inputs-row horizontal" key={question.id}>
+                            <h3>{questionLabel}</h3>
+                            <CheckboxGroup
                                 name={`speciality_questions[${question.id}]`}
-                                type="text"
-                                component={TextInputRegular}
-                                label={question.question_text_en}
+                                options={checkBoxesOptions}
                             />
-                        );
-                    } else if (question.question_type === "SelectList") {
-                        const selectOptions = question.question_options_en.map((value, key) => ({
-                            key: value,
-                            value
-                        }));
-                        return (
+                        </div>
+                    );
+                } else if (question.question_type === "RadioInput") {
+                    const radioOptions = question.question_options_en.map((value, key) => ({
+                        key: key,
+                        title: value,
+                        value: value
+                    }));
+                    return (
+                        <div className="inputs-row horizontal" key={question.id}>
+                            <h3>{questionLabel}</h3>
                             <Field
-                                key={question.id}
+                                component={RadioGroup}
                                 name={`speciality_questions[${question.id}]`}
-                                component={SelectInputRegular}
-                                label={question.question_text_en}
-                                options={selectOptions}
+                                required={true}
+                                options={radioOptions}
                             />
-                        );
-                    } else if (question.question_type === "CheckboxInput") {
-                        const checkBoxesOptions: {
-                            label: string;
-                            value: string;
-                        }[] = question.question_options_en.map((value, _) => ({
-                            label: value,
-                            value: value
-                        }));
-                        return (
-                            <div className="inputs-row horizontal" key={question.id}>
-                                <h3>{question.question_text_en}</h3>
-                                <CheckboxGroup
-                                    name={`speciality_questions[${question.id}]`}
-                                    options={checkBoxesOptions}
-                                />
-                            </div>
-                        );
-                    } else if (question.question_type === "RadioInput") {
-                        const radioOptions = question.question_options_en.map((value, key) => ({
-                            key: key,
-                            title: value,
-                            value: value
-                        }));
-                        return (
-                            <div className="inputs-row horizontal" key={question.id}>
-                                <h3>{question.question_text_en}</h3>
-                                <Field
-                                    component={RadioGroup}
-                                    name={`speciality_questions[${question.id}]`}
-                                    required={true}
-                                    options={radioOptions}
-                                />
-                            </div>
-                        );
-                    } else if (question.question_type === "FileInput") {
-                        return (
-                            // <div className="file-upload" key={question.id}>
-                            //     <Field
-                            // name={`speciality_questions[${
-                            //     question.id
-                            // }]`}
-                            //         component={UploadInput}
-                            //         label={question.question_text_en}
-                            //         onChange={e => this.handleFileChange(e)}
-                            //     />
-                            // </div>
-                            <div className="file-upload" key={question.id}>
-                                <h3>{question.question_text_en}</h3>
-                                <Field
-                                    name={`speciality_questions[${question.id}]`}
-                                    handleOnDrop={this.handleOnDrop}
-                                    removeFile={this.removeFile}
-                                    uploadedFiles={this.state.uploadedFiles}
-                                    question={question}
-                                    questionId={question.id}
-                                    component={FileInputQuestion}
-                                />
-                            </div>
-                        );
-                    } else if (question.question_type === "Textarea") {
-                        return (
+                        </div>
+                    );
+                } else if (question.question_type === "FileInput") {
+                    return (
+                        // <div className="file-upload" key={question.id}>
+                        //     <Field
+                        // name={`speciality_questions[${
+                        //     question.id
+                        // }]`}
+                        //         component={UploadInput}
+                        //         label={question.question_text_en}
+                        //         onChange={e => this.handleFileChange(e)}
+                        //     />
+                        // </div>
+                        <div className="file-upload" key={question.id}>
+                            <h3>{questionLabel}</h3>
                             <Field
-                                key={question.id}
                                 name={`speciality_questions[${question.id}]`}
-                                type="text"
-                                component={TextAreaRegular}
-                                label={question.question_text_en}
+                                handleOnDrop={this.handleOnDrop}
+                                removeFile={this.removeFile}
+                                uploadedFiles={this.state.uploadedFiles}
+                                question={question}
+                                questionId={question.id}
+                                component={FileInputQuestion}
                             />
-                        );
-                    } else {
-                        return null;
-                    }
-                });
-            }
+                        </div>
+                    );
+                } else if (question.question_type === "Textarea") {
+                    return (
+                        <Field
+                            key={question.id}
+                            name={`speciality_questions[${question.id}]`}
+                            type="text"
+                            component={TextAreaRegular}
+                            label={questionLabel}
+                        />
+                    );
+                } else {
+                    return null;
+                }
+            });
         }
 
         // if (initialNotRequiredQuestions.length > 0) {
@@ -368,12 +361,6 @@ class NewCaseForm extends Component<CompProps, CompState> {
         return (
             <div className="new-case-form">
                 <form onSubmit={this.props.handleSubmit(this.handleFormSubmit)}>
-                    <Field
-                        name="question_title"
-                        type="text"
-                        component={TextInputRegular}
-                        label="Question Title"
-                    />
                     <Field
                         name="question_description"
                         type="text"
@@ -397,8 +384,9 @@ class NewCaseForm extends Component<CompProps, CompState> {
                         />
                     )}
 
-                    <h3>Required Questions</h3>
+                    {renderRequired && <h3>Required Questions</h3>}
                     {renderRequired}
+                    {renderNotRequired && <h3>Not required Questions</h3>}
                     {renderNotRequired}
 
                     <Button
@@ -415,30 +403,22 @@ class NewCaseForm extends Component<CompProps, CompState> {
     }
 }
 
-// const validate = (values, ownProps) => {
-//   const dynamicValidations = ownProps.initialRequiredQuestions.reduce(
-//     (accu, curr) => {
-//       // accu["speciality_questions[" + curr.id + "]"] = isRequired({
-//       accu[`speciality_questions.${curr.id}`] = isRequired({
-//         message: `This field is required.`
-//       });
-//       return accu;
-//     },
-//     {}
-//   );
-
-//   console.log("shaker", dynamicValidations);
-
-//   return combineValidators({
-//     ...dynamicValidations
-//   })(values);
-// };
+const validate = (values: FormData) => {
+    const errors: any = {};
+    if (!values.question_description) {
+        errors.question_description = "يجب إدخال السؤال";
+    }
+    if (!values.selectedSpecialityID) {
+        errors.selectedSpecialityID = "يجب إختيار التخصص";
+    }
+    return errors;
+};
 
 export default compose<ComponentType>(
     connect(
         mapState,
         actions
     ),
-    reduxForm({ form: "newCaseForm", enableReinitialize: true })
-    // reduxForm({ form: "newCaseForm", enableReinitialize: true, validate })
+    // reduxForm({ form: "newCaseForm", enableReinitialize: true })
+    reduxForm({ form: "newCaseForm", enableReinitialize: true, validate })
 )(NewCaseForm);

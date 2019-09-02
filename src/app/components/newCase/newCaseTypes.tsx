@@ -52,6 +52,15 @@ export interface NewCaseActionErrorAction extends AppAction {
     type: typeof newCaseConstants.NEW_CASE_ACTION_ERROR;
 }
 
+export interface SetNewToBePaidCaseAction extends AppAction {
+    type: typeof newCaseConstants.SET_NEW_TO_BE_PAID_CASE;
+    payload: MedicalCase;
+}
+
+export interface RemoveNewToBePaidCaseAction extends AppAction {
+    type: typeof newCaseConstants.REMOVE_NEW_TO_BE_PAID_CASE;
+}
+
 export type NewCaseActions = SetPrimarySpecialitiesAction &
     SetSecondarySpecialitiesAction &
     SetInitialRequiredQuestionsAction &
@@ -60,7 +69,9 @@ export type NewCaseActions = SetPrimarySpecialitiesAction &
     SetNotRequiredQuestionsAction &
     NewCaseActionStartAction &
     NewCaseActionFinishAction &
-    NewCaseActionErrorAction;
+    NewCaseActionErrorAction &
+    SetNewToBePaidCaseAction &
+    RemoveNewToBePaidCaseAction;
 
 /**
  * action creators signature
@@ -108,4 +119,5 @@ export interface NewCaseActionsSignatures {
     asyncSetInitialRequiredQuestions: () => Promise<void>;
     asyncSetSecondarySpecialities: (parentId: number) => Promise<void>;
     asyncSetPrimarySpecialities: () => Promise<void>;
+    removeNewToBePaidCase: () => RemoveNewToBePaidCaseAction;
 }

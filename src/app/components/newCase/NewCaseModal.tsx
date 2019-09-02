@@ -5,17 +5,21 @@ import { connect } from "react-redux";
 import NewCaseForm from "./NewCaseForm";
 import Button from "../../UIComponents/Button";
 import Loader from "../layout/Loader";
-import * as actions from "../globalState/globalStateActions";
+import * as globalStateActions from "../globalState/globalStateActions";
 import { AppState } from "../../reducers/rootReducer";
 import { GlobalStateActionSignatures } from "../globalState/globalStateTypes";
+import NewCasePayment from "./NewCasePayment";
+import * as newCaseActions from "./newCaseActions";
+import { NewCaseActionsSignatures } from "./newCaseTypes";
 
 const mapState = (state: AppState) => ({
-    loading: state.global.loading
+    loading: state.global.loading,
+    newToBePaidCase: state.newCase.newToBePaidCase
 });
 
 type CompStateProps = ReturnType<typeof mapState>;
 
-type CompActionProps = GlobalStateActionSignatures;
+type CompActionProps = GlobalStateActionSignatures & NewCaseActionsSignatures;
 interface CompOwnProps {
     openNewCaseModal: boolean;
     closeNewCaseModal: MouseEventHandler;
@@ -24,8 +28,12 @@ interface CompOwnProps {
 type CompProps = CompOwnProps & CompStateProps & CompActionProps;
 
 class NewCaseModal extends Component<CompProps> {
+    componentWillUnmount() {
+        this.props.removeNewToBePaidCase();
+    }
+
     render() {
-        const { openNewCaseModal, closeNewCaseModal, loading } = this.props;
+        const { openNewCaseModal, closeNewCaseModal, loading, newToBePaidCase } = this.props;
 
         return (
             <>
@@ -50,15 +58,15 @@ class NewCaseModal extends Component<CompProps> {
                             >
                                 <i className="f-icon close-icon" />
                             </Button>
-                            <h3>Ask New Question</h3>
+                            {/* <h3>Ask New Question</h3>
                             <p className="note">
                                 Please fill the fields below so that the expert can help you in the
                                 best way possible.
-                            </p>
+                            </p> */}
                         </div>
 
                         <div className="modal-body">
-                            <NewCaseForm />
+                            {newToBePaidCase ? <NewCasePayment /> : <NewCaseForm />}
                         </div>
                     </div>
                 </Modal>
@@ -67,9 +75,14 @@ class NewCaseModal extends Component<CompProps> {
     }
 }
 
+const dispatchProps = {
+    ...globalStateActions,
+    ...newCaseActions
+};
+
 export default compose<ComponentType<CompOwnProps>>(
     connect(
         mapState,
-        actions
+        dispatchProps
     )
 )(NewCaseModal);

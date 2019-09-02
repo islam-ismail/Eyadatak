@@ -3,6 +3,7 @@ import * as newCaseConstants from "./newCaseConstants";
 import { Speciality } from "../../types/models/Speciality";
 import { QuestionTemplate } from "../../types/models/QuestionTemplate";
 import * as newCaseTypes from "./newCaseTypes";
+import { MedicalCase } from "../../types/models/MedicalCase";
 
 export interface NewCaseState {
     primarySpecialities: Speciality[];
@@ -12,6 +13,7 @@ export interface NewCaseState {
     initialNotRequiredQuestions: QuestionTemplate[];
     notRequiredQuestions: QuestionTemplate[];
     loading: boolean;
+    newToBePaidCase?: MedicalCase;
 }
 
 export const initialNewCaseState: NewCaseState = {
@@ -105,6 +107,23 @@ export const setNotRequiredQuestions = (
     };
 };
 
+export const setNewToBePaidCase = (
+    state: NewCaseState,
+    action: newCaseTypes.SetNewToBePaidCaseAction
+) => {
+    return {
+        ...state,
+        newToBePaidCase: action.payload
+    };
+};
+
+export const removeNewToBePaidCase = (state: NewCaseState) => {
+    return {
+        ...state,
+        newToBePaidCase: null
+    };
+};
+
 export default createReducer<
     NewCaseState,
     newCaseConstants.NewCaseActionTypes,
@@ -118,5 +137,7 @@ export default createReducer<
     [newCaseConstants.SET_INITIAL_REQUIRED_QUESTIONS]: setInitialRequiredQuestions,
     [newCaseConstants.SET_REQUIRED_QUESTIONS]: setRequiredQuestions,
     [newCaseConstants.SET_INITIAL_NOT_REQUIRED_QUESTIONS]: setInitialNotRequiredQuestions,
-    [newCaseConstants.SET_NOT_REQUIRED_QUESTIONS]: setNotRequiredQuestions
+    [newCaseConstants.SET_NOT_REQUIRED_QUESTIONS]: setNotRequiredQuestions,
+    [newCaseConstants.SET_NEW_TO_BE_PAID_CASE]: setNewToBePaidCase,
+    [newCaseConstants.REMOVE_NEW_TO_BE_PAID_CASE]: removeNewToBePaidCase
 });

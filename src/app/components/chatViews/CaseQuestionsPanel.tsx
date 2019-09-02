@@ -11,6 +11,8 @@ import { reduxForm, InjectedFormProps } from "redux-form";
 import { AppState } from "../../reducers/rootReducer";
 import { ChatCaseSignatures, CaseChatElement } from "./chatCaseTypes";
 import { CaseQuestion } from "../../types/models/CaseQuestion";
+import { MedicalCase } from "../../types/models/MedicalCase";
+import { SelectInputQuestion } from "./questionTypes/SelectInputQuestion";
 
 const mapState = (state: AppState) => ({
     locale: state.global.locale,
@@ -24,7 +26,7 @@ type CompActionProps = ChatCaseSignatures;
 
 interface CompOwnProps {
     caseUnansweredQuestions: CaseChatElement[];
-    caseId: number;
+    chatCase: MedicalCase;
     questionsOrHistoryActive: string;
 }
 
@@ -70,14 +72,14 @@ class CaseQuestionsPanel extends Component<CompProps, CompOwnState> {
 
     handleFormSubmit = (values: FormData) => {
         this.props.handleSubmitAnswers(
-            this.props.caseId,
+            this.props.chatCase,
             values.unanswered_case_questions,
             this.props.caseUnansweredQuestions
         );
     };
 
     handleUploadFiles = () => {
-        this.props.handleUploadFiles(this.props.caseId, this.state.uploadedFiles);
+        this.props.handleUploadFiles(this.props.chatCase, this.state.uploadedFiles);
     };
 
     render() {
@@ -144,7 +146,9 @@ class CaseQuestionsPanel extends Component<CompProps, CompOwnState> {
                                                 .question_template.question_type ===
                                                 "CheckboxInput" ||
                                             (filteredQuestion.question as CaseQuestion)
-                                                .question_template.question_type === "RadioInput"
+                                                .question_template.question_type === "RadioInput" ||
+                                            (filteredQuestion.question as CaseQuestion)
+                                                .question_template.question_type === "SelectList"
                                     )
                                     .map(caseQuestion => (
                                         <div key={caseQuestion.id} className="question">
@@ -181,6 +185,15 @@ class CaseQuestionsPanel extends Component<CompProps, CompOwnState> {
                                                 .question_template.question_type ===
                                             "RadioInput" ? (
                                                 <RadioInputQuestion
+                                                    question={caseQuestion.question as CaseQuestion}
+                                                />
+                                            ) : (
+                                                <></>
+                                            )}
+                                            {(caseQuestion.question as CaseQuestion)
+                                                .question_template.question_type ===
+                                            "SelectList" ? (
+                                                <SelectInputQuestion
                                                     question={caseQuestion.question as CaseQuestion}
                                                 />
                                             ) : (

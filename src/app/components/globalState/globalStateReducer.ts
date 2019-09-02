@@ -16,7 +16,7 @@ export interface GlobalState {
 }
 
 export const initialGlobalState: GlobalState = {
-    locale: "en",
+    locale: "ar",
     loading: false
 };
 

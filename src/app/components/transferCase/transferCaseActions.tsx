@@ -162,7 +162,7 @@ export const transferCaseToDoctor: transferCaseTypes.transferCaseToDoctorSig = (
                 payload
             );
 
-            dispatch(setChatCaseReplies(transferCase.id, transferCase, "doctor"));
+            dispatch(setChatCaseReplies(transferCase, "doctor"));
 
             dispatch(transferRequestSuccessful());
 
@@ -190,7 +190,7 @@ export const transferCaseToSpeciality: transferCaseTypes.transferCaseToSpecialit
                 Api_DoctorCaseTransfersTransferCaseBySpeciality_Endpoint(transferCase.id),
                 payload
             );
-            dispatch(setChatCaseReplies(transferCase.id, transferCase, "doctor"));
+            dispatch(setChatCaseReplies(transferCase, "doctor"));
             dispatch(transferRequestSuccessful());
 
             dispatch(transferCaseActionFinish());
@@ -216,7 +216,7 @@ export const deleteTransfer: transferCaseTypes.deleteTransferSig = (
             // console.log('response:', response)
             // console.log('data.status:', data.status)
             // console.log('data.success_message:', data.success_message)
-            dispatch(setChatCaseReplies(transferCase.id, transferCase, "doctor"));
+            dispatch(setChatCaseReplies(transferCase, "doctor"));
 
             dispatch(transferCaseActionFinish());
         } catch (error) {

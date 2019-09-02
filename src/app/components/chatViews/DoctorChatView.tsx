@@ -95,7 +95,7 @@ class DoctorChatView extends Component<CompProps, CompState> {
     };
 
     componentDidMount() {
-        this.props.setChatCaseReplies(this.props.chatCase.id, this.props.chatCase, "doctor", true);
+        this.props.setChatCaseReplies(this.props.chatCase, "doctor", true);
 
         // this.setState(() => ({
         //   caseChatData: this.props.caseChatData,
@@ -158,7 +158,10 @@ class DoctorChatView extends Component<CompProps, CompState> {
                 this.state.caseChatData.length + this.state.allAccessRequests.length
         ) {
             this.setState(() => ({
-                allChatMessages: [...this.props.caseChatData, ...this.props.allAccessRequests].sort(
+                allChatMessages: [
+                    ...this.props.caseChatData,
+                    ...(this.props.allAccessRequests || [])
+                ].sort(
                     (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
                 )
             }));

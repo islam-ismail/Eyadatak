@@ -1,8 +1,8 @@
 import { ApiResponse } from "../../api-response";
 import { User } from "../../models/User";
 
-export const Api_PatientUpdate_Endpoint = (payload: { patient_id?: number }) =>
-    `patient/update/${payload.patient_id && payload.patient_id}`;
+export const Api_PatientUpdate_Endpoint = (patient_id?: number) =>
+    `patient/update${patient_id ? "/" + patient_id : ""}`;
 
 export const Api_PatientUpdate_HttpMethod = "POST";
 

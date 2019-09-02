@@ -1,8 +1,8 @@
 import { ApiResponse } from "../../api-response";
 import { MedicalCase } from "../../models/MedicalCase";
 
-export const Api_PaymentMedicalCaseWallet_Endpoint = (payload: { medical_case_id: number }) =>
-    `patient/payment/medical_case/${payload.medical_case_id}/wallet`;
+export const Api_PaymentMedicalCaseWallet_Endpoint = (medical_case_id: number) =>
+    `patient/payment/medical_case/${medical_case_id}/wallet`;
 
 export const Api_PaymentMedicalCaseWallet_HttpMethod = "POST";
 

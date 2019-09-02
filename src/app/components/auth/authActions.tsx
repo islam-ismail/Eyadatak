@@ -1,8 +1,12 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import { reset } from "redux-form";
-import { SIGN_IN, SIGN_OUT } from "./authConstants";
-import { setAuthorizationHeader } from "../../util/helpersFunc";
+import { SIGN_IN, SIGN_OUT, UPDATE_USER } from "./authConstants";
+import {
+    setAuthorizationHeader,
+    setSignedInUser,
+    removeSignedInUser
+} from "../../util/helpersFunc";
 import { isTokenExpired, getJWT } from "../../util/helpersFunc";
 import { clearCaseLists } from "../myCasesList/myCasesListActions";
 import * as globalStateActions from "../globalState/globalStateActions";
@@ -23,16 +27,35 @@ import {
     Api_AuthRefresh_Endpoint,
     Api_AuthRefresh_Response
 } from "../../types/api-endpoints/auth";
+import {
+    Api_PatientUpdate_Payload,
+    Api_PatientUpdate_Endpoint,
+    Api_PatientUpdate_Response
+} from "../../types/api-endpoints/patient";
 
 export const signIn: authTypes.signInSig = (data: { user: User }): authTypes.SignInAction => {
+    setSignedInUser(JSON.stringify(data.user));
+
     return {
         type: SIGN_IN,
         payload: data.user
     };
 };
 
+export const updateUser: authTypes.updateUserSig = (data: {
+    user: User;
+}): authTypes.UpdateUserAction => {
+    setSignedInUser(JSON.stringify(data.user));
+
+    return {
+        type: UPDATE_USER,
+        payload: data.user
+    };
+};
+
 export const signOut: authTypes.signOutSig = (): authTypes.SignOutAction => {
     localStorage.removeItem("eyadatak-jwt");
+    removeSignedInUser();
     setAuthorizationHeader(null);
 
     return {
@@ -51,7 +74,10 @@ export const asyncSignUp: authTypes.asyncSignUpSig = (formData: Api_AuthRegister
             dispatch(globalStateActions.asyncActionFinish());
             dispatch(reset("signupForm"));
         } catch (error) {
-            toast.error(error.response.data.error_message);
+            console.log(error);
+            if (error.response) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(globalStateActions.asyncActionError());
         }
     };
@@ -68,13 +94,42 @@ export const asyncSignIn: authTypes.asyncSignInSig = (formData: Api_AuthLogin_Pa
                     dispatch(signIn(responseData.data));
                     const token = responseData.data.access_token;
                     localStorage.setItem("eyadatak-jwt", token);
+
                     setAuthorizationHeader(token);
                     dispatch(globalStateActions.asyncActionFinish());
                     toast.success(`Welcome back, ${responseData.data.user.name}`);
                 }
             }
         } catch (error) {
-            toast.error(error.response.data.error_message);
+            console.log(error);
+            if (error.response) {
+                toast.error(error.response.data.error_message);
+            }
+            dispatch(globalStateActions.asyncActionError());
+        }
+    };
+};
+
+export const asyncUpdateUser: authTypes.asyncUpdateUserSig = (
+    formData: Api_PatientUpdate_Payload
+) => {
+    return async (dispatch: Dispatch<AppAction>) => {
+        try {
+            // dispatch(globalStateActions.asyncActionStart());
+            const response = await axios.post(Api_PatientUpdate_Endpoint(), formData);
+            const responseData: Api_PatientUpdate_Response = response.data;
+            if (responseData && responseData.status) {
+                if (responseData.data) {
+                    dispatch(updateUser(responseData.data));
+                    // dispatch(globalStateActions.asyncActionFinish());
+                    toast.success(`Your information updated successfully!`);
+                }
+            }
+        } catch (error) {
+            console.log(error);
+            if (error.response) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(globalStateActions.asyncActionError());
         }
     };
@@ -120,7 +175,10 @@ export const refreshToken: authTypes.refreshTokenSig = () => {
                 dispatch(globalStateActions.asyncActionFinish());
             }
         } catch (error) {
-            toast.error(error.response.data.error_message);
+            console.log(error);
+            if (error.response) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(signOut());
             dispatch(globalStateActions.asyncActionError());
         }
@@ -132,7 +190,10 @@ export const clearListsAction: authTypes.clearListsActionSig = () => {
         try {
             dispatch(clearCaseLists());
         } catch (error) {
-            toast.error(error.response.data.error_message);
+            console.log(error);
+            if (error.response) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(signOut());
             dispatch(globalStateActions.asyncActionError());
         }

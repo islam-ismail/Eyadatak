@@ -55,6 +55,11 @@ export interface ClearCaseListsAction extends AppAction {
     type: typeof myCasesListConstants.CLEAR_CASE_LISTS;
 }
 
+export interface updateCaseInMyListAction extends AppAction {
+    type: typeof myCasesListConstants.UPDATE_CASE_IN_MY_LIST_ACTION;
+    payload: MedicalCase;
+}
+
 export type MyCasesListActions = SetMyCasesAction &
     SortCasesListAction &
     FilterCasesAction &
@@ -63,7 +68,8 @@ export type MyCasesListActions = SetMyCasesAction &
     MyCasesListActionFinishedAction &
     MyCasesListActionErrorAction &
     ClearCaseListsAction &
-    addNewCaseToMyListAction;
+    addNewCaseToMyListAction &
+    updateCaseInMyListAction;
 
 /**
  * action creators signature
@@ -121,4 +127,5 @@ export interface MyCasesListActionsSignatures {
     setPatientCasesList: (patient: User) => Promise<void>;
     setDoctorCasesList: (doctor: Doctor) => Promise<void>;
     setMyCasesList: (user: User) => void;
+    updateCaseInMyList(medicalCase: MedicalCase): updateCaseInMyListAction;
 }

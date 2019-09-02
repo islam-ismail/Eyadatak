@@ -1,17 +1,16 @@
 import React, { ChangeEventHandler, Component, ComponentType } from "react";
 import { connect } from "react-redux";
-import { RouteComponentProps, withRouter } from "react-router";
+import { RouteComponentProps } from "react-router-dom";
 import { compose } from "redux";
 import { Field, InjectedFormProps, reduxForm } from "redux-form";
 import * as revalidate from "revalidate";
-import leftArrow from "../../assets/images/left-arrow.svg";
 import SelectInput from "../../form/SelectInput";
 import TextInput from "../../form/TextInput";
 import { AppState } from "../../reducers/rootReducer";
 import { IS_EMAIL } from "../../util/constants";
 import { generateYears, getDays, months } from "../../util/helpersFunc";
 import * as actions from "../auth/authActions";
-import { AuthActionsSignatures, SignUpFormData } from "../auth/authTypes";
+import { AuthActionsSignatures, UpdateUserFormData } from "../auth/authTypes";
 
 const mapState = (state: AppState) => ({
     locale: state.global.locale,
@@ -23,16 +22,14 @@ type CompStateProps = ReturnType<typeof mapState>;
 
 type CompActionProps = AuthActionsSignatures;
 
-interface CompOwnProps {
-    switchScreens: (screenName: string) => void;
-}
+type FormData = UpdateUserFormData & { year: string; month: string; day: string };
 
-type FormData = SignUpFormData & { year: string; month: string; day: string };
+interface CompOwnProps extends Pick<InjectedFormProps, "initialValues"> {}
 
-type CompProps = RouteComponentProps &
+type CompProps = CompOwnProps &
+    RouteComponentProps &
     InjectedFormProps<FormData> &
     CompActionProps &
-    CompOwnProps &
     CompStateProps;
 
 interface CompState {
@@ -40,18 +37,11 @@ interface CompState {
     birthdateError: string;
 }
 
-class SignUpForm extends Component<CompProps, CompState> {
+class UserSettingsForm extends Component<CompProps, CompState> {
     state: CompState = {
         month: "January",
         birthdateError: ""
     };
-
-    componentDidUpdate() {
-        const { authenticated, history } = this.props;
-        if (authenticated) {
-            history.push("/dashboard");
-        }
-    }
 
     handleMonthChange: ChangeEventHandler<HTMLSelectElement> = event => {
         this.setState(() => ({
@@ -66,7 +56,7 @@ class SignUpForm extends Component<CompProps, CompState> {
     };
 
     handleFormSubmit = (values: FormData) => {
-        const user: SignUpFormData = {
+        const user: UpdateUserFormData = {
             name: values.name,
             email: values.email,
             password: values.password,
@@ -76,11 +66,10 @@ class SignUpForm extends Component<CompProps, CompState> {
             phone_number: values.phone_number
         };
 
-        this.props.asyncSignUp(user);
+        this.props.asyncUpdateUser(user);
     };
 
     render() {
-        const { switchScreens } = this.props;
         return (
             <form onSubmit={this.props.handleSubmit(this.handleFormSubmit)}>
                 <div className="multi-input">
@@ -176,17 +165,7 @@ class SignUpForm extends Component<CompProps, CompState> {
                     </div>
                 </div>
                 <div className="form-group btn-group">
-                    <button className="login" type="submit">
-                        إنشاء حساب جديد
-                        <img src={leftArrow} alt="" />
-                    </button>
-                    <button
-                        className="signup"
-                        type="button"
-                        onClick={() => switchScreens("signin")}
-                    >
-                        تسجيل الدخول
-                    </button>
+                    <button type="submit">تحديث</button>
                 </div>
             </form>
         );
@@ -207,7 +186,6 @@ const validate = revalidate.combineValidators({
         })
     )(),
     password: revalidate.composeValidators(
-        revalidate.isRequired({ message: "برجاء إدخال كلمة المرور" }),
         revalidate.hasLengthLessThan(255)({
             message: "كلمة المرور لا يمكن أن تتجاوز 255 حرف أو رقم"
         }),
@@ -216,7 +194,6 @@ const validate = revalidate.combineValidators({
         })
     )(),
     password_confirmation: revalidate.composeValidators(
-        revalidate.isRequired({ message: "برجاء إدخال كلمة المرور" }),
         revalidate.hasLengthLessThan(255)({
             message: "كلمة المرور لا يمكن أن تتجاوز 255 حرف أو رقم"
         }),
@@ -237,10 +214,9 @@ const validate = revalidate.combineValidators({
 });
 
 export default compose<ComponentType<CompOwnProps>>(
-    withRouter,
     connect(
         mapState,
         actions
     ),
-    reduxForm({ form: "signupForm", enableReinitialize: true, validate })
-)(SignUpForm);
+    reduxForm({ form: "updateUserForm", enableReinitialize: true, validate })
+)(UserSettingsForm);

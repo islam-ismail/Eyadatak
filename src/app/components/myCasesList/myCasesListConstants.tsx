@@ -7,6 +7,7 @@ export const FILTER_CASES = "FILTER_CASES";
 export const CLEAR_CASE_LISTS = "CLEAR_CASE_LISTS";
 export const SET_PENDING_TRANSFERS = "SET_PENDING_TRANSFERS";
 export const ADD_NEW_CASE_ACTION = "ADD_NEW_CASE_ACTION";
+export const UPDATE_CASE_IN_MY_LIST_ACTION = "UPDATE_CASE_IN_MY_LIST_ACTION";
 
 export type MyCasesListActionTypes = typeof SET_MY_CASES &
     typeof MY_CASES_LIST_ACTION_START &
@@ -16,4 +17,5 @@ export type MyCasesListActionTypes = typeof SET_MY_CASES &
     typeof FILTER_CASES &
     typeof CLEAR_CASE_LISTS &
     typeof ADD_NEW_CASE_ACTION &
-    typeof SET_PENDING_TRANSFERS;
+    typeof SET_PENDING_TRANSFERS &
+    typeof UPDATE_CASE_IN_MY_LIST_ACTION;

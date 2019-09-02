@@ -121,11 +121,7 @@ class MyCasesList extends Component<CompProps, CompState> {
             return (
                 <Redirect
                     to={{
-                        pathname: "/case-details",
-                        state: {
-                            chatCase: this.state.clickedCase,
-                            userType: this.props.signedInUser.type
-                        }
+                        pathname: `/case-details/${(this.state.clickedCase as MedicalCase).id}`
                     }}
                 />
             );

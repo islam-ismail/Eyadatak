@@ -10,28 +10,31 @@ import profilePic from "../../assets/images/profile-pic01.svg";
 import { AppState } from "../../reducers/rootReducer";
 import { User } from "../../types/models/User";
 import { MedicalCase } from "../../types/models/MedicalCase";
+import { CaseTransfer } from "../../types/models/CaseTransfer";
 
-interface ComponentStateProps {
-    locale: string;
-    signedInUser: User | null;
-    authenticated: boolean;
-    medicalCases: MedicalCase[];
-    pendingTransfers: MedicalCase[];
-}
+const mapState = (state: AppState) => ({
+    locale: state.global.locale,
+    signedInUser: state.auth.signedInUser,
+    authenticated: state.auth.authenticated,
+    medicalCases: state.myCasesList.medicalCases,
+    pendingTransfers: state.myCasesList.pendingTransfers
+});
 
-interface ComponentActionProps {
+type CompStateProps = ReturnType<typeof mapState>;
+
+interface CompActionProps {
     setMyCasesList(signedInUser: User): any;
     setPendingTransfersList(id: number): any;
 }
 
-type ComponentProps = ComponentStateProps & ComponentActionProps;
+type CompProps = CompStateProps & CompActionProps;
 
-interface ComponentState {
+interface CompState {
     myCases: MedicalCase[];
-    pendingTransfers: MedicalCase[];
+    pendingTransfers: CaseTransfer[];
 }
 
-class Dashboard extends Component<ComponentProps, ComponentState> {
+class Dashboard extends Component<CompProps, CompState> {
     state = {
         myCases: [],
         pendingTransfers: []
@@ -63,7 +66,7 @@ class Dashboard extends Component<ComponentProps, ComponentState> {
         }
     }
 
-    componentDidUpdate(prevProps: ComponentProps) {
+    componentDidUpdate(prevProps: CompProps) {
         if (prevProps.medicalCases !== this.props.medicalCases) {
             this.setState(() => ({
                 myCases: this.props.medicalCases
@@ -189,13 +192,7 @@ class Dashboard extends Component<ComponentProps, ComponentState> {
                                         <div key={myCase.id}>
                                             {this.props.signedInUser ? (
                                                 <Link
-                                                    to={{
-                                                        pathname: "/case-details",
-                                                        state: {
-                                                            chatCase: myCase,
-                                                            userType: this.props.signedInUser.type
-                                                        }
-                                                    }}
+                                                    to={{ pathname: `/case-details/${myCase.id}` }}
                                                 >
                                                     <div className="item">
                                                         <div className="pic">
@@ -233,14 +230,6 @@ class Dashboard extends Component<ComponentProps, ComponentState> {
         );
     }
 }
-
-const mapState = (state: AppState) => ({
-    locale: state.global.locale,
-    signedInUser: state.auth.signedInUser,
-    authenticated: state.auth.authenticated,
-    medicalCases: state.myCasesList.medicalCases,
-    pendingTransfers: state.myCasesList.pendingTransfers
-});
 
 export default compose<ComponentType>(
     connect(

@@ -7,7 +7,7 @@ export interface User {
     phone_number: string;
     picture_url: string;
     parent_id: number;
-    type: string;
+    type: "doctor" | "patient";
     created_at: string;
     updated_at: string;
 }

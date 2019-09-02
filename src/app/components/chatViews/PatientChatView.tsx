@@ -83,7 +83,7 @@ class PatientChatView extends Component<CompProps, CompState> {
             requestRespondedTo: false
         }));
 
-        this.props.setChatCaseReplies(this.props.chatCase.id, this.props.chatCase, "patient", true);
+        this.props.setChatCaseReplies(this.props.chatCase, "patient", true);
         this.props.setHistoryAccessRequestStatus(
             this.props.chatCase.id,
             this.props.signedInUser as User,
@@ -314,7 +314,7 @@ class PatientChatView extends Component<CompProps, CompState> {
                     )}
                     <CaseQuestionsPanel
                         caseUnansweredQuestions={this.state.caseUnansweredQuestions}
-                        caseId={this.props.chatCase.id}
+                        chatCase={this.props.chatCase}
                         questionsOrHistoryActive={questionsOrHistoryActive}
                     />
                 </aside>

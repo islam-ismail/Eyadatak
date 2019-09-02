@@ -22,6 +22,7 @@ import {
     Api_PatientMedicalCasesAdd_Payload,
     Api_PatientMedicalCasesAdd_Response
 } from "../../types/api-endpoints/patient";
+import { MedicalCase } from "../../types/models/MedicalCase";
 
 export const newCaseActionStart = (): newCaseTypes.NewCaseActionStartAction => {
     return {
@@ -95,6 +96,19 @@ export const setInitialRequiredQuestions = (
     return {
         type: newCaseConstants.SET_INITIAL_REQUIRED_QUESTIONS,
         payload: data
+    };
+};
+
+export const setNewToBePaidCase = (data: MedicalCase): newCaseTypes.SetNewToBePaidCaseAction => {
+    return {
+        type: newCaseConstants.SET_NEW_TO_BE_PAID_CASE,
+        payload: data
+    };
+};
+
+export const removeNewToBePaidCase = (): newCaseTypes.RemoveNewToBePaidCaseAction => {
+    return {
+        type: newCaseConstants.REMOVE_NEW_TO_BE_PAID_CASE
     };
 };
 
@@ -270,6 +284,7 @@ export const addNewCase: newCaseTypes.addNewCaseSig = (
                 payload
             );
             const responseData: Api_PatientMedicalCasesAdd_Response = response.data;
+
             if (
                 responseData.status === false ||
                 !responseData.data ||
@@ -280,12 +295,19 @@ export const addNewCase: newCaseTypes.addNewCaseSig = (
 
             if (responseData.data.medical_case) {
                 dispatch(addNewCaseToMyList(responseData.data.medical_case));
+                dispatch(setNewToBePaidCase(responseData.data.medical_case));
             }
 
             dispatch(newCaseActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+
+            if (error.response) {
+                toast.error(error.response.data.error_message);
+            } else {
+                toast.error(error.message);
+            }
+
             dispatch(newCaseActionError());
         }
     };

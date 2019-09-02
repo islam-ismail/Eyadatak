@@ -64,6 +64,15 @@ export const addNewCaseToMyList = (
     };
 };
 
+export const updateCaseInMyList = (
+    medicalCase: MedicalCase
+): myCasesListTypes.updateCaseInMyListAction => {
+    return {
+        type: myCasesListConstants.UPDATE_CASE_IN_MY_LIST_ACTION,
+        payload: medicalCase
+    };
+};
+
 export const sortCasesList = (
     orderBy: string,
     order: string,
@@ -153,38 +162,13 @@ export const setDoctorCasesList: myCasesListTypes.setDoctorCasesListSig = (docto
                 myCasesList = responseData1.data.medical_cases;
             }
 
-            await Promise.all(
-                myCasesList.map(async oneCase => {
-                    oneCase.patient_name = oneCase.patient ? oneCase.patient.name : "";
+            myCasesList.map(oneCase => {
+                oneCase.patient_name = oneCase.patient ? oneCase.patient.name : "";
 
-                    oneCase.speciality_name = oneCase.speciality.title_ar;
+                oneCase.speciality_name = oneCase.speciality.title_ar;
 
-                    let myCaseReplies: CaseReply[] = [];
-                    let latestReply: CaseReply | null = null;
-                    const response4 = await axios.get(Api_CaseRepliesViewAll_Endpoint(oneCase.id));
-                    const responseData4: Api_CaseRepliesViewAll_Response = response4.data;
-                    if (responseData4.data) {
-                        myCaseReplies = responseData4.data.case_replies;
-                        latestReply = myCaseReplies.sort(
-                            (a, b) =>
-                                new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime()
-                        )[myCaseReplies.length - 1];
-                    }
-
-                    if (latestReply) {
-                        oneCase.latestReply = latestReply.reply;
-                        oneCase.is_read =
-                            latestReply.is_read === 1
-                                ? true
-                                : latestReply.replier_id === doctor.id
-                                ? true
-                                : false;
-                    } else {
-                        oneCase.latestReply = "";
-                        oneCase.is_read = true;
-                    }
-                })
-            );
+                return oneCase;
+            });
 
             const sortedCases = sortCases(myCasesList, getSorting("desc", "updated_at"));
             dispatch(setMyCases(sortedCases));
@@ -209,52 +193,25 @@ export const setPatientCasesList: myCasesListTypes.setPatientCasesListSig = (pat
             if (responseData1.data) {
                 myCasesList = responseData1.data.medical_cases;
 
-                await Promise.all(
-                    myCasesList.map(async oneCase => {
-                        oneCase.doctor_name =
-                            oneCase.doctor_id === 0
-                                ? "لم يتم تحديد الطبيب"
-                                : oneCase.doctor
-                                ? oneCase.doctor.name
-                                : "";
+                myCasesList.map(oneCase => {
+                    oneCase.doctor_name =
+                        oneCase.doctor_id === 0
+                            ? "لم يتم تحديد الطبيب"
+                            : oneCase.doctor
+                            ? oneCase.doctor.name
+                            : "";
 
-                        if (oneCase.speciality.parent_id !== 0) {
-                            oneCase.sub_speciality_name = oneCase.speciality.parent
-                                ? oneCase.speciality.parent.title_ar
-                                : "";
-                            oneCase.speciality_name = oneCase.speciality.title_ar;
-                        } else oneCase.speciality_name = oneCase.speciality.title_ar;
+                    if (oneCase.speciality.parent_id !== 0) {
+                        oneCase.sub_speciality_name = oneCase.speciality.parent
+                            ? oneCase.speciality.parent.title_ar
+                            : "";
+                        oneCase.speciality_name = oneCase.speciality.title_ar;
+                    } else {
+                        oneCase.speciality_name = oneCase.speciality.title_ar;
+                    }
 
-                        let myCaseReplies: CaseReply[] = [];
-                        let latestReply: CaseReply | null = null;
-
-                        const response4 = await axios.get(
-                            Api_CaseRepliesViewAll_Endpoint(oneCase.id)
-                        );
-                        const responseData4: Api_CaseRepliesViewAll_Response = response4.data;
-                        if (responseData4.data) {
-                            myCaseReplies = responseData4.data.case_replies;
-                            latestReply = myCaseReplies.sort(
-                                (a, b) =>
-                                    new Date(a.updated_at).getTime() -
-                                    new Date(b.updated_at).getTime()
-                            )[myCaseReplies.length - 1];
-                        }
-
-                        if (latestReply) {
-                            oneCase.latestReply = latestReply.reply;
-                            oneCase.is_read =
-                                latestReply.is_read === 1
-                                    ? true
-                                    : latestReply.replier_id === patient.id
-                                    ? true
-                                    : false;
-                        } else {
-                            oneCase.latestReply = "";
-                            oneCase.is_read = true;
-                        }
-                    })
-                );
+                    return oneCase;
+                });
 
                 const sortedCases = sortCases(myCasesList, getSorting("desc", "updated_at"));
                 if (sortedCases) {
@@ -427,6 +384,44 @@ export const rejectCaseTransfer: myCasesListTypes.rejectCaseTransferSig = (
             dispatch(setPendingTransfersList(toDoctorId));
 
             dispatch(myCasesListActionFinish());
+        } catch (error) {
+            console.log("error:", error);
+            toast.error(error.response.data.error_message);
+            dispatch(myCasesListActionError());
+        }
+    };
+};
+
+/** use this function as a template to edit the backend to return these fields: latestReply, is_read */
+export const asyncSetMedicalCaseReplies = (medicalCase: MedicalCase, user: User) => {
+    return async (dispatch: ThunkDispatch<{}, {}, AppAction>) => {
+        try {
+            dispatch(myCasesListActionStart());
+
+            let myCaseReplies: CaseReply[] = [];
+            let latestReply: CaseReply | null = null;
+
+            const response = await axios.get(Api_CaseRepliesViewAll_Endpoint(medicalCase.id));
+            const responseData: Api_CaseRepliesViewAll_Response = response.data;
+            if (responseData.data) {
+                myCaseReplies = responseData.data.case_replies;
+                latestReply = myCaseReplies.sort(
+                    (a, b) => new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime()
+                )[myCaseReplies.length - 1];
+            }
+
+            if (latestReply) {
+                medicalCase.latestReply = latestReply.reply;
+                medicalCase.is_read =
+                    latestReply.is_read === 1
+                        ? true
+                        : latestReply.replier_id === user.id
+                        ? true
+                        : false;
+            } else {
+                medicalCase.latestReply = "";
+                medicalCase.is_read = true;
+            }
         } catch (error) {
             console.log("error:", error);
             toast.error(error.response.data.error_message);

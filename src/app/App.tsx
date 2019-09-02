@@ -1,11 +1,9 @@
 import React, { Component, ComponentType } from "react";
 import { Route, Switch, withRouter } from "react-router-dom";
-import axios from "axios";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { ToastContainer, Slide } from "react-toastify";
 import Modal from "react-modal";
-// import "react-toastify/dist/ReactToastify.css";
 import GateWay from "./components/gateway/Gateway";
 import Dashboard from "./components/dashboard/Dashboard";
 import MyCasesList from "./components/myCasesList/MyCasesList";
@@ -13,20 +11,15 @@ import ChatViews from "./components/chatViews/ChatViews";
 import Layout from "./components/layout/Layout";
 import * as authActions from "./components/auth/authActions";
 import * as globalStateActions from "./components/globalState/globalStateActions";
-import { setAuthorizationHeader, getJWT, getLocale, setLocale } from "./util/helpersFunc";
+import { setLocale } from "./util/helpersFunc";
 import Error404 from "./components/errorsPages/Error404";
 import Auth from "./components/auth/Auth";
 import Loader from "./components/layout/Loader";
 import { AppState } from "./reducers/rootReducer";
 import { AuthActionsSignatures } from "./components/auth/authTypes";
 import { GlobalStateActionSignatures } from "./components/globalState/globalStateTypes";
-
-let baseURL: string;
-if (process.env.NODE_ENV !== "production") {
-    baseURL = "http://localhost:8080/backend/api";
-} else {
-    baseURL = "http://eyadatak.com/backend/api";
-}
+import AcceptSuccess from "./components/payment/accept-success";
+import UserSettings from "./components/user-settings/UserSettings";
 
 const mapState = (state: AppState) => ({
     locale: state.global.locale,
@@ -40,31 +33,22 @@ type CompActionProps = AuthActionsSignatures & GlobalStateActionSignatures;
 type CompProps = CompStateProps & CompActionProps;
 
 class App extends Component<CompProps> {
-    componentDidMount() {
-        let locale: string;
-        locale = getLocale();
-        if (!locale) {
-            setLocale(locale);
-            locale = getLocale();
-        }
-
-        document.body.classList.add(locale);
-        axios.defaults.baseURL = baseURL + `/${locale}/`;
-
-        const token = getJWT();
-        if (token) {
-            setAuthorizationHeader(token);
-            authActions.autoSignIn();
-        }
-    }
-
     componentDidUpdate(prevProps: CompProps) {
-        if (prevProps.locale !== this.props.locale) {
-            setLocale(this.props.locale);
-            const locale = getLocale();
-            document.body.classList.remove("en", "ar");
-            document.body.classList.add(locale);
-            axios.defaults.baseURL = baseURL + `/${locale}/`;
+        if (
+            prevProps.locale !== this.props.locale &&
+            this.props.locale &&
+            this.props.locale !== "null"
+        ) {
+            const locale = this.props.locale;
+
+            if (locale) {
+                setLocale(locale);
+
+                this.props.setLocale(locale);
+
+                document.body.classList.remove("en", "ar");
+                document.body.classList.add(locale);
+            }
         }
     }
 
@@ -95,7 +79,13 @@ class App extends Component<CompProps> {
                                     <Switch>
                                         <Route path="/dashboard" component={Dashboard} />
                                         <Route path="/my-cases-list" component={MyCasesList} />
-                                        <Route path="/case-details" component={ChatViews} />
+                                        <Route path="/case-details/:caseId" component={ChatViews} />
+                                        <Route
+                                            path="/payment/accept/success"
+                                            component={AcceptSuccess}
+                                        />
+                                        <Route path="/user-settings" component={UserSettings} />
+
                                         <Route component={Error404} />
                                     </Switch>
                                 </Layout>

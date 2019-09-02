@@ -1,5 +1,5 @@
 import { AppAction } from "../../types/app-action";
-import { SIGN_IN, SIGN_OUT, SIGN_UP } from "./authConstants";
+import { SIGN_IN, SIGN_OUT, SIGN_UP, UPDATE_USER } from "./authConstants";
 import { User } from "../../types/models/User";
 import { ThunkDispatch } from "redux-thunk";
 import { Dispatch } from "redux";
@@ -17,9 +17,25 @@ export interface SignOutAction extends AppAction {
     type: typeof SIGN_OUT;
 }
 
-export type AuthActions = SignInAction & SignUpAction & SignOutAction;
+export interface UpdateUserAction extends AppAction {
+    type: typeof UPDATE_USER;
+    payload: User;
+}
+
+export type AuthActions = SignInAction & SignUpAction & SignOutAction & UpdateUserAction;
 
 export interface SignUpFormData {
+    name: string;
+    email: string;
+    password: string;
+    password_confirmation: string;
+    birthdate: string;
+    gender: string;
+    phone_number: string;
+    picture?: File;
+}
+
+export interface UpdateUserFormData {
     name: string;
     email: string;
     password: string;
@@ -36,6 +52,8 @@ export interface SignInFormData {
 }
 
 export type signInSig = (data: { user: User }) => SignInAction;
+
+export type updateUserSig = (data: { user: User }) => UpdateUserAction;
 
 export type signOutSig = () => SignOutAction;
 
@@ -55,12 +73,18 @@ export type asyncSignUpSig = (
     formData: SignUpFormData
 ) => (dispatch: Dispatch<AppAction>) => Promise<void>;
 
+export type asyncUpdateUserSig = (
+    formData: UpdateUserFormData
+) => (dispatch: Dispatch<AppAction>) => Promise<void>;
+
 export interface AuthActionsSignatures {
     clearListsAction: clearListsActionSig;
     refreshToken: refreshTokenSig;
     autoSignIn: autoSignInSig;
     asyncSignIn: asyncSignInSig;
     asyncSignUp: asyncSignUpSig;
+    asyncUpdateUser: asyncUpdateUserSig;
     signIn: signInSig;
     signOut: signOutSig;
+    updateUser: updateUserSig;
 }

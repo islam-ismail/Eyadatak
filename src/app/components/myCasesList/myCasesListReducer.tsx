@@ -63,6 +63,18 @@ export const addNewCase = (
     };
 };
 
+export const updateCaseInMyListAction = (
+    state: MyCasesListState,
+    action: myCasesListTypes.updateCaseInMyListAction
+) => {
+    const mcs = state.medicalCases.filter(mc => mc.id !== action.payload.id);
+
+    return {
+        ...state,
+        medicalCases: [...mcs, action.payload]
+    };
+};
+
 export const setMyCases = (state: MyCasesListState, action: myCasesListTypes.SetMyCasesAction) => {
     return {
         ...state,
@@ -131,5 +143,6 @@ export default createReducer<
     [myCasesListConstants.SORT_CASES_LIST]: sortCasesList,
     [myCasesListConstants.FILTER_CASES]: filterCases,
     [myCasesListConstants.CLEAR_CASE_LISTS]: clearCaseLists,
-    [myCasesListConstants.SET_PENDING_TRANSFERS]: setPendingTransfers
+    [myCasesListConstants.SET_PENDING_TRANSFERS]: setPendingTransfers,
+    [myCasesListConstants.UPDATE_CASE_IN_MY_LIST_ACTION]: updateCaseInMyListAction
 });

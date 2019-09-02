@@ -18,6 +18,7 @@ import { initialMyCasesListState } from "./app/components/myCasesList/myCasesLis
 import { initialNewCaseState } from "./app/components/newCase/newCaseReducer";
 import { initialQuestionTemplateState } from "./app/components/questionTemplate/questionTemplateReducer";
 import { initialTransferCaseState } from "./app/components/transferCase/transferCaseReducer";
+import "./interceptor";
 
 const appInitialState: AppState = {
     global: initialGlobalState,

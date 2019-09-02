@@ -1,5 +1,6 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import { apiAssetUrl_development, apiAssetUrl_production } from "./constants";
 
 // Generate the years since 1900
 export const generateYears = (startYear?: number) => {
@@ -8,7 +9,7 @@ export const generateYears = (startYear?: number) => {
     startYear = startYear || 1900;
 
     while (startYear <= currentYear - 14) {
-        let year = { key: startYear++, value: startYear };
+        let year = { key: ++startYear, value: startYear };
         years.push(year);
     }
 
@@ -16,19 +17,19 @@ export const generateYears = (startYear?: number) => {
 };
 
 // Months Array
-export const months = [
-    { key: "01", value: "January" },
-    { key: "02", value: "February" },
-    { key: "03", value: "March" },
-    { key: "04", value: "April" },
-    { key: "05", value: "May" },
-    { key: "06", value: "June" },
-    { key: "07", value: "July" },
-    { key: "08", value: "August" },
-    { key: "09", value: "September" },
-    { key: "10", value: "October" },
-    { key: "11", value: "November" },
-    { key: "12", value: "December" }
+export const months: { value: string; key: string }[] = [
+    { value: "01", key: "January" },
+    { value: "02", key: "February" },
+    { value: "03", key: "March" },
+    { value: "04", key: "April" },
+    { value: "05", key: "May" },
+    { value: "06", key: "June" },
+    { value: "07", key: "July" },
+    { value: "08", key: "August" },
+    { value: "09", key: "September" },
+    { value: "10", key: "October" },
+    { value: "11", key: "November" },
+    { value: "12", key: "December" }
 ];
 
 // const isLeap = new Date(year, 1, 29).getMonth() == 1;
@@ -40,7 +41,7 @@ const generateDays = (limit = 31) => {
 
     for (var i = 1; i <= limit; i++) {
         if (singleDigits.includes(i)) {
-            let day = { key: `0${i}`, value: i };
+            let day = { key: `0${i}`, value: `0${i}` };
             days.push(day);
         } else {
             let day = { key: i, value: i };
@@ -64,6 +65,42 @@ export const getDays = (month: string) => {
     }
 };
 
+export const getYearFromDate = (date: string): string => {
+    if (date) {
+        let dateParts = date.split("-");
+
+        if (dateParts[0]) {
+            return dateParts[0];
+        }
+    }
+
+    return "";
+};
+
+export const getMonthFromDate = (date: string): string => {
+    if (date) {
+        let dateParts = date.split("-");
+
+        if (dateParts[1]) {
+            return dateParts[1];
+        }
+    }
+
+    return "";
+};
+
+export const getDayFromDate = (date: string): string => {
+    if (date) {
+        let dateParts = date.split("-");
+
+        if (dateParts[2]) {
+            return dateParts[2];
+        }
+    }
+
+    return "";
+};
+
 // Get JWT from Local Storage
 export const getJWT = () => {
     return localStorage.getItem("eyadatak-jwt");
@@ -77,6 +114,18 @@ export const setLocale = (locale: string) => {
 // Get Locale from Local Storage
 export const getLocale = (): string => {
     return localStorage.getItem("eyadatak-locale") as string;
+};
+
+export const setSignedInUser = (user: string) => {
+    localStorage.setItem("eyadatak-signedInUser", user);
+};
+
+export const getSignedInUser = () => {
+    return localStorage.getItem("eyadatak-signedInUser");
+};
+
+export const removeSignedInUser = () => {
+    return localStorage.removeItem("eyadatak-signedInUser");
 };
 
 //Set the Authorization Header in the default header
@@ -148,4 +197,27 @@ export const adjustDateZone = (serverDate: string) => {
         d.getFullYear().toString();
 
     return dateString;
+};
+
+export const apiAssetUrl = (filename: string) => {
+    let baseURL: string;
+    if (process.env.NODE_ENV !== "production") {
+        baseURL = apiAssetUrl_development;
+    } else {
+        baseURL = apiAssetUrl_production;
+    }
+
+    return baseURL + filename;
+};
+
+export const apiAssetName = (filename: string) => {
+    let name = filename;
+
+    let filenameParts = filename.split("/");
+
+    if (filenameParts && filenameParts.length) {
+        name = filenameParts.pop() as string;
+    }
+
+    return name;
 };
