@@ -49,7 +49,7 @@ export const BoxLink: SFC<{ label: string; count?: number; amount?: number }> = 
                     </div>
                 </Link>
             ) : (
-                <Link to="/wallet" className="stat">
+                <Link to="/my-wallet" className="stat">
                     <div className="title">
                         <h4>{boxLabel}</h4>
                     </div>

@@ -5,6 +5,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Provider } from "react-redux";
 import "./index.scss";
 import "./app/css/app.css";
+import "./app/css/other-styles.css";
 import App from "./app/App";
 import { configureStore } from "./app/store/configureStore";
 import ScrollToTop from "./app/util/ScrollToTop";
@@ -19,6 +20,7 @@ import { initialNewCaseState } from "./app/components/newCase/newCaseReducer";
 import { initialQuestionTemplateState } from "./app/components/questionTemplate/questionTemplateReducer";
 import { initialTransferCaseState } from "./app/components/transferCase/transferCaseReducer";
 import "./interceptor";
+import { initialPaymentReceiptsListState } from "./app/components/user-wallet/PaymentReceiptsListReducer";
 
 const appInitialState: AppState = {
     global: initialGlobalState,
@@ -30,7 +32,8 @@ const appInitialState: AppState = {
     transferCase: initialTransferCaseState,
     historyAccess: initialHistoryAccessState,
     historyCase: initialHistoryCaseState,
-    questionTemplate: initialQuestionTemplateState
+    questionTemplate: initialQuestionTemplateState,
+    paymentReceipts: initialPaymentReceiptsListState
 };
 
 const store = configureStore(appInitialState);

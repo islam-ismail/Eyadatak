@@ -31,7 +31,7 @@ class SideNav extends Component {
                         </NavLink>
                     </div>
                     <div className="item">
-                        <NavLink to="/user-settings">
+                        <NavLink to="/my-settings">
                             <img src={settingsIcon} alt="الإعدادات" />
                         </NavLink>
                     </div>

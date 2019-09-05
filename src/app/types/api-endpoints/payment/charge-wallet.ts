@@ -14,6 +14,7 @@ export interface Api_PaymentChargeWallet_Payload {
 export interface Api_PaymentChargeWallet_Response extends ApiResponse {
     data?: {
         completed: number;
+        [key: string]: any;
         patient_wallet?: PatientWallet;
     };
 }

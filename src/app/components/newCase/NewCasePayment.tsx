@@ -1,8 +1,7 @@
-import React, { Component, ComponentType, FormEventHandler, MouseEventHandler } from "react";
+import React, { Component, ComponentType, MouseEventHandler, ChangeEventHandler } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { AppState } from "../../reducers/rootReducer";
-import Button from "../../UIComponents/Button";
 import { toast } from "react-toastify";
 import {
     Api_PaymentMedicalCasePaymentMethod_Payload,
@@ -16,6 +15,7 @@ import * as myCasesListActions from "../myCasesList/myCasesListActions";
 import * as newCaseActions from "./newCaseActions";
 import { MyCasesListActionsSignatures } from "../myCasesList/myCasesListTypes";
 import { NewCaseActionsSignatures } from "./newCaseTypes";
+import PaymentForm from "../payment/PaymentForm";
 
 const mapState = (state: AppState) => ({
     locale: state.global.locale,
@@ -46,7 +46,7 @@ class NewCasePayment extends Component<CompProps, CompState> {
         done: false
     };
 
-    handleSubmit: FormEventHandler = e => {
+    handleSubmit: MouseEventHandler = e => {
         e.preventDefault();
         const { paymentMethodType, paymentSource } = this.state;
         const { newToBePaidCase } = this.props;
@@ -97,7 +97,9 @@ class NewCasePayment extends Component<CompProps, CompState> {
                 console.log("error:", error);
 
                 if (error.response) {
-                    toast.error(error.response.data.error_message);
+                    if (error.response.data.error_message) {
+                        toast.error(error.response.data.error_message);
+                    }
                 } else {
                     toast.error(error.message);
                 }
@@ -105,7 +107,7 @@ class NewCasePayment extends Component<CompProps, CompState> {
         }
     };
 
-    changePaymentSource: MouseEventHandler = e => {
+    changePaymentSource: ChangeEventHandler = e => {
         let paymentSource: "Payment method" | "Wallet" = "Payment method";
 
         if (e.currentTarget.getAttribute("data-value") === "Wallet") {
@@ -115,7 +117,7 @@ class NewCasePayment extends Component<CompProps, CompState> {
         this.setState({ paymentSource });
     };
 
-    changePaymentMethodType: MouseEventHandler = e => {
+    changePaymentMethodType: ChangeEventHandler = e => {
         let paymentMethodType: "Accept" | "Fawry" = "Accept";
 
         if (e.currentTarget.getAttribute("data-value") === "Fawry") {
@@ -127,82 +129,22 @@ class NewCasePayment extends Component<CompProps, CompState> {
 
     render() {
         const { paymentSource, paymentMethodType, done, fawryReferenceNumber } = this.state;
+        const { newToBePaidCase, signedInUser } = this.props;
 
-        return (
-            <>
-                <div id="payment-summary"></div>
-                <div id="payment-form">
-                    {done ? (
-                        fawryReferenceNumber ? (
-                            <p>Fawry reference number: {fawryReferenceNumber}</p>
-                        ) : (
-                            <></>
-                        )
-                    ) : (
-                        <form onSubmit={this.handleSubmit}>
-                            <div
-                                id="payment-source"
-                                className="col-md-12 list-group list-group-horizontal"
-                            >
-                                <button
-                                    type="button"
-                                    data-value="Wallet"
-                                    onClick={this.changePaymentSource}
-                                    className={
-                                        "col-md-6 btn list-group-item list-group-item-action" +
-                                        (paymentSource === "Wallet" ? " active" : "")
-                                    }
-                                >
-                                    Wallet
-                                </button>
-                                <button
-                                    type="button"
-                                    data-value="Payment method"
-                                    onClick={this.changePaymentSource}
-                                    className={
-                                        "col-md-6 btn list-group-item list-group-item-action" +
-                                        (paymentSource === "Payment method" ? " active" : "")
-                                    }
-                                >
-                                    Payment method
-                                </button>
-                            </div>
-                            {paymentSource === "Payment method" && (
-                                <div
-                                    id="payment-method-type"
-                                    className="col-md-12 list-group list-group-horizontal"
-                                >
-                                    <button
-                                        type="button"
-                                        data-value="Fawry"
-                                        onClick={this.changePaymentMethodType}
-                                        className={
-                                            "col-md-6 btn list-group-item list-group-item-action" +
-                                            (paymentMethodType === "Fawry" ? " active" : "")
-                                        }
-                                    >
-                                        Fawry
-                                    </button>
-                                    <button
-                                        type="button"
-                                        data-value="Accept"
-                                        onClick={this.changePaymentMethodType}
-                                        className={
-                                            "col-md-6 btn list-group-item list-group-item-action" +
-                                            (paymentMethodType === "Accept" ? " active" : "")
-                                        }
-                                    >
-                                        Accept
-                                    </button>
-                                </div>
-                            )}
-                            <Button type="submit" size="big" theme="black">
-                                دفع
-                            </Button>
-                        </form>
-                    )}
-                </div>
-            </>
+        return signedInUser && newToBePaidCase ? (
+            <PaymentForm
+                paymentSource={paymentSource}
+                paymentMethodType={paymentMethodType}
+                done={done}
+                amount={newToBePaidCase.speciality.fee}
+                walletBalance={signedInUser.patient_wallet.balance}
+                fawryReferenceNumber={fawryReferenceNumber}
+                changePaymentMethodType={this.changePaymentMethodType}
+                changePaymentSource={this.changePaymentSource}
+                handleSubmit={this.handleSubmit}
+            />
+        ) : (
+            <></>
         );
     }
 }

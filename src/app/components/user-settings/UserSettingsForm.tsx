@@ -72,8 +72,12 @@ class UserSettingsForm extends Component<CompProps, CompState> {
     render() {
         return (
             <form onSubmit={this.props.handleSubmit(this.handleFormSubmit)}>
-                <div className="multi-input">
-                    <div className="form-group">
+                <div className="block">
+                    <h4>إعدادات الحساب</h4>
+                    <p>قم بتعديل الحقول أدناه للإعدادات المفضلة لديك.</p>
+                </div>
+                <div className="block">
+                    <div className="fixed-width">
                         <Field
                             name="name"
                             type="text"
@@ -83,16 +87,18 @@ class UserSettingsForm extends Component<CompProps, CompState> {
                         />
                     </div>
                 </div>
-                <div className="form-group">
-                    <Field
-                        name="email"
-                        type="text"
-                        component={TextInput}
-                        label="البريد الإلكتروني"
-                    />
+                <div className="block">
+                    <div className="fixed-width">
+                        <Field
+                            name="email"
+                            type="text"
+                            component={TextInput}
+                            label="البريد الإلكتروني"
+                        />
+                    </div>
                 </div>
-                <div className="multi-input">
-                    <div className="form-group">
+                <div className="block">
+                    <div className="fixed-width">
                         <Field
                             name="password"
                             type="password"
@@ -100,7 +106,9 @@ class UserSettingsForm extends Component<CompProps, CompState> {
                             label="كلمة المرور"
                         />
                     </div>
-                    <div className="form-group">
+                </div>
+                <div className="block">
+                    <div className="fixed-width">
                         <Field
                             name="password_confirmation"
                             type="password"
@@ -109,23 +117,24 @@ class UserSettingsForm extends Component<CompProps, CompState> {
                         />
                     </div>
                 </div>
-                <div className="form-group">
-                    <Field
-                        name="phone_number"
-                        type="tel"
-                        component={TextInput}
-                        label="رقم الهاتف"
-                    />
+                <div className="block">
+                    <div className="fixed-width">
+                        <Field
+                            name="phone_number"
+                            type="tel"
+                            component={TextInput}
+                            label="رقم الهاتف"
+                        />
+                    </div>
                 </div>
-                <div className="multi-input">
-                    <div className="form-group inline">
+                <div className="block">
+                    <div className="fixed-width">
                         <label htmlFor="">تاريخ الميلاد </label>
                         <Field
                             name="year"
                             component={SelectInput}
                             label="سنة"
                             options={generateYears()}
-                            className="s5"
                             required={true}
                             onBirthdayFieldChange={this.handleBirthdateChange}
                             manyFields={true}
@@ -151,7 +160,9 @@ class UserSettingsForm extends Component<CompProps, CompState> {
                         />
                         <span className="err-msg">{this.state.birthdateError}</span>
                     </div>
-                    <div className="form-group">
+                </div>
+                <div className="block">
+                    <div className="fixed-width">
                         <Field
                             component={SelectInput}
                             name="gender"
@@ -164,8 +175,12 @@ class UserSettingsForm extends Component<CompProps, CompState> {
                         />
                     </div>
                 </div>
-                <div className="form-group btn-group">
-                    <button type="submit">تحديث</button>
+                <div className="block">
+                    <div className="fixed-width">
+                        <button className="btn btn-success" type="submit">
+                            تحديث
+                        </button>
+                    </div>
                 </div>
             </form>
         );

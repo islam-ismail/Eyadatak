@@ -176,7 +176,9 @@ export const setDoctorCasesList: myCasesListTypes.setDoctorCasesListSig = (docto
             dispatch(myCasesListActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(myCasesListActionError());
         }
     };
@@ -222,7 +224,9 @@ export const setPatientCasesList: myCasesListTypes.setPatientCasesListSig = (pat
             dispatch(myCasesListActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(myCasesListActionError());
         }
     };
@@ -241,7 +245,9 @@ export const sortCasesListRequest: myCasesListTypes.sortCasesListRequestSig = (
             dispatch(myCasesListActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(myCasesListActionError());
         }
     };
@@ -302,7 +308,9 @@ export const filterCasesList: myCasesListTypes.filterCasesListSig = (
             dispatch(myCasesListActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(myCasesListActionError());
         }
     };
@@ -316,7 +324,9 @@ export const clearCaseLists: myCasesListTypes.clearCaseListsSig = () => {
             dispatch(myCasesListActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(myCasesListActionError());
         }
     };
@@ -346,7 +356,9 @@ export const setPendingTransfersList: myCasesListTypes.setPendingTransfersListSi
             dispatch(myCasesListActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(myCasesListActionError());
         }
     };
@@ -366,7 +378,9 @@ export const acceptCaseTransfer: myCasesListTypes.acceptCaseTransferSig = (
             dispatch(myCasesListActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(myCasesListActionError());
         }
     };
@@ -386,7 +400,9 @@ export const rejectCaseTransfer: myCasesListTypes.rejectCaseTransferSig = (
             dispatch(myCasesListActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(myCasesListActionError());
         }
     };
@@ -424,7 +440,9 @@ export const asyncSetMedicalCaseReplies = (medicalCase: MedicalCase, user: User)
             }
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(myCasesListActionError());
         }
     };

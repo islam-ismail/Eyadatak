@@ -314,7 +314,9 @@ export const setDoctorChatCaseReplies: chatCaseTypes.setDoctorChatCaseRepliesSig
             dispatch(chatCaseActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(chatCaseActionError());
         }
     };
@@ -447,7 +449,9 @@ export const setPatientChatCaseReplies: chatCaseTypes.setPatientChatCaseRepliesS
             dispatch(chatCaseActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(chatCaseActionError());
         }
     };
@@ -472,7 +476,9 @@ export const handleSubmitChatReply: chatCaseTypes.handleSubmitChatReplySig = (
             dispatch(chatCaseActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(chatCaseActionError());
         }
     };
@@ -509,7 +515,9 @@ export const handleUploadFiles: chatCaseTypes.handleUploadFilesSig = (
             dispatch(chatCaseActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(chatCaseActionError());
         }
     };

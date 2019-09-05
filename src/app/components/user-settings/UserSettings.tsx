@@ -48,7 +48,7 @@ class UserSettings extends Component<CompProps> {
         return (
             <>
                 <div className="container">
-                    <div className="dashboard">
+                    <div className="page-content bg-white border-green">
                         <UserSettingsForm initialValues={initialVals} />
                     </div>
                 </div>

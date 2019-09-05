@@ -1,43 +1,27 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 60 60" style="enable-background:new 0 0 60 60;" xml:space="preserve">
-<g>
-	<path d="M42.5,22h-25c-0.552,0-1,0.447-1,1s0.448,1,1,1h25c0.552,0,1-0.447,1-1S43.052,22,42.5,22z"/>
-	<path d="M17.5,16h10c0.552,0,1-0.447,1-1s-0.448-1-1-1h-10c-0.552,0-1,0.447-1,1S16.948,16,17.5,16z"/>
-	<path d="M42.5,30h-25c-0.552,0-1,0.447-1,1s0.448,1,1,1h25c0.552,0,1-0.447,1-1S43.052,30,42.5,30z"/>
-	<path d="M42.5,38h-25c-0.552,0-1,0.447-1,1s0.448,1,1,1h25c0.552,0,1-0.447,1-1S43.052,38,42.5,38z"/>
-	<path d="M42.5,46h-25c-0.552,0-1,0.447-1,1s0.448,1,1,1h25c0.552,0,1-0.447,1-1S43.052,46,42.5,46z"/>
-	<path d="M38.914,0H6.5v60h47V14.586L38.914,0z M39.5,3.414L50.086,14H39.5V3.414z M8.5,58V2h29v14h14v42H8.5z"/>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
+<svg id="Group_359" data-name="Group 359" xmlns="http://www.w3.org/2000/svg" width="10.002" height="13.34" viewBox="0 0 10.002 13.34">
+  <g id="Group_350" data-name="Group 350">
+    <g id="Group_349" data-name="Group 349">
+      <path id="Path_474" data-name="Path 474" d="M10,2.7a.308.308,0,0,0-.091-.219L7.519.091h0A.311.311,0,0,0,7.3,0H.657A.657.657,0,0,0,0,.657V12.681a.658.658,0,0,0,.657.659H9.343A.657.657,0,0,0,10,12.684V2.7S10,2.7,10,2.7ZM7.613,1.066,8.937,2.392H7.644a.034.034,0,0,1-.034-.034l0-1.292ZM9.377,12.684a.034.034,0,0,1-.034.034H.657a.034.034,0,0,1-.034-.034V.657A.034.034,0,0,1,.657.623H6.985V2.355a.657.657,0,0,0,.657.657H9.375l0,9.672Z" fill="#183247"/>
+    </g>
+  </g>
+  <g id="Group_352" data-name="Group 352" transform="translate(1.925 4.273)">
+    <g id="Group_351" data-name="Group 351">
+      <path id="Path_475" data-name="Path 475" d="M79.739,164H74.213a.313.313,0,0,0,0,.625h5.526a.313.313,0,0,0,0-.625Z" transform="translate(-73.9 -164)" fill="#183247"/>
+    </g>
+  </g>
+  <g id="Group_354" data-name="Group 354" transform="translate(1.925 6.159)">
+    <g id="Group_353" data-name="Group 353">
+      <path id="Path_476" data-name="Path 476" d="M79.739,236.4H74.213a.313.313,0,0,0,0,.625h5.526a.314.314,0,0,0,.313-.313A.31.31,0,0,0,79.739,236.4Z" transform="translate(-73.9 -236.4)" fill="#183247"/>
+    </g>
+  </g>
+  <g id="Group_356" data-name="Group 356" transform="translate(1.925 8.043)">
+    <g id="Group_355" data-name="Group 355">
+      <path id="Path_477" data-name="Path 477" d="M79.739,308.7H74.213a.313.313,0,1,0,0,.625h5.526a.313.313,0,0,0,0-.625Z" transform="translate(-73.9 -308.7)" fill="#183247"/>
+    </g>
+  </g>
+  <g id="Group_358" data-name="Group 358" transform="translate(1.925 9.927)">
+    <g id="Group_357" data-name="Group 357">
+      <path id="Path_478" data-name="Path 478" d="M76.977,381H74.213a.313.313,0,0,0,0,.625h2.764a.313.313,0,0,0,0-.625Z" transform="translate(-73.9 -381)" fill="#183247"/>
+    </g>
+  </g>
 </svg>

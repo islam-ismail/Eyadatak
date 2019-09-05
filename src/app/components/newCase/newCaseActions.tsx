@@ -125,7 +125,9 @@ export const asyncSetPrimarySpecialities: newCaseTypes.asyncSetPrimarySpecialiti
 
             dispatch(newCaseActionFinish());
         } catch (error) {
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(newCaseActionError());
         }
     };
@@ -146,7 +148,9 @@ export const asyncSetSecondarySpecialities: newCaseTypes.asyncSetSecondarySpecia
 
             dispatch(newCaseActionFinish());
         } catch (error) {
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(newCaseActionError());
         }
     };
@@ -165,7 +169,9 @@ export const asyncSetInitialRequiredQuestions: newCaseTypes.asyncSetInitialRequi
 
             dispatch(newCaseActionFinish());
         } catch (error) {
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(newCaseActionError());
         }
     };
@@ -188,7 +194,9 @@ export const asyncSetRequiredQuestions: newCaseTypes.asyncSetRequiredQuestionsSi
 
             dispatch(newCaseActionFinish());
         } catch (error) {
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(newCaseActionError());
         }
     };
@@ -207,7 +215,9 @@ export const asyncSetInitialNotRequiredQuestions: newCaseTypes.asyncSetInitialNo
 
             dispatch(newCaseActionFinish());
         } catch (error) {
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(newCaseActionError());
         }
     };
@@ -230,7 +240,9 @@ export const asyncSetNotRequiredQuestions: newCaseTypes.asyncSetNotRequiredQuest
 
             dispatch(newCaseActionFinish());
         } catch (error) {
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(newCaseActionError());
         }
     };
@@ -260,7 +272,9 @@ export const setInitialQuestionValues: newCaseTypes.setInitialQuestionValuesSig 
 
             dispatch(newCaseActionFinish());
         } catch (error) {
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(newCaseActionError());
         }
     };
@@ -303,7 +317,9 @@ export const addNewCase: newCaseTypes.addNewCaseSig = (
             console.log("error:", error);
 
             if (error.response) {
-                toast.error(error.response.data.error_message);
+                if (error.response.data.error_message) {
+                    toast.error(error.response.data.error_message);
+                }
             } else {
                 toast.error(error.message);
             }

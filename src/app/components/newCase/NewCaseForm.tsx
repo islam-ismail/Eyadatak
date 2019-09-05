@@ -360,12 +360,16 @@ class NewCaseForm extends Component<CompProps, CompState> {
 
         return (
             <div className="new-case-form">
-                <form onSubmit={this.props.handleSubmit(this.handleFormSubmit)}>
+                <form
+                    className="form queestions"
+                    onSubmit={this.props.handleSubmit(this.handleFormSubmit)}
+                >
                     <Field
                         name="question_description"
                         type="text"
                         component={TextAreaRegular}
                         label="Question Description"
+                        className="question"
                     />
                     <Field
                         name="top_level_speciality"

@@ -39,17 +39,17 @@ class NewCaseModal extends Component<CompProps> {
             <>
                 <Modal
                     isOpen={openNewCaseModal}
-                    className="react-modal new-case-modal"
+                    className="react-modal new-case-modal modal"
                     overlayClassName="react-modal-overlay"
                     portalClassName="react-modal-portal"
                     contentLabel="Create New Case Modal"
                     onRequestClose={closeNewCaseModal}
                     closeTimeoutMS={300}
                 >
-                    <div className="modal-content-wrapper">
+                    <div className="modal-content-wrapper content">
                         <Loader loading={loading} />
 
-                        <div className="modal-header">
+                        <div className="modal-header header">
                             <Button
                                 icon="icon"
                                 title="Close Modal"
@@ -65,7 +65,7 @@ class NewCaseModal extends Component<CompProps> {
                             </p> */}
                         </div>
 
-                        <div className="modal-body">
+                        <div className="modal-body body">
                             {newToBePaidCase ? <NewCasePayment /> : <NewCaseForm />}
                         </div>
                     </div>

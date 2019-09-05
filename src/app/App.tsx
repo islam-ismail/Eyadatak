@@ -20,6 +20,7 @@ import { AuthActionsSignatures } from "./components/auth/authTypes";
 import { GlobalStateActionSignatures } from "./components/globalState/globalStateTypes";
 import AcceptSuccess from "./components/payment/accept-success";
 import UserSettings from "./components/user-settings/UserSettings";
+import UserWallet from "./components/user-wallet/UserWallet";
 
 const mapState = (state: AppState) => ({
     locale: state.global.locale,
@@ -84,7 +85,8 @@ class App extends Component<CompProps> {
                                             path="/payment/accept/success"
                                             component={AcceptSuccess}
                                         />
-                                        <Route path="/user-settings" component={UserSettings} />
+                                        <Route path="/my-wallet" component={UserWallet} />
+                                        <Route path="/my-settings" component={UserSettings} />
 
                                         <Route component={Error404} />
                                     </Switch>

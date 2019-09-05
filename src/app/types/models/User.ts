@@ -8,6 +8,9 @@ export interface User {
     picture_url: string;
     parent_id: number;
     type: "doctor" | "patient";
+    patient_wallet: {
+        balance: number;
+    };
     created_at: string;
     updated_at: string;
 }

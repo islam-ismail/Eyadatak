@@ -1,6 +1,6 @@
 import React, { Component, ComponentType, MouseEventHandler } from "react";
 import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
+import { Redirect, NavLink } from "react-router-dom";
 import { compose } from "redux";
 // import LanguageSwitcher from "../languageSwitcher/LanguageSwitcher";
 import magnifyingGlass from "../../assets/images/magnifying-glass.svg";
@@ -65,10 +65,9 @@ class Header extends Component<CompProps, CompState> {
                 {/* Button for SignOut */}
                 <div className="top-bar">
                     <div className="profile-pic">
-                        <a href="/my-settings">
+                        <NavLink to="/my-settings">
                             <img src={profilePic} alt={this.props.signedInUser.name} />
-                            {/* <img src={this.props.signedInUser.picture_url} alt={this.props.signedInUser.name} /> */}
-                        </a>
+                        </NavLink>
                     </div>
                     <div className="actions">
                         <div className="search">

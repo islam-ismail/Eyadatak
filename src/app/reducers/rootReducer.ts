@@ -9,6 +9,7 @@ import transferCaseReducer from "../components/transferCase/transferCaseReducer"
 import historyAccessReducer from "../components/chatViews/historyAccess/historyAccessReducer";
 import historyCaseReducer from "../components/chatViews/historyCase/historyCaseReducer";
 import questionTemplateReducer from "../components/questionTemplate/questionTemplateReducer";
+import paymentReceiptsReducer from "../components/user-wallet/PaymentReceiptsListReducer";
 
 const rootReducer = combineReducers({
     global: globalStateReducer,
@@ -20,7 +21,8 @@ const rootReducer = combineReducers({
     transferCase: transferCaseReducer,
     historyAccess: historyAccessReducer,
     historyCase: historyCaseReducer,
-    questionTemplate: questionTemplateReducer
+    questionTemplate: questionTemplateReducer,
+    paymentReceipts: paymentReceiptsReducer
 });
 
 export type AppState = ReturnType<typeof rootReducer>;

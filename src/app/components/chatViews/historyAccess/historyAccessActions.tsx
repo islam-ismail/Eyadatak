@@ -89,7 +89,9 @@ export const requestHistoryAccess: historyAccessTypes.requestHistoryAccessSig = 
             dispatch(historyAccessActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(historyAccessActionError());
         }
     };
@@ -247,7 +249,9 @@ export const setAccessRequestStatus: historyAccessTypes.setAccessRequestStatusSi
             dispatch(historyAccessActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(historyAccessActionError());
         }
     };
@@ -268,7 +272,9 @@ export const approveHistoryAccess: historyAccessTypes.approveHistoryAccessSig = 
             dispatch(historyAccessActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(historyAccessActionError());
         }
     };
@@ -286,7 +292,9 @@ export const declineHistoryAccess: historyAccessTypes.declineHistoryAccessSig = 
             dispatch(historyAccessActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(historyAccessActionError());
         }
     };

@@ -76,7 +76,9 @@ export const setTopLevelSpecialities: transferCaseTypes.setTopLevelSpecialitiesS
             dispatch(transferCaseActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(transferCaseActionError());
         }
     };
@@ -98,7 +100,9 @@ export const setSecondLevelSpecialities: transferCaseTypes.setSecondLevelSpecial
             dispatch(transferCaseActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(transferCaseActionError());
         }
     };
@@ -137,7 +141,9 @@ export const setSpecialityDoctorsList: transferCaseTypes.setSpecialityDoctorsLis
             dispatch(transferCaseActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(transferCaseActionError());
         }
     };
@@ -169,7 +175,9 @@ export const transferCaseToDoctor: transferCaseTypes.transferCaseToDoctorSig = (
             dispatch(transferCaseActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(transferCaseActionError());
         }
     };
@@ -196,7 +204,9 @@ export const transferCaseToSpeciality: transferCaseTypes.transferCaseToSpecialit
             dispatch(transferCaseActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(transferCaseActionError());
         }
     };
@@ -221,7 +231,9 @@ export const deleteTransfer: transferCaseTypes.deleteTransferSig = (
             dispatch(transferCaseActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(transferCaseActionError());
         }
     };

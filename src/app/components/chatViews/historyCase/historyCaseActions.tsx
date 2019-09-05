@@ -151,7 +151,9 @@ export const setHistoryCaseReplies: historyCaseTypes.setHistoryCaseRepliesSig = 
             dispatch(historyCaseActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(historyCaseActionError());
         }
     };

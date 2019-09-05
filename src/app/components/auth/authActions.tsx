@@ -75,7 +75,7 @@ export const asyncSignUp: authTypes.asyncSignUpSig = (formData: Api_AuthRegister
             dispatch(reset("signupForm"));
         } catch (error) {
             console.log(error);
-            if (error.response) {
+            if (error.response && error.response.data.error_message) {
                 toast.error(error.response.data.error_message);
             }
             dispatch(globalStateActions.asyncActionError());
@@ -102,7 +102,7 @@ export const asyncSignIn: authTypes.asyncSignInSig = (formData: Api_AuthLogin_Pa
             }
         } catch (error) {
             console.log(error);
-            if (error.response) {
+            if (error.response && error.response.data.error_message) {
                 toast.error(error.response.data.error_message);
             }
             dispatch(globalStateActions.asyncActionError());
@@ -127,7 +127,7 @@ export const asyncUpdateUser: authTypes.asyncUpdateUserSig = (
             }
         } catch (error) {
             console.log(error);
-            if (error.response) {
+            if (error.response && error.response.data.error_message) {
                 toast.error(error.response.data.error_message);
             }
             dispatch(globalStateActions.asyncActionError());
@@ -176,7 +176,7 @@ export const refreshToken: authTypes.refreshTokenSig = () => {
             }
         } catch (error) {
             console.log(error);
-            if (error.response) {
+            if (error.response && error.response.data.error_message) {
                 toast.error(error.response.data.error_message);
             }
             dispatch(signOut());
@@ -191,7 +191,7 @@ export const clearListsAction: authTypes.clearListsActionSig = () => {
             dispatch(clearCaseLists());
         } catch (error) {
             console.log(error);
-            if (error.response) {
+            if (error.response && error.response.data.error_message) {
                 toast.error(error.response.data.error_message);
             }
             dispatch(signOut());

@@ -79,7 +79,9 @@ export const setSavedQuestionsList: questionTemplateTypes.setSavedQuestionsListS
             dispatch(questionTemplateActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(questionTemplateActionError());
         }
     };
@@ -115,7 +117,9 @@ export const saveNewQuestion: questionTemplateTypes.saveNewQuestionSig = (
             dispatch(questionTemplateActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(questionTemplateActionError());
         }
     };
@@ -147,7 +151,9 @@ export const sendCaseTemplateQuestions: questionTemplateTypes.sendCaseTemplateQu
             dispatch(questionTemplateActionFinish());
         } catch (error) {
             console.log("error:", error);
-            toast.error(error.response.data.error_message);
+            if (error.response && error.response.data.error_message) {
+                toast.error(error.response.data.error_message);
+            }
             dispatch(questionTemplateActionError());
         }
     };
