@@ -9,6 +9,7 @@ interface FieldConfig extends WrappedFieldProps {
     }[];
     multiple: boolean;
     className: string;
+    wrapperClass?: string;
 }
 
 const SelectInputRegular: SFC<FieldConfig> = ({
@@ -17,10 +18,12 @@ const SelectInputRegular: SFC<FieldConfig> = ({
     options,
     label,
     meta = { touched: false, error: "", dirty: false },
+    wrapperClass,
     className
 }) => {
+    let inputGroupClass = wrapperClass ? wrapperClass : "input-group-regular";
     let groupClasses =
-        meta.touched && !!meta.error ? "input-group-regular error" : "input-group-regular";
+        meta && meta.touched && !!meta.error ? inputGroupClass + " error" : inputGroupClass;
 
     return (
         <div className={groupClasses}>

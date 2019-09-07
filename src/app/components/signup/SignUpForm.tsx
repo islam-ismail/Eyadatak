@@ -91,6 +91,7 @@ class SignUpForm extends Component<CompProps, CompState> {
                             component={TextInput}
                             label="الاسم"
                             autofocus="autofocus"
+                            wrapperClass="input"
                         />
                     </div>
                 </div>
@@ -100,6 +101,7 @@ class SignUpForm extends Component<CompProps, CompState> {
                         type="text"
                         component={TextInput}
                         label="البريد الإلكتروني"
+                        wrapperClass="input"
                     />
                 </div>
                 <div className="multi-input">
@@ -109,6 +111,7 @@ class SignUpForm extends Component<CompProps, CompState> {
                             type="password"
                             component={TextInput}
                             label="كلمة المرور"
+                            wrapperClass="input"
                         />
                     </div>
                     <div className="form-group">
@@ -117,6 +120,7 @@ class SignUpForm extends Component<CompProps, CompState> {
                             type="password"
                             component={TextInput}
                             label="تأكيد كلمة المرور"
+                            wrapperClass="input"
                         />
                     </div>
                 </div>
@@ -126,6 +130,7 @@ class SignUpForm extends Component<CompProps, CompState> {
                         type="tel"
                         component={TextInput}
                         label="رقم الهاتف"
+                        wrapperClass="input"
                     />
                 </div>
                 <div className="multi-input">
@@ -140,6 +145,7 @@ class SignUpForm extends Component<CompProps, CompState> {
                             required={true}
                             onBirthdayFieldChange={this.handleBirthdateChange}
                             manyFields={true}
+                            wrapperClass="input"
                         />
                         <Field
                             name="month"
@@ -150,6 +156,7 @@ class SignUpForm extends Component<CompProps, CompState> {
                             onBirthdayFieldChange={this.handleBirthdateChange}
                             manyFields={true}
                             onChange={this.handleMonthChange}
+                            wrapperClass="input"
                         />
                         <Field
                             name="day"
@@ -159,6 +166,7 @@ class SignUpForm extends Component<CompProps, CompState> {
                             onBirthdayFieldChange={this.handleBirthdateChange}
                             manyFields={true}
                             options={getDays(this.state.month)}
+                            wrapperClass="input"
                         />
                         <span className="err-msg">{this.state.birthdateError}</span>
                     </div>
@@ -172,6 +180,7 @@ class SignUpForm extends Component<CompProps, CompState> {
                                 { key: "أنثى", value: "female" }
                             ]}
                             label="الجنس"
+                            wrapperClass="input"
                         />
                     </div>
                 </div>

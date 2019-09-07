@@ -4,6 +4,7 @@ import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Provider } from "react-redux";
 import "./index.scss";
+import "react-toastify/dist/ReactToastify.min.css";
 import "./app/css/app.css";
 import "./app/css/other-styles.css";
 import App from "./app/App";

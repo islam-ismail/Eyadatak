@@ -275,8 +275,8 @@ class PatientChatView extends Component<CompProps, CompState> {
                                 >
                                     <Field
                                         name="chat_reply"
+                                        component="textarea"
                                         type="text"
-                                        component={TextAreaRegular}
                                         placeholder="اكتب رسالتك هنا..."
                                     />
                                     <div className="chat-actions">

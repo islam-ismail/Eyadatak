@@ -140,6 +140,21 @@ class PaymentReceiptsListTable extends Component<CompProps, CompState> {
                             <button id="prev" onClick={() => this.handleChangePage("next")} />
                         </div>
                     </div>
+                    <div className="actions left">
+                        <div className="single">
+                            <select className="select" onChange={this.handleFilterChange}>
+                                <option value="id">ترتيب حسب</option>
+                                <option value="target">النوع</option>
+                                <option value="amount">المبلغ</option>
+                                <option value="payment_method">طريقة الدفع</option>
+                                <option value="completed">مكتمل</option>
+                                <option value="transaction_id">رمز المعاملة</option>
+                                <option value="created_at">تاريخ بدء السؤال</option>
+                                <option value="updated_at">تاريخ آخر تحديث</option>
+                            </select>
+                        </div>
+
+                    </div>
                 </div>
                 <div className="container">
                     <table className="all_cases">

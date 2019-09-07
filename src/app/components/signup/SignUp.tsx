@@ -11,9 +11,9 @@ export default class SingUp extends Component<CompProps> {
     render() {
         return (
             <>
-                <div className="login-form">
+                <div className="login-form signup">
                     <div className="title">
-                        <h2>تسجيل الدخول</h2>
+                        <h2>التسجيل</h2>
                     </div>
                     <SignUpForm switchScreens={this.props.switchScreens} />
                 </div>

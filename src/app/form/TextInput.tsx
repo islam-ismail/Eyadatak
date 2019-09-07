@@ -4,15 +4,19 @@ import { WrappedFieldProps } from "redux-form";
 interface FieldConfig extends WrappedFieldProps {
     label: string;
     type: string;
+    wrapperClass?: string;
 }
 
 const TextInput: SFC<FieldConfig> = ({
     input,
     type,
     label,
+    wrapperClass,
     meta = { touched: false, error: "", dirty: false }
 }) => {
-    const groupClasses = meta.touched && !!meta.error ? "input-group error" : "input-group";
+    let inputGroupClass = wrapperClass ? wrapperClass : "input-group";
+    const groupClasses =
+        meta && meta.touched && !!meta.error ? inputGroupClass + " error" : inputGroupClass;
 
     return (
         <div className={groupClasses}>

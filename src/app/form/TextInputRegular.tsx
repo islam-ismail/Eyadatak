@@ -5,6 +5,7 @@ interface FieldConfig extends WrappedFieldProps {
     label: string;
     type: string;
     placeholder: string;
+    wrapperClass?: string;
 }
 
 const TextInputRegular: SFC<FieldConfig> = ({
@@ -12,10 +13,12 @@ const TextInputRegular: SFC<FieldConfig> = ({
     type,
     label,
     meta = { touched: false, error: "", dirty: false },
+    wrapperClass,
     placeholder
 }) => {
+    let inputGroupClass = wrapperClass ? wrapperClass : "input-group-regular";
     const groupClasses =
-        meta.touched && meta.error ? "input-group-regular error" : "input-group-regular";
+        meta && meta.touched && !!meta.error ? inputGroupClass + " error" : inputGroupClass;
 
     return (
         <div className={groupClasses}>

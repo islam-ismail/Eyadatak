@@ -12,6 +12,7 @@ interface CompProps extends WrappedFieldProps {
     manyFields: boolean;
     className: string;
     onBirthdayFieldChange: (error: string) => void;
+    wrapperClass?: string;
 }
 
 class SelectInput extends Component<CompProps> {
@@ -46,11 +47,11 @@ class SelectInput extends Component<CompProps> {
     }
 
     render() {
-        const { input, multiple, options, label, className, manyFields } = this.props;
+        const { input, multiple, options, label, className, manyFields, wrapperClass } = this.props;
         const meta = this.props.meta as { touched: boolean; dirty: boolean; error: string };
-
+        let inputGroupClass = wrapperClass ? wrapperClass : "input-group";
         let groupClasses =
-            meta && meta.touched && !!meta.error ? "input-group error" : "input-group";
+            meta && meta.touched && !!meta.error ? inputGroupClass + " error" : inputGroupClass;
 
         return (
             <div className={groupClasses}>

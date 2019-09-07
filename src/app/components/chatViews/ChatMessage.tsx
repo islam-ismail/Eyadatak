@@ -28,6 +28,8 @@ export const ChatMessage: SFC<CompProps> = props => {
     let className = `chat-m`;
     let question_template: QuestionTemplate;
     let answer: CaseQuestionAnswer;
+    const patientClass = "green";
+    const doctorClass = "blue";
 
     switch (message.type) {
         case "accessRequest":
@@ -35,7 +37,7 @@ export const ChatMessage: SFC<CompProps> = props => {
             if (accessRequest.status === "Waiting approval") {
                 return (
                     <>
-                        <div className={className}>
+                        <div className={className + " " + doctorClass}>
                             <div className="header">
                                 <div className="sender">
                                     <h4>طلب الحصول على حق الاطلاع على الأسئلة السابقة</h4>
@@ -111,7 +113,7 @@ export const ChatMessage: SFC<CompProps> = props => {
             } else {
                 return (
                     <>
-                        <div className={className}>
+                        <div className={className + " " + doctorClass}>
                             <div className="header">
                                 <div className="sender">
                                     <h4>طلب الحصول على حق الاطلاع على الأسئلة السابقة</h4>
@@ -147,7 +149,7 @@ export const ChatMessage: SFC<CompProps> = props => {
             const question = message.question as MedicalCase;
             return (
                 <>
-                    <div className={className}>
+                    <div className={className + " " + patientClass}>
                         <div className="header">
                             <div className="sender">
                                 <h4>{me === "patient" ? "أنت" : "المريض"}</h4>
@@ -164,7 +166,7 @@ export const ChatMessage: SFC<CompProps> = props => {
             );
         case "reply":
             const reply = message.reply as CaseReply;
-            whoseReply = me === reply.replier.type ? "green" : "blue";
+            whoseReply = reply.replier.type === "patient" ? patientClass : doctorClass;
             className = `${className} ${whoseReply}`;
             return (
                 <>
@@ -194,7 +196,7 @@ export const ChatMessage: SFC<CompProps> = props => {
             question_template = answer.question_template as QuestionTemplate;
             return (
                 <>
-                    <div className={className}>
+                    <div className={className + " " + patientClass}>
                         <div className="header">
                             <div className="sender">
                                 <h4>إجابات المريض على أسئلة الطبيب</h4>
@@ -287,7 +289,7 @@ export const ChatMessage: SFC<CompProps> = props => {
                         answer = answerElement.answer as CaseQuestionAnswer;
                         question_template = answer.question_template as QuestionTemplate;
                         return (
-                            <div key={answer.id} className={className}>
+                            <div key={answer.id} className={className + " " + patientClass}>
                                 <div className="header">
                                     <div className="sender">
                                         <h4>إجابات المريض على أسئلة الطبيب</h4>
@@ -382,7 +384,7 @@ export const ChatMessage: SFC<CompProps> = props => {
             // const caseQuestion = message.question as CaseQuestion;
             return (
                 <>
-                    <div className={className}>
+                    <div className={className + " " + doctorClass}>
                         <div className="header">
                             <div className="sender">
                                 <h4>أسئلة مرسلة من الطبيب</h4>
@@ -412,7 +414,7 @@ export const ChatMessage: SFC<CompProps> = props => {
                 <>
                     {transfer.status !== "Rejected" ? (
                         <>
-                            <div className={className}>
+                            <div className={className + " " + doctorClass}>
                                 <div className="header">
                                     <div className="sender">
                                         <h4>تحويل السؤال لطبيب آخر</h4>
@@ -438,7 +440,7 @@ export const ChatMessage: SFC<CompProps> = props => {
                         <>
                             {me === "doctor" && userId === transfer.from_doctor.id ? (
                                 <>
-                                    <div className={className}>
+                                    <div className={className + " " + doctorClass}>
                                         <div className="header">
                                             <div className="sender">
                                                 <h4>تحويل السؤال لطبيب آخر</h4>
@@ -467,7 +469,7 @@ export const ChatMessage: SFC<CompProps> = props => {
         case "Closed":
             return (
                 <>
-                    <div className={className}>
+                    <div className={className + " " + doctorClass}>
                         <div className="header">
                             <div className="sender">
                                 <h4>إغلاق السؤال</h4>

@@ -7,15 +7,21 @@ interface FieldConfig extends WrappedFieldProps {
     type: string;
     label: string;
     props: ReactDatePickerProps[];
+    wrapperClass: string;
 }
 const DateInput: SFC<FieldConfig> = ({
     input: { value, onChange, ...restInput },
     type,
     label,
     meta: { touched, error, dirty },
+    wrapperClass,
     ...props
 }) => {
-    let groupClasses = touched && !!error ? "input-group error" : "input-group";
+    let groupClasses = wrapperClass
+        ? wrapperClass
+        : touched && !!error
+        ? "input-group error"
+        : "input-group";
     let selectedDate: Date;
 
     if (value && value != "") {
