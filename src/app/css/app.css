@@ -7220,15 +7220,22 @@ select.select:focus {
     height: 50rem;
     position: absolute;
     z-index: -10;
-    top: -6.8rem;
+    top: -5.8rem;
     right: 13%;
 }
 .login-wrapper .login-shape .shape2 {
     height: 45rem;
     position: absolute;
     z-index: -10;
-    top: -2rem;
-    left: 9%;
+    top: -3rem;
+    left: 10%;
+}
+.login-wrapper .login-shape .shape3 {
+    height: 45rem;
+    position: absolute;
+    z-index: -10;
+    top: 35rem;
+    left: 20%;
 }
 .login-wrapper .login-box {
     width: 65%;
@@ -7265,7 +7272,7 @@ select.select:focus {
 .login-wrapper .login-box .login-bg {
     width: 41.66667%;
     float: left;
-    min-height: 600px;
+    min-height: 700px; 
     background-image: url(../assets/images/patient-login.png);
     background-position: center;
     background-repeat: no-repeat;
@@ -7287,6 +7294,10 @@ select.select:focus {
     margin-right: 0.83333%;
     padding: 20px;
     padding-right: 40px;
+}
+.login-wrapper .login-box .login-form.signup .title {
+    font-size: 2rem;
+    font-weight: bold;
 }
 .login-wrapper .login-box .login-form .multi-input {
     display: -webkit-box;
@@ -7355,9 +7366,9 @@ select.select:focus {
     display: block;
     border: unset;
     border-bottom: 1px #e3e3e3 solid;
-    width: 90%;
+    width: 100%;
     font-size: 16px;
-    padding: 5px;
+    padding: 10px;
     font-weight: 100;
     color: #666;
     font-family: "Roboto", sans-serif;
@@ -7366,7 +7377,7 @@ select.select:focus {
 .login-wrapper .login-box .login-form .form-group input:focus {
     border: unset;
     outline: none;
-    border-bottom: 1px #1f92d1 solid;
+    /* border-bottom: 1px #1f92d1 solid; */
     background-color: #e8f0fe;
 }
 .login-wrapper .login-box .login-form .form-group select {
@@ -8828,7 +8839,7 @@ aside .aside-active::-webkit-scrollbar {
 .modal-wrapper .modal#new-case textarea:active,
 .modal-wrapper .modal#new-case textarea:focus {
     background-color: #e8f0fe;
-    border: 1px #1f92d1 solid;
+    /* border: 1px #1f92d1 solid; */
 }
 .modal-wrapper .modal#new-case select {
     margin-bottom: 15px;
