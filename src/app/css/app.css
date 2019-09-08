@@ -7276,6 +7276,7 @@ select.select:focus {
 .login-wrapper .login-box .title {
     margin-bottom: 20px;
     font-size: 1.3rem;
+    font-weight: bold;
 }
 .login-wrapper .login-box .login-form {
     font-family: "Droid Arabic Kufi", sans-serif;
@@ -7415,6 +7416,23 @@ select.select:focus {
     color: #fff;
     border-radius: 5px;
 }
+.login-wrapper .login-box .login-form .form-group.btn-group button.login-facebook {
+    display: block;
+    width: 90%;
+    padding: 16px 10px;
+    background-color: #3b5998;
+    color: #fff;
+    border-radius: 5px;
+}
+.login-wrapper .login-box .login-form .form-group.btn-group button.login-google {
+    display: block;
+    width: 90%;
+    padding: 16px 10px;
+    background-color: #1da1f2;
+    color: #fff;
+    border-radius: 5px;
+}
+
 .login-wrapper .login-box .login-form .form-group.btn-group button.signup {
     display: block;
     width: 90%;
