@@ -2,6 +2,8 @@ import React, { Component, ComponentType } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { reduxForm, Field, InjectedFormProps } from 'redux-form';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import TextInput from '../../form/TextInput';
 import * as actions from '../auth/authActions';
 import {
@@ -81,10 +83,13 @@ class SignInForm extends Component<CompProps> {
             إنشاء حساب جديد
           </button>
           <button className="login-facebook" type="submit">
-            Continue With Facebook
+            Continue With Facebook{' '}
+            <span className="login-face-icon">
+              <FontAwesomeIcon icon={faFacebook} size="lg" />
+            </span>
           </button>
           <button className="login-google" type="submit">
-            Sign in With Google
+            Sign in With Google <FontAwesomeIcon icon={faGoogle} size="lg" />
           </button>
         </div>
       </form>

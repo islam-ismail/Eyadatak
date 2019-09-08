@@ -7091,7 +7091,7 @@ input.checkbox[type="checkbox"],
 .form .form-group input:focus {
     border: unset;
     outline: none;
-    border-bottom: 1px #1f92d1 solid;
+    /* border-bottom: 1px #1f92d1 solid; */
     background-color: #e8f0fe;
 }
 .form .radio-group {
@@ -7190,7 +7190,7 @@ select.select:focus {
 }
 
 .login-wrapper {
-    max-width: 100%;
+    max-width: 94%;
     margin-left: auto;
     margin-right: auto;
     padding: 20px;
@@ -7234,8 +7234,8 @@ select.select:focus {
     height: 45rem;
     position: absolute;
     z-index: -10;
-    top: 35rem;
-    left: 20%;
+    top: 20rem;
+    left: 18%;
 }
 .login-wrapper .login-box {
     width: 65%;
@@ -7245,6 +7245,7 @@ select.select:focus {
     border-radius: 10px;
     -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.12);
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.12);
+    position: relative;
 }
 .login-wrapper .login-box:before,
 .login-wrapper .login-box:after {
@@ -7272,13 +7273,15 @@ select.select:focus {
 .login-wrapper .login-box .login-bg {
     width: 41.66667%;
     float: left;
-    min-height: 700px; 
     background-image: url(../assets/images/patient-login.png);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     border-bottom-left-radius: 10px;
     border-top-left-radius: 10px;
+    position: absolute;
+    left: 0;
+    height: 100%
 }
 .login-wrapper .login-box .title {
     margin-bottom: 20px;
@@ -7323,7 +7326,7 @@ select.select:focus {
 .login-wrapper .login-box .login-form .form-group.inline select {
     width: 23.33333%;
     float: left;
-    margin-left: 0.83333%;
+    margin-left: 4.3%;
     margin-right: 0.83333%;
     float: right;
 }
@@ -7356,8 +7359,8 @@ select.select:focus {
 .login-wrapper .login-box .login-form .form-group.inline select.s5 {
     width: 40%;
     float: left;
-    margin-left: 0.83333%;
-    margin-right: 0.83333%;
+    margin-left: 2.23%;
+    margin-right: 0.23%;
     float: right;
 }
 .login-wrapper .login-box .login-form .form-group input {
@@ -7404,7 +7407,7 @@ select.select:focus {
 .login-wrapper .login-box .login-form .form-group select:focus {
     border: unset;
     outline: none;
-    border-bottom: 1px #1f92d1 solid;
+    /* border-bottom: 1px #1f92d1 solid; */
     background-color: #e8f0fe;
 }
 .login-wrapper .login-box .login-form .form-group.btn-group {
@@ -7434,7 +7437,16 @@ select.select:focus {
     background-color: #3b5998;
     color: #fff;
     border-radius: 5px;
+    position: relative;
 }
+
+
+.login-wrapper .login-box .login-form .form-group.btn-group button.login-facebook span.login-face-icon {
+    position: absolute;
+    left: 106!important;
+    bottom: 17 !important;
+}
+
 .login-wrapper .login-box .login-form .form-group.btn-group button.login-google {
     display: block;
     width: 90%;

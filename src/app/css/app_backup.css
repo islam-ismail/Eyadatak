@@ -7350,7 +7350,7 @@ select.select:focus {
 .login-wrapper .login-box .login-form .form-group input:focus {
     border: unset;
     outline: none;
-    border-bottom: 1px #1f92d1 solid;
+    /* border-bottom: 1px #1f92d1 solid; */
     background-color: #e8f0fe;
 }
 .login-wrapper .login-box .login-form .form-group select {
