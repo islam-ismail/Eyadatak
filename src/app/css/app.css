@@ -7091,7 +7091,7 @@ input.checkbox[type="checkbox"],
 .form .form-group input:focus {
     border: unset;
     outline: none;
-    border-bottom: 1px #1f92d1 solid;
+    /* border-bottom: 1px #1f92d1 solid; */
     background-color: #e8f0fe;
 }
 .form .radio-group {
@@ -7190,7 +7190,7 @@ select.select:focus {
 }
 
 .login-wrapper {
-    max-width: 100%;
+    max-width: 80%;
     margin-left: auto;
     margin-right: auto;
     padding: 20px;
@@ -7220,15 +7220,22 @@ select.select:focus {
     height: 50rem;
     position: absolute;
     z-index: -10;
-    top: -6.8rem;
+    top: -5.8rem;
     right: 13%;
 }
 .login-wrapper .login-shape .shape2 {
     height: 45rem;
     position: absolute;
     z-index: -10;
-    top: -2rem;
-    left: 9%;
+    top: -3rem;
+    left: 10%;
+}
+.login-wrapper .login-shape .shape3 {
+    height: 45rem;
+    position: absolute;
+    z-index: -10;
+    top: 20rem;
+    left: 18%;
 }
 .login-wrapper .login-box {
     width: 65%;
@@ -7238,6 +7245,7 @@ select.select:focus {
     border-radius: 10px;
     -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.12);
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.12);
+    position: relative;
 }
 .login-wrapper .login-box:before,
 .login-wrapper .login-box:after {
@@ -7265,17 +7273,20 @@ select.select:focus {
 .login-wrapper .login-box .login-bg {
     width: 41.66667%;
     float: left;
-    min-height: 600px;
     background-image: url(../assets/images/patient-login.png);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     border-bottom-left-radius: 10px;
     border-top-left-radius: 10px;
+    position: absolute;
+    left: 0;
+    height: 100%
 }
 .login-wrapper .login-box .title {
     margin-bottom: 20px;
     font-size: 1.3rem;
+    font-weight: bold;
 }
 .login-wrapper .login-box .login-form {
     font-family: "Droid Arabic Kufi", sans-serif;
@@ -7286,6 +7297,10 @@ select.select:focus {
     margin-right: 0.83333%;
     padding: 20px;
     padding-right: 40px;
+}
+.login-wrapper .login-box .login-form.signup .title {
+    font-size: 2rem;
+    font-weight: bold;
 }
 .login-wrapper .login-box .login-form .multi-input {
     display: -webkit-box;
@@ -7311,7 +7326,7 @@ select.select:focus {
 .login-wrapper .login-box .login-form .form-group.inline select {
     width: 23.33333%;
     float: left;
-    margin-left: 0.83333%;
+    margin-left: 4.3%;
     margin-right: 0.83333%;
     float: right;
 }
@@ -7344,8 +7359,8 @@ select.select:focus {
 .login-wrapper .login-box .login-form .form-group.inline select.s5 {
     width: 40%;
     float: left;
-    margin-left: 0.83333%;
-    margin-right: 0.83333%;
+    margin-left: 2.23%;
+    margin-right: 0.23%;
     float: right;
 }
 .login-wrapper .login-box .login-form .form-group input {
@@ -7354,9 +7369,9 @@ select.select:focus {
     display: block;
     border: unset;
     border-bottom: 1px #e3e3e3 solid;
-    width: 90%;
+    width: 100%;
     font-size: 16px;
-    padding: 5px;
+    padding: 10px;
     font-weight: 100;
     color: #666;
     font-family: "Roboto", sans-serif;
@@ -7365,7 +7380,7 @@ select.select:focus {
 .login-wrapper .login-box .login-form .form-group input:focus {
     border: unset;
     outline: none;
-    border-bottom: 1px #1f92d1 solid;
+    /* border-bottom: 1px #1f92d1 solid; */
     background-color: #e8f0fe;
 }
 .login-wrapper .login-box .login-form .form-group select {
@@ -7392,11 +7407,34 @@ select.select:focus {
 .login-wrapper .login-box .login-form .form-group select:focus {
     border: unset;
     outline: none;
-    border-bottom: 1px #1f92d1 solid;
+    /* border-bottom: 1px #1f92d1 solid; */
     background-color: #e8f0fe;
 }
 .login-wrapper .login-box .login-form .form-group.btn-group {
     margin-top: 30px;
+}
+.login-wrapper .login-box .login-form .form-group.btn-group .underline-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0 auto;
+}
+.login-wrapper .login-box .login-form .form-group.btn-group .underline-container .underline-left {
+    width: 40%;
+    border-bottom: 2px #e3e3e3 solid;
+    margin-left: 45px;
+    margin-bottom: 5px;
+}
+.login-wrapper .login-box .login-form .form-group.btn-group .underline-container .underline-right {
+    width: 40%;
+    border-bottom: 2px #e3e3e3 solid;
+    margin-right: 5px;
+    margin-bottom: 5px;
+
+}
+.login-wrapper .login-box .login-form .form-group.btn-group .underline-container .or-underline {
+    width: 1%;
+    margin-left:7px;
 }
 .login-wrapper .login-box .login-form .form-group.btn-group button {
     border: none;
@@ -7415,6 +7453,38 @@ select.select:focus {
     color: #fff;
     border-radius: 5px;
 }
+.login-wrapper .login-box .login-form .form-group.btn-group button.login-facebook {
+    display: block;
+    width: 90%;
+    padding: 16px 10px;
+    background-color: #3b5998;
+    color: #fff;
+    border-radius: 5px;
+    position: relative;
+}
+
+
+.login-wrapper .login-box .login-form .form-group.btn-group button.login-facebook span.login-face-icon {
+    position: absolute;
+    margin-right: 5px;
+    top: 10px;
+}
+.login-wrapper .login-box .login-form .form-group.btn-group button.login-google span.login-google-icon {
+    position: absolute;
+    margin-right: 5px;
+    top: 12px;
+}
+
+.login-wrapper .login-box .login-form .form-group.btn-group button.login-google {
+    display: block;
+    width: 90%;
+    padding: 16px 10px;
+    background-color: #1da1f2;
+    color: #fff;
+    border-radius: 5px;
+    position: relative;
+}
+
 .login-wrapper .login-box .login-form .form-group.btn-group button.signup {
     display: block;
     width: 90%;
@@ -8821,7 +8891,7 @@ aside .aside-active::-webkit-scrollbar {
 .modal-wrapper .modal#new-case textarea:active,
 .modal-wrapper .modal#new-case textarea:focus {
     background-color: #e8f0fe;
-    border: 1px #1f92d1 solid;
+    /* border: 1px #1f92d1 solid; */
 }
 .modal-wrapper .modal#new-case select {
     margin-bottom: 15px;
