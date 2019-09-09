@@ -9,6 +9,8 @@ import { MedicalCase } from "../../types/models/MedicalCase";
 import { AppState } from "../../reducers/rootReducer";
 import { SortAndFilterOptions } from "./myCasesListReducer";
 import { MyCasesListActionsSignatures } from "./myCasesListTypes";
+import { Field, InjectedFormProps, reduxForm } from "redux-form";
+import TextInput from "../../form/TextInput";
 
 const mapState = (state: AppState) => ({
     locale: state.global.locale,
@@ -113,7 +115,7 @@ class MyCasesListTable extends Component<CompProps, CompState> {
                         <label htmlFor="select_all">اختر الكل</label>
                     </div>
                     <div className="search">
-                        <input type="search" placeholder="تبحث عن شيء؟" />
+                        <input type="search" placeholder="البحث  عن جميع الادخالات" />
                         <div className="s-icon">
                             <img src={magnifyingGlass} alt="search icon" />
                         </div>
@@ -154,6 +156,20 @@ class MyCasesListTable extends Component<CompProps, CompState> {
                             <button id="next" onClick={() => this.handleChangePage("prev")} />
                             <button id="prev" onClick={() => this.handleChangePage("next")} />
                         </div>
+
+
+                        {/* <div className="single">
+                        <div className="form-group">
+                            <Field
+                                name="search"
+                                type="text"
+                                component={TextInput}
+                                label="البحث"
+                                wrapperClass="input"
+                            />
+                        </div>
+                        </div> */}
+
                     </div>
                     {/* <TablePagination
             className='actions left'
@@ -279,5 +295,6 @@ export default compose<ComponentType<CompOwnProps>>(
     connect(
         mapState,
         actions
-    )
+    ),
+    reduxForm({ form: "myCasesListForm", enableReinitialize: true })
 )(MyCasesListTable);

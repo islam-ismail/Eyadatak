@@ -82,14 +82,22 @@ class SignInForm extends Component<CompProps> {
           >
             إنشاء حساب جديد
           </button>
+          <div className="underline-container">
+            <div className="underline-right"></div>
+            <div className=" or-underline">أو</div>
+            <div className="underline-left"></div>
+          </div>
           <button className="login-facebook" type="submit">
             Continue With Facebook{' '}
             <span className="login-face-icon">
-              <FontAwesomeIcon icon={faFacebook} size="lg" />
+              <FontAwesomeIcon icon={faFacebook} size="2x" />
             </span>
           </button>
           <button className="login-google" type="submit">
-            Sign in With Google <FontAwesomeIcon icon={faGoogle} size="lg" />
+            Sign in With Google{' '}
+            <span className="login-google-icon">
+              <FontAwesomeIcon icon={faGoogle} size="lg" />
+            </span>
           </button>
         </div>
       </form>
