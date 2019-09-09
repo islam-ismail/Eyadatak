@@ -7692,7 +7692,7 @@ main.content aside {
 main.content .container {
     width: 98.33333%;
     float: left;
-    margin-left: 0.83333%;
+    margin-left: 3.83333%;
     margin-right: 0.83333%;
 }
 main.content .container.sidebar {
@@ -7866,7 +7866,7 @@ main.content .container.sidebar-active ~ aside {
     margin: auto 20px;
 }
 .action-bar .select_all {
-    display: none;
+    /* display: none; */
 }
 .action-bar .select_all input[type="checkbox"] {
     -webkit-appearance: none;
@@ -7896,7 +7896,7 @@ main.content .container.sidebar-active ~ aside {
     position: relative;
     margin: auto 20px;
     width: 250px;
-    display: none;
+    /* display: none; */
 }
 .action-bar .search input {
     width: 100%;
@@ -7999,7 +7999,7 @@ table.all_cases thead tr th {
     overflow: hidden;
 }
 table.all_cases thead tr th:after {
-    content: "";
+    /* content: "";
     background-image: url("../assets/images/sort.svg");
     background-repeat: no-repeat;
     background-position: center;
@@ -8008,7 +8008,18 @@ table.all_cases thead tr th:after {
     top: 5.8rem;
     height: 1.1rem;
     width: 1rem;
-    margin-right: 1rem;
+    margin-right: 1rem; */
+
+    content: "";
+    background-image: url("../assets/images/sort.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 14px;
+    position: absolute;
+    top: 7.8rem;
+    height: 4.1rem;
+    width: 1rem;
+    margin-right: -14rem;
 }
 table.all_cases tbody {
     background-color: #fff;
