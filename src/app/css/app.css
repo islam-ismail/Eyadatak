@@ -7190,7 +7190,7 @@ select.select:focus {
 }
 
 .login-wrapper {
-    max-width: 94%;
+    max-width: 80%;
     margin-left: auto;
     margin-right: auto;
     padding: 20px;
@@ -7413,6 +7413,29 @@ select.select:focus {
 .login-wrapper .login-box .login-form .form-group.btn-group {
     margin-top: 30px;
 }
+.login-wrapper .login-box .login-form .form-group.btn-group .underline-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0 auto;
+}
+.login-wrapper .login-box .login-form .form-group.btn-group .underline-container .underline-left {
+    width: 40%;
+    border-bottom: 2px #e3e3e3 solid;
+    margin-left: 45px;
+    margin-bottom: 5px;
+}
+.login-wrapper .login-box .login-form .form-group.btn-group .underline-container .underline-right {
+    width: 40%;
+    border-bottom: 2px #e3e3e3 solid;
+    margin-right: 5px;
+    margin-bottom: 5px;
+
+}
+.login-wrapper .login-box .login-form .form-group.btn-group .underline-container .or-underline {
+    width: 1%;
+    margin-left:7px;
+}
 .login-wrapper .login-box .login-form .form-group.btn-group button {
     border: none;
     margin: 10px 0;
@@ -7443,8 +7466,13 @@ select.select:focus {
 
 .login-wrapper .login-box .login-form .form-group.btn-group button.login-facebook span.login-face-icon {
     position: absolute;
-    left: 106!important;
-    bottom: 17 !important;
+    margin-right: 5px;
+    top: 10px;
+}
+.login-wrapper .login-box .login-form .form-group.btn-group button.login-google span.login-google-icon {
+    position: absolute;
+    margin-right: 5px;
+    top: 12px;
 }
 
 .login-wrapper .login-box .login-form .form-group.btn-group button.login-google {
@@ -7454,6 +7482,7 @@ select.select:focus {
     background-color: #1da1f2;
     color: #fff;
     border-radius: 5px;
+    position: relative;
 }
 
 .login-wrapper .login-box .login-form .form-group.btn-group button.signup {
