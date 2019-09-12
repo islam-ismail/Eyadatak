@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "5bf4e1370146d389738d532fcd2de572",
+    "revision": "de3c060cbc4ca43cd74f3bd93a4f2657",
     "url": "/eyadatak/index.html"
   },
   {
