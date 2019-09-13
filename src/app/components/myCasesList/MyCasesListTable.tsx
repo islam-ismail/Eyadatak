@@ -188,7 +188,7 @@ class MyCasesListTable extends Component<CompProps, CompState> {
             onChangeRowsPerPage={this.handleChangeRowsPerPage}
           /> */}
                 </div>
-                <div className="container">
+                <div className="my-cases-container">
                     <table className="all_cases">
                         <MyCasesListTableHeader
                             prepareSort={this.prepareSort}

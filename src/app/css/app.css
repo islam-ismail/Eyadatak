@@ -7762,9 +7762,17 @@ main.content aside {
 main.content .container {
     width: 98.33333%;
     float: left;
+    margin-left: 0.83333%;
+    margin-right: 0.83333%;
+}
+
+main.content .my-cases-container {
+    width: 98.33333%;
+    float: left;
     margin-left: 3.83333%;
     margin-right: 0.83333%;
 }
+
 main.content .container.sidebar {
     width: 73.33333%;
     float: left;
